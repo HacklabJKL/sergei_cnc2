@@ -1,0 +1,8 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP L6393
+D High voltage high and low-side 4 A gate driver, SO-14
+K fet driver
+$ENDCMP
+#
+#End Doc Library

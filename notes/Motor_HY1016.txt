@@ -1,0 +1,6 @@
+Bought from eBay.
+Rated 24V 300W 17A 2750 RPM.
+
+DC Resistance 0.4 ohm
+Inductance 0.5 mH
+

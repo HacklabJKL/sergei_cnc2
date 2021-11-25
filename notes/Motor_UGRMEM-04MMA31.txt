@@ -1,0 +1,23 @@
+Speed testing:
+
+10V:  600 RPM, 0.4 A
+20V: 1340 RPM, 0.5 A
+30V: 2110 RPM, 0.6 A
+40V: 2890 RPM, 0.7 A
+50V: 3660 RPM, 0.8 A
+
+Kv constant 70 RPM/V
+Kt constant 0.14 Nm/A
+
+1 cm rise, 1:1 ratio:
+=> 0.04 mm per pulse, 0.01 mm per encoder step
+=> max speed 60 cm/sec
+=> force with 5A drive is 440 N
+
+Could use different ratio gearing, 1:2 or 1:4.
+
+Mating connector: Molex 0003091032
+
+DC resistance 5 ohms
+Inductance 0.5 mH
+

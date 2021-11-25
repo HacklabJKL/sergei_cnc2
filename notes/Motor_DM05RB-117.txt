@@ -1,0 +1,6 @@
+Specs: DC 24 V, 2000 RPM
+
+12 cogging steps
+
+DC resistance 5.5 ohms
+Inductance 7 mH

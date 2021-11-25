@@ -1,0 +1,36 @@
+2 ports of 17 IO pins each.
+
+Port 1:
+- 5 pins X: FWD/REV/FAULT/A/B
+- 5 pins Y: FWD/REV/FAULT/A/B
+- 5 pins Z: FWD/REV/FAULT/A/B
+- HCURR output
+
+
+Port 2:
+- 5 pins A: FWD/REV/FAULT/A/B
+- 2 pins 48V: ON/OK
+- 1 pin SPINDLE_ON
+- 1 pin TOOL_SENSOR
+- 1 pin PROBE
+- 3 pins X/Y/Z home
+
+
+Port 1:
+ 1: X_FWD
+ 2: X_REV
+ 3: X_A
+ 4: X_B
+ 5: X_HOME
+ 6: Y_FWD
+ 7: Y_REV
+ 8: Y_A
+ 9: Y_B
+10: Y_HOME
+11: Z_FWD
+12: Z_REV
+13: Z_A
+14: Z_B
+15: Z_HOME
+16: MOTOR_FAULT
+17: MOTOR_HCURR

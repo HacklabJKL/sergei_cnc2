@@ -1,0 +1,11 @@
+Width of door opening 565 mm
+Depth to wall at door width 780 mm
+Depth to wall from cutter position about 40 to 50 cm
+
+Middle to door 960 mm
+
+500x600 mm table?
+180 mm of movement with door closed
+
+500x500 mm table?
+280 mm of movement with door closed

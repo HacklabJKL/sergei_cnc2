@@ -1,0 +1,12 @@
+Kuularuuvi 14mm, 1cm nousu
+1:1 välitys
+Optical encoder UTOPI-O25SD, 250pulses/rev
+Minertia motor, UGRMEM-04MMA31
+UTOPI-025SD
+
+=> 0.04 mm/pulse
+
+Cart extension 150 mm from lower edge
+
+Fits 1100 mm carts sideways at 910 mm distance between inner faces
+

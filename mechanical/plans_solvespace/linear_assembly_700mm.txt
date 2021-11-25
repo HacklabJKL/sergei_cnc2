@@ -1,0 +1,3 @@
+Length total 760, rails 685, movement 590
+Depth without motor 60mm to screw, 75mm to bearing block, 100mm to cart attachment
+
