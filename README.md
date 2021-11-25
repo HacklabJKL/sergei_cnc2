@@ -14,3 +14,10 @@ Y axis moves the table.
 
 ![](notes/general_plan_2021_10.png)
 ![](photos/build_2021_11.jpg)
+
+
+Documentation index
+-------------------
+
+* [Parts list](PARTS.md)
+* [Wiring diagram](electronics/wiring/images/sergei2-wiring.pdf)

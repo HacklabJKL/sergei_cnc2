@@ -1,0 +1,3 @@
+(sym_lib_table
+  (lib (name "sergei2_wiring")(type "KiCad")(uri "${KIPRJMOD}/sergei2_wiring.kicad_sym")(options "")(descr ""))
+)

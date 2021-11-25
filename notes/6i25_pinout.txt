@@ -19,18 +19,18 @@ Port 2:
 Port 1:
  1: X_FWD
  2: X_REV
- 3: X_A
- 4: X_B
- 5: X_HOME
+ 3: X_HOME
+ 4: X_A
+ 5: X_B
  6: Y_FWD
  7: Y_REV
- 8: Y_A
- 9: Y_B
-10: Y_HOME
+ 8: Y_HOME
+ 9: Y_A
+10: Y_B
 11: Z_FWD
 12: Z_REV
-13: Z_A
-14: Z_B
-15: Z_HOME
+13: Z_HOME
+14: Z_A
+15: Z_B
 16: MOTOR_FAULT
 17: MOTOR_HCURR
