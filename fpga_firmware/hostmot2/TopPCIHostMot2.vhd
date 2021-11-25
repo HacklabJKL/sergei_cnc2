@@ -79,10 +79,10 @@ use work.FixICap.all;
 
 
 -------------------- select one card type------------------------------
-use work.@Card@.all;
+--use work.@Card@.all;
 --use work.i25_x9card.all;                -- needs 5i25.ucf and SP6 x9 144 pin
 --use work.i74_x9card.all;   	-- needs 4I74.ucf and SP6 x9 144 pin
---use work.Sixi25_x9card.all;	-- needs 6i25.ucf and SP6 x9 144 pin
+use work.Sixi25_x9card.all;	-- needs 6i25.ucf and SP6 x9 144 pin
 --use work.i24_x16card.all; 	-- needs 5I24.ucf and SP6 x16 256 pin
 --use work.i24_x25card.all;   -- needs 5I24.ucf and SP6 x25 256 pin
 
@@ -93,6 +93,8 @@ use work.@Card@.all;
 --use work.@Pin@.all;
 
 -- 34 I/O pinouts for 5I25, 5I26 and 6I25:
+
+use work.PIN_HACKLAB_6I25.all;
 
 --use work.PIN_7I76x2_34.all;  			-- 5i25/6 step config for 2X 7I76 step/dir breakout
 --use work.PIN_7I76x2D_34.all;         -- 5i25/6 step config for 2X 7I76 step/dir breakout with DPLL
