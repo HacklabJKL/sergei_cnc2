@@ -112,21 +112,21 @@ package PIN_HACKLAB_6I25 is
 -- 	Base func  sec unit sec func 	 sec pin		
 		IOPortTag & x"00" & PWMTag    & PWMAOutPin,			-- I/O 00:	X_FWD	
 		IOPortTag & x"00" & PWMTag    & PWMBDirPin,			-- I/O 01:	X_REV
-		IOPortTag & x"00" & NullTag   & x"00",					-- I/O 02:  X_HOME
-		IOPortTag & x"00" & QCountTag & QCountQAPin,			-- I/O 03:  X_A
-		IOPortTag & x"00" & QCountTag & QCountQBPin,			-- I/O 04:  X_B
-		IOPortTag & x"01" & PWMTag    & PWMAOutPin,			-- I/O 05:  Y_FWD
-		IOPortTag & x"01" & PWMTag    & PWMBDirPin,			-- I/O 06:  Y_REV
-		IOPortTag & x"00" & NullTag   & x"00",					-- I/O 07:  Y_HOME
-		IOPortTag & x"01" & QCountTag & QCountQAPin,			-- I/O 08:  Y_A
-		IOPortTag & x"01" & QCountTag & QCountQBPin,			-- I/O 09:  Y_B
-		IOPortTag & x"02" & PWMTag    & PWMAOutPin,			-- I/O 10:  Z_FWD
-		IOPortTag & x"02" & PWMTag    & PWMBDirPin,			-- I/O 11:  Z_REV
-		IOPortTag & x"00" & NullTag   & x"00",					-- I/O 12:  Z_HOME
-		IOPortTag & x"02" & QCountTag & QCountQAPin,			-- I/O 13:  Z_A
-		IOPortTag & x"02" & QCountTag & QCountQBPin,			-- I/O 14:  Z_B
-		IOPortTag & x"00" & NullTag   & x"00",					-- I/O 15:  GPIO
-		IOPortTag & x"00" & NullTag   & x"00",					-- I/O 16:  GPIO
+		IOPortTag & x"00" & QCountTag & QCountQAPin,		-- I/O 02:  X_A
+		IOPortTag & x"00" & QCountTag & QCountQBPin,		-- I/O 03:  X_B
+		IOPortTag & x"01" & PWMTag    & PWMAOutPin,			-- I/O 04:  Y_FWD
+		IOPortTag & x"01" & PWMTag    & PWMBDirPin,			-- I/O 05:  Y_REV
+		IOPortTag & x"01" & QCountTag & QCountQAPin,		-- I/O 06:  Y_A
+		IOPortTag & x"01" & QCountTag & QCountQBPin,		-- I/O 07:  Y_B
+		IOPortTag & x"02" & PWMTag    & PWMAOutPin,			-- I/O 08:  Z_FWD
+		IOPortTag & x"02" & PWMTag    & PWMBDirPin,			-- I/O 09:  Z_REV
+		IOPortTag & x"02" & QCountTag & QCountQAPin,		-- I/O 10:  Z_A
+		IOPortTag & x"02" & QCountTag & QCountQBPin,		-- I/O 11:  Z_B
+		IOPortTag & x"00" & NullTag   & x"00",				-- I/O 12:  GPIO / MOTOR_HCURR
+		IOPortTag & x"00" & NullTag   & x"00",				-- I/O 13:  GPIO / MOTOR_FAULT
+		IOPortTag & x"00" & NullTag   & x"00",				-- I/O 14:  GPIO / X_HOME
+		IOPortTag & x"00" & NullTag   & x"00",				-- I/O 15:  GPIO / Y_HOME
+		IOPortTag & x"00" & NullTag   & x"00",				-- I/O 16:  GPIO / Z_HOME
 
 		-- Internal 26 pin header, Port 2
 		IOPortTag & x"00" & StepGenTag & StepGenStepPin,	-- I/O 17:  Rotary axis step
@@ -143,9 +143,9 @@ package PIN_HACKLAB_6I25 is
 		IOPortTag & x"00" & NullTag    & x"00",				-- I/O 28
 		IOPortTag & x"00" & NullTag    & x"00",				-- I/O 29
 		IOPortTag & x"00" & NullTag    & x"00",				-- I/O 30
-		IOPortTag & x"03" & PWMTag     & PWMAOutPin,			-- I/O 31: FET1_CTRL
-		IOPortTag & x"04" & PWMTag     & PWMAOutPin,			-- I/O 32: FET2_CTRL
-		IOPortTag & x"05" & PWMTag     & PWMAOutPin,			-- I/O 33: FET3_CTRL
+		IOPortTag & x"03" & PWMTag     & PWMAOutPin,		-- I/O 31: FET1_CTRL
+		IOPortTag & x"04" & PWMTag     & PWMAOutPin,		-- I/O 32: FET2_CTRL
+		IOPortTag & x"05" & PWMTag     & PWMAOutPin,		-- I/O 33: FET3_CTRL
 
 		emptypin,emptypin,emptypin,emptypin,emptypin,emptypin,emptypin,emptypin, -- added for 34 pin 5I25
 		emptypin,emptypin,emptypin,emptypin,emptypin,emptypin,
