@@ -1,0 +1,57 @@
+# Interface to hardware using Mesa Electronics 6i25 control card.
+
+loadrt hostmot2 debug_idrom=1 debug_module_descriptors=1 debug_pin_descriptors=1 debug_modules=1
+loadrt [HOSTMOT2](DRIVER) config=[HOSTMOT2](CONFIG)
+
+# Read inputs at start of servo loop and write outputs at end
+addf hm2_[HOSTMOT2](BOARD).0.read          servo-thread    1
+addf hm2_[HOSTMOT2](BOARD).0.write         servo-thread   -1
+
+# Global PWM frequency
+setp hm2_[HOSTMOT2](BOARD).0.pwmgen.pwm_frequency 40000
+
+########################
+# X-axis encoder input #
+########################
+setp hm2_[HOSTMOT2](BOARD).0.encoder.00.counter-mode 0
+setp hm2_[HOSTMOT2](BOARD).0.encoder.00.filter 1
+setp hm2_[HOSTMOT2](BOARD).0.encoder.00.scale  [ENCODERS]STEP_PER_MM_X
+net motordrive.0.feedback <= hm2_[HOSTMOT2](BOARD).0.encoder.00.position
+
+########################
+# Y-axis encoder input #
+########################
+setp hm2_[HOSTMOT2](BOARD).0.encoder.01.counter-mode 0
+setp hm2_[HOSTMOT2](BOARD).0.encoder.01.filter 1
+setp hm2_[HOSTMOT2](BOARD).0.encoder.01.scale  [ENCODERS]STEP_PER_MM_Y
+net motordrive.1.feedback <= hm2_[HOSTMOT2](BOARD).0.encoder.01.position
+
+########################
+# Z-axis encoder input #
+########################
+setp hm2_[HOSTMOT2](BOARD).0.encoder.02.counter-mode 0
+setp hm2_[HOSTMOT2](BOARD).0.encoder.02.filter 1
+setp hm2_[HOSTMOT2](BOARD).0.encoder.02.scale  [ENCODERS]STEP_PER_MM_Z
+net motordrive.2.feedback <= hm2_[HOSTMOT2](BOARD).0.encoder.02.position
+
+#####################
+# X-axis PWM output #
+#####################
+setp hm2_[HOSTMOT2](BOARD).0.pwmgen.00.output-type 2
+setp hm2_[HOSTMOT2](BOARD).0.pwmgen.00.scale [MOTORDRIVE]SUPPLY_VOLTAGE
+net motordrive.0.control => hm2_[HOSTMOT2](BOARD).0.pwmgen.00.value
+
+#####################
+# Y-axis PWM output #
+#####################
+setp hm2_[HOSTMOT2](BOARD).0.pwmgen.01.output-type 2
+setp hm2_[HOSTMOT2](BOARD).0.pwmgen.01.scale [MOTORDRIVE]SUPPLY_VOLTAGE
+net motordrive.1.control => hm2_[HOSTMOT2](BOARD).0.pwmgen.01.value
+
+#####################
+# Z-axis PWM output #
+#####################
+setp hm2_[HOSTMOT2](BOARD).0.pwmgen.02.output-type 2
+setp hm2_[HOSTMOT2](BOARD).0.pwmgen.02.scale [MOTORDRIVE]SUPPLY_VOLTAGE
+net motordrive.2.control => hm2_[HOSTMOT2](BOARD).0.pwmgen.02.value
+

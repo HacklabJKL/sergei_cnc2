@@ -1,0 +1,31 @@
+# Simulates DC motor controller response
+
+loadrt integ count=3
+addf integ.0 servo-thread
+addf integ.1 servo-thread
+addf integ.2 servo-thread
+
+####################
+# X axis / joint 0 #
+####################
+
+setp integ.0.gain [SIMULATOR]GAIN_X
+net motordrive.0.control => integ.0.in
+net motordrive.0.feedback <= integ.0.out
+
+####################
+# Y axis / joint 1 #
+####################
+
+setp integ.1.gain [SIMULATOR]GAIN_Y
+net motordrive.1.control => integ.1.in
+net motordrive.1.feedback <= integ.1.out
+
+####################
+# Z axis / joint 2 #
+####################
+
+setp integ.2.gain [SIMULATOR]GAIN_Z
+net motordrive.2.control => integ.2.in
+net motordrive.2.feedback <= integ.2.out
+

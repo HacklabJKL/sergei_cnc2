@@ -1,0 +1,6 @@
+# Power-on and emergency stop control.
+# Actual emergency stop mechanism cuts power in hardware, but the software
+# loop provides feedback for GUI and faster stopping.
+
+setp iocontrol.0.emc-enable-in TRUE
+

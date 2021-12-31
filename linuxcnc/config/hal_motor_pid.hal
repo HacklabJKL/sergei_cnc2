@@ -1,0 +1,112 @@
+# LinuxCNC HAL configuration for motor PID controllers.
+
+# Module loading
+loadrt pid num_chan=3
+
+addf pid.0.do-pid-calcs                    servo-thread
+addf pid.1.do-pid-calcs                    servo-thread
+addf pid.2.do-pid-calcs                    servo-thread
+
+####################
+# X axis / joint 0 #
+####################
+
+# Enable signal for the motor driver
+newsig motordrive.0.enable bit
+sets motordrive.0.enable FALSE
+net motordrive.0.enable => pid.0.enable
+net motordrive.0.enable <= joint.0.amp-enable-out 
+
+# Feedback signal from encoder
+newsig motordrive.0.feedback float
+net motordrive.0.feedback => pid.0.feedback        # Feedback to PID control
+net motordrive.0.feedback => joint.0.motor-pos-fb  # Feedback to GUI
+
+# PWM output drive signal
+newsig motordrive.0.control float
+net motordrive.0.control <= pid.0.output
+
+# Commanded position from motion controller
+net motordrive.0.command joint.0.motor-pos-cmd => pid.0.command
+
+# PID parameters from ini file
+setp pid.0.Pgain [JOINT_0]P
+setp pid.0.Igain [JOINT_0]I
+setp pid.0.Dgain [JOINT_0]D
+setp pid.0.bias [JOINT_0]BIAS
+setp pid.0.FF0 [JOINT_0]FF0
+setp pid.0.FF1 [JOINT_0]FF1
+setp pid.0.FF2 [JOINT_0]FF2
+setp pid.0.deadband [JOINT_0]DEADBAND
+setp pid.0.maxoutput [JOINT_0]MAX_OUTPUT
+
+
+####################
+# Y axis / joint 1 #
+####################
+
+# Enable signal for the motor driver
+newsig motordrive.1.enable bit
+sets motordrive.1.enable FALSE
+net motordrive.1.enable => pid.1.enable
+net motordrive.1.enable <= joint.1.amp-enable-out 
+
+# Feedback signal from encoder
+newsig motordrive.1.feedback float
+net motordrive.1.feedback => pid.1.feedback        # Feedback to PID control
+net motordrive.1.feedback => joint.1.motor-pos-fb  # Feedback to GUI
+
+# PWM output drive signal
+newsig motordrive.1.control float
+net motordrive.1.control <= pid.1.output
+
+# Commanded position from motion controller
+net motordrive.1.command joint.1.motor-pos-cmd => pid.1.command
+
+# PID parameters from ini file
+setp pid.1.Pgain [JOINT_1]P
+setp pid.1.Igain [JOINT_1]I
+setp pid.1.Dgain [JOINT_1]D
+setp pid.1.bias [JOINT_1]BIAS
+setp pid.1.FF0 [JOINT_1]FF0
+setp pid.1.FF1 [JOINT_1]FF1
+setp pid.1.FF2 [JOINT_1]FF2
+setp pid.1.deadband [JOINT_1]DEADBAND
+setp pid.1.maxoutput [JOINT_1]MAX_OUTPUT
+
+
+####################
+# Z axis / joint 2 #
+####################
+
+# Enable signal for the motor driver
+newsig motordrive.2.enable bit
+sets motordrive.2.enable FALSE
+net motordrive.2.enable => pid.2.enable
+net motordrive.2.enable <= joint.2.amp-enable-out 
+
+# Feedback signal from encoder
+newsig motordrive.2.feedback float
+net motordrive.2.feedback => pid.2.feedback        # Feedback to PID control
+net motordrive.2.feedback => joint.2.motor-pos-fb  # Feedback to GUI
+
+# PWM output drive signal
+newsig motordrive.2.control float
+net motordrive.2.control <= pid.2.output
+
+# Commanded position from motion controller
+net motordrive.2.command joint.2.motor-pos-cmd => pid.2.command
+
+# PID parameters from ini file
+setp pid.2.Pgain [JOINT_2]P
+setp pid.2.Igain [JOINT_2]I
+setp pid.2.Dgain [JOINT_2]D
+setp pid.2.bias [JOINT_2]BIAS
+setp pid.2.FF0 [JOINT_2]FF0
+setp pid.2.FF1 [JOINT_2]FF1
+setp pid.2.FF2 [JOINT_2]FF2
+setp pid.2.deadband [JOINT_2]DEADBAND
+setp pid.2.maxoutput [JOINT_2]MAX_OUTPUT
+
+
+
