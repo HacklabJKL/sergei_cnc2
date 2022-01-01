@@ -110,42 +110,42 @@ package PIN_HACKLAB_6I25 is
 	constant PinDesc : PinDescType :=(
 		-- External DB25, Port 1
 -- 	Base func  sec unit sec func 	 sec pin		
-		IOPortTag & x"00" & PWMTag    & PWMAOutPin,			-- I/O 00:	X_FWD	
-		IOPortTag & x"00" & PWMTag    & PWMBDirPin,			-- I/O 01:	X_REV
-		IOPortTag & x"00" & QCountTag & QCountQAPin,		-- I/O 02:  X_A
-		IOPortTag & x"00" & QCountTag & QCountQBPin,		-- I/O 03:  X_B
-		IOPortTag & x"01" & PWMTag    & PWMAOutPin,			-- I/O 04:  Y_FWD
-		IOPortTag & x"01" & PWMTag    & PWMBDirPin,			-- I/O 05:  Y_REV
-		IOPortTag & x"01" & QCountTag & QCountQAPin,		-- I/O 06:  Y_A
-		IOPortTag & x"01" & QCountTag & QCountQBPin,		-- I/O 07:  Y_B
-		IOPortTag & x"02" & PWMTag    & PWMAOutPin,			-- I/O 08:  Z_FWD
-		IOPortTag & x"02" & PWMTag    & PWMBDirPin,			-- I/O 09:  Z_REV
-		IOPortTag & x"02" & QCountTag & QCountQAPin,		-- I/O 10:  Z_A
-		IOPortTag & x"02" & QCountTag & QCountQBPin,		-- I/O 11:  Z_B
-		IOPortTag & x"00" & NullTag   & x"00",				-- I/O 12:  GPIO / MOTOR_HCURR
-		IOPortTag & x"00" & NullTag   & x"00",				-- I/O 13:  GPIO / MOTOR_FAULT
-		IOPortTag & x"00" & NullTag   & x"00",				-- I/O 14:  GPIO / X_HOME
-		IOPortTag & x"00" & NullTag   & x"00",				-- I/O 15:  GPIO / Y_HOME
-		IOPortTag & x"00" & NullTag   & x"00",				-- I/O 16:  GPIO / Z_HOME
+		IOPortTag & x"00" & PWMTag    & PWMAOutPin,			-- I/O 00 / Pin  1:	X_FWD	
+		IOPortTag & x"00" & NullTag   & x"00",				-- I/O 01 / Pin 14: GPIO / MOTOR_FAULT
+		IOPortTag & x"00" & PWMTag    & PWMBDirPin,			-- I/O 02 / Pin  2:	X_REV
+		IOPortTag & x"00" & NullTag   & x"00",				-- I/O 03 / Pin 15: GPIO / X_HOME
+		IOPortTag & x"00" & QCountTag & QCountQAPin,		-- I/O 04 / Pin  3: X_A
+		IOPortTag & x"00" & NullTag   & x"00",				-- I/O 05 / Pin 16: GPIO / Y_HOME
+		IOPortTag & x"00" & QCountTag & QCountQBPin,		-- I/O 06 / Pin  4: X_B
+		IOPortTag & x"00" & NullTag   & x"00",				-- I/O 07 / Pin 17: GPIO / Z_HOME
+		IOPortTag & x"01" & PWMTag    & PWMAOutPin,			-- I/O 08 / Pin  5:  Y_FWD
+		IOPortTag & x"01" & PWMTag    & PWMBDirPin,			-- I/O 09 / Pin  6:  Y_REV
+		IOPortTag & x"01" & QCountTag & QCountQAPin,		-- I/O 10 / Pin  7:  Y_A
+		IOPortTag & x"01" & QCountTag & QCountQBPin,		-- I/O 11 / Pin  8:  Y_B
+		IOPortTag & x"02" & PWMTag    & PWMAOutPin,			-- I/O 12 / Pin  9:  Z_FWD
+		IOPortTag & x"02" & PWMTag    & PWMBDirPin,			-- I/O 13 / Pin 10:  Z_REV
+		IOPortTag & x"02" & QCountTag & QCountQAPin,		-- I/O 14 / Pin 11:  Z_A
+		IOPortTag & x"02" & QCountTag & QCountQBPin,		-- I/O 15 / Pin 12:  Z_B
+		IOPortTag & x"00" & NullTag   & x"00",				-- I/O 16 / Pin 13:  GPIO / MOTOR_HCURR
 
 		-- Internal 26 pin header, Port 2
-		IOPortTag & x"00" & StepGenTag & StepGenStepPin,	-- I/O 17:  Rotary axis step
-		IOPortTag & x"00" & StepGenTag & StepGenDirPin,		-- I/O 18:  Rotary axis dir
-		IOPortTag & x"00" & NullTag    & x"00",				-- I/O 19
-		IOPortTag & x"00" & NullTag    & x"00",				-- I/O 20
-		IOPortTag & x"00" & NullTag    & x"00",				-- I/O 21
-		IOPortTag & x"00" & NullTag    & x"00",				-- I/O 22
-		IOPortTag & x"00" & NullTag    & x"00",				-- I/O 23
-		IOPortTag & x"00" & NullTag    & x"00",				-- I/O 24
-		IOPortTag & x"00" & NullTag    & x"00",				-- I/O 25
-		IOPortTag & x"00" & NullTag    & x"00",				-- I/O 26
-		IOPortTag & x"00" & NullTag    & x"00",				-- I/O 27
-		IOPortTag & x"00" & NullTag    & x"00",				-- I/O 28
-		IOPortTag & x"00" & NullTag    & x"00",				-- I/O 29
-		IOPortTag & x"00" & NullTag    & x"00",				-- I/O 30
-		IOPortTag & x"03" & PWMTag     & PWMAOutPin,		-- I/O 31: FET1_CTRL
-		IOPortTag & x"04" & PWMTag     & PWMAOutPin,		-- I/O 32: FET2_CTRL
-		IOPortTag & x"05" & PWMTag     & PWMAOutPin,		-- I/O 33: FET3_CTRL
+		IOPortTag & x"00" & StepGenTag & StepGenStepPin,	-- I/O 17 / Pin  1: Rotary axis step
+		IOPortTag & x"00" & NullTag    & x"00",				-- I/O 18 / Pin 14
+		IOPortTag & x"00" & StepGenTag & StepGenDirPin,		-- I/O 19 / Pin  2: Rotary axis dir
+		IOPortTag & x"03" & PWMTag     & PWMAOutPin,		-- I/O 20 / Pin 15: FET1_CTRL
+		IOPortTag & x"00" & NullTag    & x"00",				-- I/O 21 / Pin  3
+		IOPortTag & x"04" & PWMTag     & PWMAOutPin,		-- I/O 22 / Pin 16: FET2_CTRL
+		IOPortTag & x"00" & NullTag    & x"00",				-- I/O 23 / Pin  4
+		IOPortTag & x"05" & PWMTag     & PWMAOutPin,		-- I/O 24 / Pin 17: FET3_CTRL
+		IOPortTag & x"00" & NullTag    & x"00",				-- I/O 25 / Pin  5
+		IOPortTag & x"00" & NullTag    & x"00",				-- I/O 26 / Pin  6
+		IOPortTag & x"00" & NullTag    & x"00",				-- I/O 27 / Pin  7
+		IOPortTag & x"00" & NullTag    & x"00",				-- I/O 28 / Pin  8
+		IOPortTag & x"00" & NullTag    & x"00",				-- I/O 29 / Pin  9
+		IOPortTag & x"00" & NullTag    & x"00",				-- I/O 30 / Pin 10
+		IOPortTag & x"00" & NullTag    & x"00",				-- I/O 31 / Pin 11
+		IOPortTag & x"00" & NullTag    & x"00",				-- I/O 32 / Pin 12
+		IOPortTag & x"00" & NullTag    & x"00",				-- I/O 33 / Pin 13
 
 		emptypin,emptypin,emptypin,emptypin,emptypin,emptypin,emptypin,emptypin, -- added for 34 pin 5I25
 		emptypin,emptypin,emptypin,emptypin,emptypin,emptypin,
