@@ -222,37 +222,18 @@ Wire Wire Line
 $Comp
 L Connector:Screw_Terminal_01x02 J1
 U 1 1 61887827
-P 650 2000
-F 0 "J1" H 568 1675 50  0000 C CNN
-F 1 "Power" H 568 1766 50  0000 C CNN
-F 2 "TerminalBlock:TerminalBlock_bornier-2_P5.08mm" H 650 2000 50  0001 C CNN
-F 3 "~" H 650 2000 50  0001 C CNN
-	1    650  2000
+P 1150 1950
+F 0 "J1" H 1068 1625 50  0000 C CNN
+F 1 "Power" H 1068 1716 50  0000 C CNN
+F 2 "TerminalBlock:TerminalBlock_bornier-2_P5.08mm" H 1150 1950 50  0001 C CNN
+F 3 "~" H 1150 1950 50  0001 C CNN
+	1    1150 1950
 	-1   0    0    1   
 $EndComp
-$Comp
-L Device:EMI_Filter_CommonMode FL1
-U 1 1 61888648
-P 1600 1950
-F 0 "FL1" H 1600 2231 50  0000 C CNN
-F 1 "EMI_Filter_CommonMode" H 1600 2140 50  0000 C CNN
-F 2 "motor_driver:CM7060" H 1600 1990 50  0001 C CNN
-F 3 "~" H 1600 1990 50  0001 C CNN
-	1    1600 1950
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
-	1400 1850 1300 1850
+	1800 1850 1350 1850
 Wire Wire Line
-	1300 1850 1300 1900
-Wire Wire Line
-	1300 1900 850  1900
-Wire Wire Line
-	850  2000 1300 2000
-Wire Wire Line
-	1300 2000 1300 2050
-Wire Wire Line
-	1300 2050 1400 2050
+	1350 1950 1800 1950
 $Comp
 L Device:CP C1
 U 1 1 6188F9E0
@@ -321,8 +302,6 @@ Wire Wire Line
 Wire Wire Line
 	7500 5850 7500 5750
 Wire Wire Line
-	7350 5450 6000 5450
-Wire Wire Line
 	6000 5450 6000 5050
 Wire Wire Line
 	6000 5050 5350 5050
@@ -331,7 +310,7 @@ L Device:R R13
 U 1 1 61930F0E
 P 5750 5650
 F 0 "R13" V 5865 5650 50  0000 C CNN
-F 1 "100k" V 5956 5650 50  0000 C CNN
+F 1 "47k" V 5956 5650 50  0000 C CNN
 F 2 "Resistor_SMD:R_0603_1608Metric" V 5680 5650 50  0001 C CNN
 F 3 "~" H 5750 5650 50  0001 C CNN
 	1    5750 5650
@@ -340,16 +319,14 @@ $EndComp
 $Comp
 L Device:R R14
 U 1 1 61931B2A
-P 6050 5650
-F 0 "R14" V 6165 5650 50  0000 C CNN
-F 1 "1k" V 6256 5650 50  0000 C CNN
-F 2 "Resistor_SMD:R_0603_1608Metric" V 5980 5650 50  0001 C CNN
-F 3 "~" H 6050 5650 50  0001 C CNN
-	1    6050 5650
+P 6900 5650
+F 0 "R14" V 7015 5650 50  0000 C CNN
+F 1 "1k" V 6900 5650 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 6830 5650 50  0001 C CNN
+F 3 "~" H 6900 5650 50  0001 C CNN
+	1    6900 5650
 	0    1    1    0   
 $EndComp
-Wire Wire Line
-	6200 5650 7350 5650
 Wire Wire Line
 	5900 5650 5900 5150
 Wire Wire Line
@@ -843,18 +820,9 @@ Wire Wire Line
 Wire Wire Line
 	2750 2350 2950 2350
 Connection ~ 2950 2350
-Wire Wire Line
-	1800 1850 2100 1850
-Wire Wire Line
-	1800 2050 2100 2050
-Wire Wire Line
-	2100 2050 2100 2350
-Wire Wire Line
-	2100 2350 2200 2350
 Connection ~ 2750 2350
 Wire Wire Line
 	2100 2450 2100 2350
-Connection ~ 2100 2350
 $Comp
 L Device:C C6
 U 1 1 61DE2F7B
@@ -912,7 +880,7 @@ F 3 "~" H 2850 4150 50  0001 C CNN
 	1    2850 4150
 	0    -1   -1   0   
 $EndComp
-Text Label 3250 4450 0    50   ~ 0
+Text Label 3600 4450 0    50   ~ 0
 ~FAULT
 $Comp
 L Device:LED_ALT D3
@@ -1135,14 +1103,9 @@ F 3 "" H 9900 4000 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Connection ~ 3350 2350
-Connection ~ 2100 1400
 Wire Wire Line
 	2100 1200 2100 1400
 Connection ~ 2750 1400
-Wire Wire Line
-	2100 1400 2200 1400
-Wire Wire Line
-	2100 1850 2100 1400
 Connection ~ 2950 1400
 Wire Wire Line
 	2750 1400 2950 1400
@@ -1219,9 +1182,9 @@ F 3 "~" H 3350 2450 50  0001 C CNN
 	1    3350 2450
 	-1   0    0    1   
 $EndComp
-Text Label 900  1900 0    50   ~ 0
+Text Label 1400 1850 0    50   ~ 0
 Supply+
-Text Label 900  2000 0    50   ~ 0
+Text Label 1400 1950 0    50   ~ 0
 Supply-
 $Comp
 L Connector:TestPoint TP1
@@ -1275,7 +1238,7 @@ Wire Wire Line
 	2200 4450 3100 4450
 Connection ~ 3100 4450
 Wire Wire Line
-	3100 4450 3250 4450
+	3100 4450 3300 4450
 Wire Wire Line
 	2200 4250 2200 4150
 Wire Wire Line
@@ -1348,7 +1311,7 @@ Wire Wire Line
 Text Notes 9600 6100 0    50   ~ 0
 70°C temperature limit
 Text Notes 4250 7300 0    50   ~ 0
-Current limit is set by R13 to 1 A by default\nand by R22 to 5 A if HCURR input is high.\nAdditionally R23 can be installed to\nprovide asymmetric torque for Z axis lift.
+Current limit is set by R13 to 2 A by default\nand by R22 to 5 A if HCURR input is high.\nAdditionally R23 can be installed to\nprovide asymmetric torque for Z axis lift.
 $Comp
 L Device:R R20
 U 1 1 625952D2
@@ -1545,24 +1508,18 @@ Connection ~ 4700 2050
 $Comp
 L Device:D_TVS_ALT D1
 U 1 1 6285B635
-P 2200 1900
-F 0 "D1" V 2154 1980 50  0000 L CNN
-F 1 "SMAJ51A" V 2245 1980 50  0000 L CNN
-F 2 "Diode_SMD:D_SMA" H 2200 1900 50  0001 C CNN
-F 3 "~" H 2200 1900 50  0001 C CNN
-	1    2200 1900
+P 2100 1900
+F 0 "D1" V 2054 1980 50  0000 L CNN
+F 1 "SMAJ51A" V 2145 1980 50  0000 L CNN
+F 2 "Diode_SMD:D_SMA" H 2100 1900 50  0001 C CNN
+F 3 "~" H 2100 1900 50  0001 C CNN
+	1    2100 1900
 	0    1    1    0   
 $EndComp
 Wire Wire Line
-	2200 2050 2200 2350
-Connection ~ 2200 2350
+	2100 2050 2100 2350
 Wire Wire Line
-	2200 2350 2750 2350
-Wire Wire Line
-	2200 1750 2200 1400
-Connection ~ 2200 1400
-Wire Wire Line
-	2200 1400 2750 1400
+	2100 1750 2100 1400
 Wire Wire Line
 	3350 2100 3350 2350
 Wire Wire Line
@@ -1685,4 +1642,105 @@ Wire Wire Line
 Connection ~ 4150 2350
 Wire Wire Line
 	4150 2350 4700 2350
+$Comp
+L Device:C C18
+U 1 1 61C9C9BC
+P 3300 4300
+F 0 "C18" H 3415 4346 50  0000 L CNN
+F 1 "1nF" H 3415 4255 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric" H 3338 4150 50  0001 C CNN
+F 3 "~" H 3300 4300 50  0001 C CNN
+	1    3300 4300
+	1    0    0    -1  
+$EndComp
+Connection ~ 3300 4450
+Wire Wire Line
+	3300 4450 3600 4450
+Wire Wire Line
+	3300 4150 3100 4150
+Wire Wire Line
+	7050 5650 7350 5650
+$Comp
+L Device:R R25
+U 1 1 61CC7027
+P 6900 5450
+F 0 "R25" V 7015 5450 50  0000 C CNN
+F 1 "1k" V 6900 5450 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 6830 5450 50  0001 C CNN
+F 3 "~" H 6900 5450 50  0001 C CNN
+	1    6900 5450
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	7050 5450 7350 5450
+Wire Wire Line
+	6750 5650 6550 5650
+Wire Wire Line
+	6000 5450 6300 5450
+$Comp
+L Device:C C20
+U 1 1 61D06CBC
+P 6550 5900
+F 0 "C20" H 6665 5946 50  0000 L CNN
+F 1 "1nF" H 6665 5855 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric" H 6588 5750 50  0001 C CNN
+F 3 "~" H 6550 5900 50  0001 C CNN
+	1    6550 5900
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C C19
+U 1 1 61D073FF
+P 6300 5900
+F 0 "C19" H 6185 5946 50  0000 R CNN
+F 1 "1nF" H 6185 5855 50  0000 R CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric" H 6338 5750 50  0001 C CNN
+F 3 "~" H 6300 5900 50  0001 C CNN
+	1    6300 5900
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR0102
+U 1 1 61D079EB
+P 6300 6200
+F 0 "#PWR0102" H 6300 5950 50  0001 C CNN
+F 1 "GND" H 6305 6027 50  0000 C CNN
+F 2 "" H 6300 6200 50  0001 C CNN
+F 3 "" H 6300 6200 50  0001 C CNN
+	1    6300 6200
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6300 6200 6300 6150
+Wire Wire Line
+	6300 6150 6550 6150
+Wire Wire Line
+	6550 6150 6550 6050
+Connection ~ 6300 6150
+Wire Wire Line
+	6300 6150 6300 6050
+Wire Wire Line
+	6550 5750 6550 5650
+Connection ~ 6550 5650
+Wire Wire Line
+	6550 5650 5900 5650
+Wire Wire Line
+	6300 5750 6300 5450
+Connection ~ 6300 5450
+Wire Wire Line
+	6300 5450 6750 5450
+Wire Wire Line
+	2100 1400 1800 1400
+Wire Wire Line
+	1800 1400 1800 1850
+Connection ~ 2100 1400
+Wire Wire Line
+	1800 1950 1800 2350
+Wire Wire Line
+	1800 2350 2100 2350
+Connection ~ 2100 2350
+Wire Wire Line
+	2100 2350 2750 2350
+Wire Wire Line
+	2100 1400 2750 1400
 $EndSCHEMATC
