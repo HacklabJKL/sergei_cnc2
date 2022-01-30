@@ -6,3 +6,4 @@ loadrt [EMCMOT]EMCMOT servo_period_nsec=[EMCMOT]SERVO_PERIOD num_joints=[KINS]JO
 addf motion-command-handler                servo-thread
 addf motion-controller                     servo-thread
 
+
