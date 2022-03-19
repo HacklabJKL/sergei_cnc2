@@ -68,6 +68,6 @@ net motordrive.1.enable => hm2_[HOSTMOT2](BOARD).0.pwmgen.01.enable
 # Z-axis PWM output #
 #####################
 setp hm2_[HOSTMOT2](BOARD).0.pwmgen.02.output-type 2
-setp hm2_[HOSTMOT2](BOARD).0.pwmgen.02.scale [MOTORDRIVE]SUPPLY_VOLTAGE
+setp hm2_[HOSTMOT2](BOARD).0.pwmgen.02.scale -[MOTORDRIVE]SUPPLY_VOLTAGE
 net motordrive.2.control => hm2_[HOSTMOT2](BOARD).0.pwmgen.02.value
 net motordrive.2.enable => hm2_[HOSTMOT2](BOARD).0.pwmgen.02.enable
