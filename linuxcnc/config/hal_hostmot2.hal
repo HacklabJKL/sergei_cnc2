@@ -21,6 +21,8 @@ setp hm2_[HOSTMOT2](BOARD).0.watchdog.timeout_ns 10000000
 setp hm2_[HOSTMOT2](BOARD).0.gpio.018.is_output 1
 net power_enable halui.machine.is-on => hm2_[HOSTMOT2](BOARD).0.gpio.018.out
 
+net estop iocontrol.0.emc-enable-in <= hm2_[HOSTMOT2](BOARD).0.gpio.22.in_not
+
 ########################
 # X-axis encoder input #
 ########################
@@ -47,6 +49,13 @@ setp hm2_[HOSTMOT2](BOARD).0.encoder.02.filter 1
 setp hm2_[HOSTMOT2](BOARD).0.encoder.02.scale  [ENCODERS]STEP_PER_MM_Z
 net motordrive.2.feedback <= hm2_[HOSTMOT2](BOARD).0.encoder.02.position
 net motordrive.2.feedback_deriv pid.2.feedback-deriv <= hm2_[HOSTMOT2](BOARD).0.encoder.02.velocity
+
+###################
+# Homing switches #
+###################
+net motordrive.0.home_sw joint.0.home-sw-in <= hm2_[HOSTMOT2](BOARD).0.gpio.3.in_not
+net motordrive.1.home_sw joint.1.home-sw-in <= hm2_[HOSTMOT2](BOARD).0.gpio.5.in_not
+net motordrive.2.home_sw joint.2.home-sw-in <= hm2_[HOSTMOT2](BOARD).0.gpio.7.in_not
 
 #####################
 # X-axis PWM output #

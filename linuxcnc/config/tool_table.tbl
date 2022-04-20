@@ -1,0 +1,8 @@
+T1 P1 D2.000 ;2mm end mill
+T2 P2 D3.000 ;3mm end mill
+T3 P3 D6.000 ;6mm end mill
+T4 P4 D8.000 ;8mm end mill
+T5 P5 D10.00 ;10mm end mill
+T6 P6 D12.00 ;12mm end mill
+T7 P7 D15.00 ;15mm end mill
+T8 P8 D20.00 ;20mm end mill

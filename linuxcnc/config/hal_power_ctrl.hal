@@ -4,3 +4,14 @@
 
 setp iocontrol.0.emc-enable-in TRUE
 
+# Run and pause buttons:
+# In setup mode (MSO 2):
+#  - Holding RUN or having door closed allows automatic moves such as homing
+#  - Pressing PAUSE acts as emergency stop
+#
+# In automatic mode (MSO 1):
+#  - Pressing RUN starts or resumes the program
+#  - Pressing PAUSE pauses the program
+#  - Opening door acts as pause
+#  - Holding RUN overrides the door switch
+

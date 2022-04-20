@@ -1,31 +1,64 @@
 # Simulates DC motor controller response
 
 loadrt integ count=3
+loadrt lowpass count=3
+loadrt comp count=3
+
 addf integ.0 servo-thread
 addf integ.1 servo-thread
 addf integ.2 servo-thread
+addf lowpass.0 servo-thread
+addf lowpass.1 servo-thread
+addf lowpass.2 servo-thread
+addf comp.0 servo-thread
+addf comp.1 servo-thread
+addf comp.2 servo-thread
 
 ####################
 # X axis / joint 0 #
 ####################
 
 setp integ.0.gain [SIMULATOR]GAIN_X
-net motordrive.0.control => integ.0.in
+setp lowpass.0.gain [SIMULATOR]LOWPASS_X
+net motordrive.0.control => lowpass.0.in
+net simulator.0.speed integ.0.in <= lowpass.0.out
 net motordrive.0.feedback <= integ.0.out
+
+# X axis home switch at left side
+setp comp.0.in1 -100
+setp comp.0.hyst 0.1
+net motordrive.0.feedback => comp.0.in0
+net motordrive.0.home_sw joint.0.home-sw-in <= comp.0.out
 
 ####################
 # Y axis / joint 1 #
 ####################
 
 setp integ.1.gain [SIMULATOR]GAIN_Y
-net motordrive.1.control => integ.1.in
+setp lowpass.1.gain [SIMULATOR]LOWPASS_Y
+net motordrive.1.control => lowpass.1.in
+net simulator.1.speed integ.1.in <= lowpass.1.out
 net motordrive.1.feedback <= integ.1.out
+
+# Y axis home switch at back edge
+setp comp.1.in0 100
+setp comp.1.hyst 0.1
+net motordrive.1.feedback => comp.1.in1
+net motordrive.1.home_sw joint.1.home-sw-in <= comp.1.out
 
 ####################
 # Z axis / joint 2 #
 ####################
 
 setp integ.2.gain [SIMULATOR]GAIN_Z
-net motordrive.2.control => integ.2.in
+setp lowpass.2.gain [SIMULATOR]LOWPASS_Z
+net motordrive.2.control => lowpass.2.in
+net simulator.2.speed integ.2.in <= lowpass.2.out
 net motordrive.2.feedback <= integ.2.out
+
+# Z axis home switch at upper edge
+setp comp.2.in0 100
+setp comp.2.hyst 0.1
+net motordrive.2.feedback => comp.2.in1
+net motordrive.2.home_sw joint.2.home-sw-in <= comp.2.out
 
