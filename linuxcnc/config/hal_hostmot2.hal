@@ -21,7 +21,10 @@ setp hm2_[HOSTMOT2](BOARD).0.watchdog.timeout_ns 10000000
 setp hm2_[HOSTMOT2](BOARD).0.gpio.018.is_output 1
 net power_enable halui.machine.is-on => hm2_[HOSTMOT2](BOARD).0.gpio.018.out
 
-net estop iocontrol.0.emc-enable-in <= hm2_[HOSTMOT2](BOARD).0.gpio.22.in_not
+net estop iocontrol.0.emc-enable-in <= hm2_[HOSTMOT2](BOARD).0.gpio.022.in_not
+
+setp hm2_[HOSTMOT2](BOARD).0.gpio.016.is_output 1
+setp hm2_[HOSTMOT2](BOARD).0.gpio.016.out 0
 
 ########################
 # X-axis encoder input #
@@ -37,7 +40,7 @@ net motordrive.0.feedback_deriv pid.0.feedback-deriv <= hm2_[HOSTMOT2](BOARD).0.
 ########################
 setp hm2_[HOSTMOT2](BOARD).0.encoder.01.counter-mode 0
 setp hm2_[HOSTMOT2](BOARD).0.encoder.01.filter 1
-setp hm2_[HOSTMOT2](BOARD).0.encoder.01.scale  [ENCODERS]STEP_PER_MM_Y
+setp hm2_[HOSTMOT2](BOARD).0.encoder.01.scale  -[ENCODERS]STEP_PER_MM_Y
 net motordrive.1.feedback <= hm2_[HOSTMOT2](BOARD).0.encoder.01.position
 net motordrive.1.feedback_deriv pid.1.feedback-deriv <= hm2_[HOSTMOT2](BOARD).0.encoder.01.velocity
 
@@ -53,9 +56,9 @@ net motordrive.2.feedback_deriv pid.2.feedback-deriv <= hm2_[HOSTMOT2](BOARD).0.
 ###################
 # Homing switches #
 ###################
-net motordrive.0.home_sw joint.0.home-sw-in <= hm2_[HOSTMOT2](BOARD).0.gpio.3.in_not
-net motordrive.1.home_sw joint.1.home-sw-in <= hm2_[HOSTMOT2](BOARD).0.gpio.5.in_not
-net motordrive.2.home_sw joint.2.home-sw-in <= hm2_[HOSTMOT2](BOARD).0.gpio.7.in_not
+net motordrive.0.home_sw joint.0.home-sw-in <= hm2_[HOSTMOT2](BOARD).0.gpio.003.in
+net motordrive.1.home_sw joint.1.home-sw-in <= hm2_[HOSTMOT2](BOARD).0.gpio.005.in
+net motordrive.2.home_sw joint.2.home-sw-in <= hm2_[HOSTMOT2](BOARD).0.gpio.007.in
 
 #####################
 # X-axis PWM output #
@@ -69,7 +72,7 @@ net motordrive.0.enable => hm2_[HOSTMOT2](BOARD).0.pwmgen.00.enable
 # Y-axis PWM output #
 #####################
 setp hm2_[HOSTMOT2](BOARD).0.pwmgen.01.output-type 2
-setp hm2_[HOSTMOT2](BOARD).0.pwmgen.01.scale [MOTORDRIVE]SUPPLY_VOLTAGE
+setp hm2_[HOSTMOT2](BOARD).0.pwmgen.01.scale -[MOTORDRIVE]SUPPLY_VOLTAGE
 net motordrive.1.control => hm2_[HOSTMOT2](BOARD).0.pwmgen.01.value
 net motordrive.1.enable => hm2_[HOSTMOT2](BOARD).0.pwmgen.01.enable
 
