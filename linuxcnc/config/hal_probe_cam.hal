@@ -1,0 +1,26 @@
+# LinuxCNC HAL configuration for camera & probing
+
+loadrt sum2 count=3
+
+addf sum2.0 servo-thread
+addf sum2.1 servo-thread
+addf sum2.2 servo-thread
+
+# Adjusted positions for camera tab DRO
+
+newsig camera.dro_x float
+newsig camera.dro_y float
+newsig camera.dro_z float
+
+setp sum2.0.offset [CAMERA]XOFF
+setp sum2.1.offset [CAMERA]YOFF
+setp sum2.2.offset [CAMERA]ZOFF
+
+net machine.rel_x halui.axis.x.pos-relative => sum2.0.in0
+net machine.rel_y halui.axis.y.pos-relative => sum2.1.in0
+net machine.rel_z halui.axis.z.pos-relative => sum2.2.in0
+
+net camera.dro_x <= sum2.0.out
+net camera.dro_y <= sum2.1.out
+net camera.dro_z <= sum2.2.out
+

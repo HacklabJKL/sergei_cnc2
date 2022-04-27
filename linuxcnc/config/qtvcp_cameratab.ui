@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1128</width>
+    <height>784</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>800</width>
+    <height>600</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="2" column="0">
+     <spacer name="verticalSpacer">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>40</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="1" column="0">
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="3" column="0">
+       <widget class="HALLabel" name="hallabel_2">
+        <property name="font">
+         <font>
+          <family>DejaVu Sans Mono</family>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="frameShape">
+         <enum>QFrame::NoFrame</enum>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+        <property name="pin_name" stdset="0">
+         <string>dro_y</string>
+        </property>
+        <property name="float_pin_type" stdset="0">
+         <bool>true</bool>
+        </property>
+        <property name="textTemplate" stdset="0">
+         <string>Y %+8.3f</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="ActionButton" name="actionbutton">
+        <property name="text">
+         <string>Set X = 0</string>
+        </property>
+        <property name="mdi_command_action" stdset="0">
+         <bool>true</bool>
+        </property>
+        <property name="command_text_string" stdset="0">
+         <string>G10 L20 P0 X-#&lt;_ini[CAMERA]XOFF&gt;</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="ActionButton" name="actionbutton_3">
+        <property name="text">
+         <string>Set X to half</string>
+        </property>
+        <property name="mdi_command_action" stdset="0">
+         <bool>true</bool>
+        </property>
+        <property name="command_text_string" stdset="0">
+         <string>G10 L20 P0 X[[#&lt;_x&gt;+#&lt;_ini[CAMERA]XOFF&gt;] / 2 - #&lt;_ini[CAMERA]XOFF&gt;]</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="ActionButton" name="actionbutton_2">
+        <property name="text">
+         <string>Set Y = 0</string>
+        </property>
+        <property name="mdi_command_action" stdset="0">
+         <bool>true</bool>
+        </property>
+        <property name="command_text_string" stdset="0">
+         <string>G10 L20 P0 Y-#&lt;_ini[CAMERA]YOFF&gt;</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="HALLabel" name="hallabel">
+        <property name="font">
+         <font>
+          <family>DejaVu Sans Mono</family>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="frameShape">
+         <enum>QFrame::NoFrame</enum>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+        <property name="pin_name" stdset="0">
+         <string>dro_x</string>
+        </property>
+        <property name="float_pin_type" stdset="0">
+         <bool>true</bool>
+        </property>
+        <property name="textTemplate" stdset="0">
+         <string>X %+8.3f</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="HALLabel" name="hallabel_3">
+        <property name="font">
+         <font>
+          <family>DejaVu Sans Mono</family>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="frameShape">
+         <enum>QFrame::NoFrame</enum>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+        <property name="pin_name" stdset="0">
+         <string>dro_z</string>
+        </property>
+        <property name="float_pin_type" stdset="0">
+         <bool>true</bool>
+        </property>
+        <property name="textTemplate" stdset="0">
+         <string>Z %+8.3f</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="2">
+       <widget class="ActionButton" name="actionbutton_6">
+        <property name="text">
+         <string>Set Z to half</string>
+        </property>
+        <property name="mdi_command_action" stdset="0">
+         <bool>true</bool>
+        </property>
+        <property name="command_text_string" stdset="0">
+         <string>G10 L20 P0 Z[[#&lt;_Z&gt;+#&lt;_ini[CAMERA]ZOFF&gt;] / 2 - #&lt;_ini[CAMERA]ZOFF&gt;]</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="2">
+       <widget class="ActionButton" name="actionbutton_5">
+        <property name="text">
+         <string>Set Y to half</string>
+        </property>
+        <property name="mdi_command_action" stdset="0">
+         <bool>true</bool>
+        </property>
+        <property name="command_text_string" stdset="0">
+         <string>G10 L20 P0 Y[[#&lt;_y&gt;+#&lt;_ini[CAMERA]YOFF&gt;] / 2 - #&lt;_ini[CAMERA]YOFF&gt;]</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="ActionButton" name="actionbutton_4">
+        <property name="text">
+         <string>Set Z = 0</string>
+        </property>
+        <property name="mdi_command_action" stdset="0">
+         <bool>true</bool>
+        </property>
+        <property name="command_text_string" stdset="0">
+         <string>G10 L20 P0 Z-#&lt;_ini[CAMERA]ZOFF&gt;</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0" colspan="2">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Coordinates at camera center:</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="0" column="0">
+     <widget class="CamView" name="camview">
+      <property name="minimumSize">
+       <size>
+        <width>640</width>
+        <height>480</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>640</width>
+        <height>480</height>
+       </size>
+      </property>
+      <property name="baseSize">
+       <size>
+        <width>640</width>
+        <height>480</height>
+       </size>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="1">
+     <spacer name="horizontalSpacer">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>40</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1128</width>
+     <height>22</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>CamView</class>
+   <extends>QWidget</extends>
+   <header>qtvcp.widgets.camview_widget</header>
+  </customwidget>
+  <customwidget>
+   <class>HALLabel</class>
+   <extends>QLabel</extends>
+   <header>qtvcp.widgets.hal_label</header>
+  </customwidget>
+  <customwidget>
+   <class>ActionButton</class>
+   <extends>QPushButton</extends>
+   <header>qtvcp.widgets.action_button</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>
