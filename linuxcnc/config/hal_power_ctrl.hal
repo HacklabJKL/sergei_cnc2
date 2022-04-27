@@ -1,17 +1,142 @@
 # Power-on and emergency stop control.
-# Actual emergency stop mechanism cuts power in hardware, but the software
-# loop provides feedback for GUI and faster stopping.
 
-setp iocontrol.0.emc-enable-in TRUE
+loadrt not count=1
+loadrt lut5 count=10
+loadrt timedelay count=1
 
-# Run and pause buttons:
-# In setup mode (MSO 2):
-#  - Holding RUN or having door closed allows automatic moves such as homing
-#  - Pressing PAUSE acts as emergency stop
-#
+addf not.0      servo-thread
+addf lut5.0     servo-thread
+addf lut5.1     servo-thread
+addf lut5.2     servo-thread
+addf lut5.3     servo-thread
+addf lut5.4     servo-thread
+addf lut5.5     servo-thread
+addf lut5.6     servo-thread
+addf lut5.7     servo-thread
+addf lut5.8     servo-thread
+addf lut5.9     servo-thread
+addf timedelay.0 servo-thread
+
+# Signals to hardware / simulator panel
+newsig powerctl.mso1_switch bit
+newsig powerctl.mso1_latched bit
+newsig powerctl.estop_btn bit
+newsig powerctl.estop_off bit
+newsig powerctl.run_btn bit
+newsig powerctl.pause_btn bit
+newsig powerctl.power_good bit
+newsig powerctl.program_paused bit
+newsig powerctl.program_running bit
+newsig powerctl.machine_homed bit
+newsig powerctl.pause_indicator bit
+
+net powerctl.program_paused <= halui.program.is-paused
+net powerctl.program_running <= halui.program.is-running
+
+#######################
+# Run / pause buttons
 # In automatic mode (MSO 1):
 #  - Pressing RUN starts or resumes the program
-#  - Pressing PAUSE pauses the program
+#  - Pressing PAUSE pauses the program or acts as
+#    emergency stop if program is not running.
 #  - Opening door acts as pause
 #  - Holding RUN overrides the door switch
+#
+# In setup mode (MSO 2):
+#  - Automatic program start is not possible
+#  - Pressing PAUSE acts as emergency stop
+#  - Maximum speed 2000 mm/min (33 mm/s)
+#  - Spindle cannot be started
 
+# Actual emergency stop mechanism cuts power in hardware, but the software
+# loop provides feedback for GUI and faster stopping.
+# lut5.0: Combine estop signals (high = estop activated)
+# out = !(in0 | in1 | in2 | in3 | in4)
+setp lut5.0.function 0x01
+net powerctl.estop_off lut5.0.out => iocontrol.0.emc-enable-in
+net powerctl.estop_btn => lut5.0.in-0
+
+# lut5.1: If program is not running, run button starts.
+# out = in0 & in1 & in2 & in3 & in4
+setp lut5.1.function 0x80000000
+net powerctl.run_btn => lut5.1.in-0
+net powerctl.program_idle halui.program.is-idle => lut5.1.in-1
+net powerctl.machine_homed => lut5.1.in-2
+net powerctl.power_good => lut5.1.in-3
+net powerctl.mso1_switch => lut5.1.in-4
+net powerctl.run lut5.1.out => halui.program.run
+
+# lut5.2: If program is paused, run button resumes.
+# out = in0 & in1
+setp lut5.2.function 0x08
+net powerctl.run_btn => lut5.2.in-0
+net powerctl.program_paused halui.program.is-paused => lut5.2.in-1
+net powerctl.resume lut5.2.out => halui.program.resume
+
+# lut5.3: Pause with button, prevent running if not in MSO1 mode
+# out = (in0 & in1) | (!in2 & in1)
+setp lut5.3.function 0x8C
+net powerctl.pause_btn => lut5.3.in-0
+net powerctl.program_running => lut5.3.in-1
+net powerctl.mso1_latched => lut5.3.in-2
+net powerctl.pause lut5.3.out => halui.program.pause
+
+# Jogging / homing cannot be paused, so if program is not
+# running, pause button should act as estop.
+# lut5.4: Set estop when program not running and pause pressed
+# out = (in0 & in1)
+setp lut5.4.function 0x08
+net powerctl.pause_btn => lut5.4.in-0
+net powerctl.program_idle halui.program.is-idle => lut5.4.in-1
+net powerctl.estop_pause lut5.4.out => lut5.0.in-1
+
+# Latch MSO1 switch & door switch state when RUN button is held down.
+# This allows ISO16090 MSO3 "manual intervention" to keep running
+# with guards open. As soon as the RUN button is released the program
+# will be paused.
+# lut5.5: Update mso1_latched from mso1_switch when run_btn = 0
+# out = (in0 & in2) | (!in0 & in1)
+setp lut5.5.function 0xE4
+net powerctl.run_btn => lut5.5.in-0
+net powerctl.mso1_switch => lut5.5.in-1
+net powerctl.mso1_latched => lut5.5.in-2
+net powerctl.mso1_latched <= lut5.5.out
+
+# Enable power in UI when power good signal is high
+# The power-on must be delayed to give the GUI time to react when estop turns off.
+# lut5.6: out = !in0 | !in1
+setp lut5.6.function 0x06
+setp timedelay.0.on-delay 0.2
+setp timedelay.0.off-delay 0.0
+net powerctl.power_good => lut5.6.in-0
+net powerctl.estop_off => lut5.6.in-1
+net powerctl.machine_off lut5.6.out => halui.machine.off
+net powerctl.machine_off => not.0.in
+net powerctl.machine_on not.0.out => timedelay.0.in
+net powerctl.machine_on_delayed timedelay.0.out => halui.machine.on
+
+# Check machine homing status
+# lut5.7: out = in0 & in1 & in2
+setp lut5.7.function 0x80
+net powerctl.homed_x joint.0.homed => lut5.7.in-0
+net powerctl.homed_y joint.1.homed => lut5.7.in-1
+net powerctl.homed_z joint.2.homed => lut5.7.in-2
+net powerctl.machine_homed <= lut5.7.out
+
+# Start homing with run button if not already homed
+# lut5.8: out = in0 & in1 & !in2
+setp lut5.8.function 0x08
+net powerctl.run_btn => lut5.8.in-0
+net powerctl.power_good => lut5.8.in-1
+net powerctl.machine_homed => lut5.8.in-2
+net powerctl.start_homing lut5.8.out => halui.home-all
+
+# Pause button indicator:
+# If program running, use program state.
+# Otherwise use motion.in-position.
+# lut5.9: out = in1 | (!in0 & in2)
+setp lut5.9.function 0xDC
+net powerctl.program_running => lut5.9.in-0
+net powerctl.program_paused => lut5.9.in-1
+net powerctl.in_position motion.in-position => lut5.9.in-2
+net powerctl.pause_indicator <= lut5.9.out

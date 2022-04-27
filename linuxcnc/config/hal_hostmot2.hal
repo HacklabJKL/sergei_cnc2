@@ -11,20 +11,39 @@ addf hm2_[HOSTMOT2](BOARD).0.write         servo-thread   -1
 # Global PWM frequency
 setp hm2_[HOSTMOT2](BOARD).0.pwmgen.pwm_frequency 40000
 
-# Watchdog timeout
+# Watchdog timeout 10ms
 setp hm2_[HOSTMOT2](BOARD).0.watchdog.timeout_ns 10000000
 
 #################
 # Power control #
 #################
 
-setp hm2_[HOSTMOT2](BOARD).0.gpio.018.is_output 1
-net power_enable halui.machine.is-on => hm2_[HOSTMOT2](BOARD).0.gpio.018.out
-
-net estop iocontrol.0.emc-enable-in <= hm2_[HOSTMOT2](BOARD).0.gpio.022.in_not
-
+# GPIO 16: MOTOR_HCURR, enable higher forces when in automatic mode.
 setp hm2_[HOSTMOT2](BOARD).0.gpio.016.is_output 1
-setp hm2_[HOSTMOT2](BOARD).0.gpio.016.out 0
+net powerctl.mso1_latched => hm2_[HOSTMOT2](BOARD).0.gpio.016.out
+
+# GPIO 18: PWR_ENABLE (high = connect +48V to motors)
+# Normally this is enabled as soon as LinuxCNC is active.
+# Hardware mode switch controls 230 VAC supply to the +48 V power supply.
+# When estop is pressed, this switch is used to cut power fast.
+setp hm2_[HOSTMOT2](BOARD).0.gpio.018.is_output 1
+net powerctl.estop_all => hm2_[HOSTMOT2](BOARD).0.gpio.018.out
+
+# GPIO 20: POWER_GOOD (pullup, low state = +48V supply ok)
+# Inverted because powerctl.power_good is active high
+net powerctl.power_good <= hm2_[HOSTMOT2](BOARD).0.gpio.020.in_not
+
+# GPIO 22: ESTOP_INFO (pullup, high state = estop pressed)
+# Inverted because powerctl.estop signal is active low
+net powerctl.estop <= hm2_[HOSTMOT2](BOARD).0.gpio.022.in_not
+
+# GPIO 24: MSO1_ACTIVE (pullup, low state = MSO1 is active and door closed)
+# Inverted because powerctl.mso1_switch is active high
+net powerctl.mso1_switch <= hm2_[HOSTMOT2](BOARD).0.gpio.024.in_not
+
+# GPIO 33: Run / pause indicator LEDs (low = run, high = pause)
+setp hm2_[HOSTMOT2](BOARD).0.gpio.033.is_output 1
+net powerctl.pause_indicator =>  hm2_[HOSTMOT2](BOARD).0.gpio.033.out
 
 ########################
 # X-axis encoder input #

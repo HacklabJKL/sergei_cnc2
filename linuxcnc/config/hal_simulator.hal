@@ -1,5 +1,7 @@
 # Simulates DC motor controller response
 
+loadusr -Wn simulator_pyvcp pyvcp -c simulator_pyvcp simulator_pyvcp.xml
+
 loadrt integ count=3
 loadrt lowpass count=3
 loadrt comp count=3
@@ -13,6 +15,19 @@ addf lowpass.2 servo-thread
 addf comp.0 servo-thread
 addf comp.1 servo-thread
 addf comp.2 servo-thread
+
+####################
+# Power control interface to simulated panel
+####################
+
+net powerctl.mso1_switch <= simulator_pyvcp.mso1_switch
+net powerctl.estop_btn <= simulator_pyvcp.estop
+net powerctl.run_btn <= simulator_pyvcp.run_btn
+net powerctl.pause_btn <= simulator_pyvcp.pause_btn
+net powerctl.pause_indicator => simulator_pyvcp.run_indicator
+net powerctl.pause_indicator => simulator_pyvcp.pause_indicator
+net powerctl.power_good <= simulator_pyvcp.power_good
+net powerctl.mso1_latched => simulator_pyvcp.high_current
 
 ####################
 # X axis / joint 0 #

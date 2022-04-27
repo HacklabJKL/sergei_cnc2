@@ -1,0 +1,22 @@
+<pyvcp>
+
+<labelframe text="Power control">
+    <vbox>
+        <hbox>
+            <button halpin="run_btn" text="Run" />
+            <rectled halpin="run_indicator" on_color="black" off_color="green" />
+        </hbox>
+        <hbox>
+            <button halpin="pause_btn" text="Pause" />
+            <rectled halpin="pause_indicator" on_color="yellow" off_color="black" />
+        </hbox>
+        <checkbutton halpin="power_good" text="Power good" />
+        <checkbutton halpin="mso1_switch" text="MSO1 switch" />
+        <checkbutton halpin="estop" text="Emergency stop on" />
+        <hbox>
+            <label text="High current" />
+            <rectled halpin="high_current" on_color="red" off_color="black" />
+        </hbox>
+    </vbox>
+</labelframe>
+</pyvcp>
