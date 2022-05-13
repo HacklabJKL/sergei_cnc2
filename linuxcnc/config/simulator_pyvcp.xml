@@ -17,6 +17,15 @@
             <label text="High current" />
             <rectled halpin="high_current" on_color="red" off_color="black" />
         </hbox>
+        <hbox>
+            <label text="Spindle RPM:" />
+            <number halpin="spindle_rpm" format="+6.0f" />
+        </hbox> 
+        <hbox>
+            <label text="Spindle enable:" />
+            <rectled halpin="spindle_enable" on_color="green" off_color="black" />
+        </hbox> 
+        <checkbutton halpin="spindle_at_speed" text="Spindle at speed" />
     </vbox>
 </labelframe>
 </pyvcp>

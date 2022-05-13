@@ -1,8 +1,10 @@
 # Power-on and emergency stop control.
 
 loadrt not count=1
-loadrt lut5 count=10
-loadrt timedelay count=1
+loadrt lut5 count=13
+loadrt timedelay count=2
+loadrt mux2 count=1
+loadrt near count=1
 
 addf not.0      servo-thread
 addf lut5.0     servo-thread
@@ -15,7 +17,13 @@ addf lut5.6     servo-thread
 addf lut5.7     servo-thread
 addf lut5.8     servo-thread
 addf lut5.9     servo-thread
+addf lut5.10    servo-thread
+addf lut5.11    servo-thread
 addf timedelay.0 servo-thread
+addf timedelay.1 servo-thread
+addf mux2.0     servo-thread
+addf near.0     servo-thread
+addf lut5.12    servo-thread
 
 # Signals to hardware / simulator panel
 newsig powerctl.mso1_switch bit
@@ -29,6 +37,9 @@ newsig powerctl.program_paused bit
 newsig powerctl.program_running bit
 newsig powerctl.machine_homed bit
 newsig powerctl.pause_indicator bit
+newsig powerctl.spindle_enable bit
+newsig powerctl.spindle_at_speed bit
+newsig powerctl.spindle_rpm float
 
 net powerctl.program_paused <= halui.program.is-paused
 net powerctl.program_running <= halui.program.is-running
@@ -140,3 +151,44 @@ net powerctl.program_running => lut5.9.in-0
 net powerctl.program_paused => lut5.9.in-1
 net powerctl.in_position motion.in-position => lut5.9.in-2
 net powerctl.pause_indicator <= lut5.9.out
+
+# Spindle control
+# Stop when not in MSO1 mode or when estop hit
+# lut5.10: out = in0 & in1 & in2
+setp lut5.10.function 0x80
+net powerctl.spindle_on spindle.0.on => lut5.10.in-0
+net powerctl.mso1_latched => lut5.10.in-1
+net powerctl.estop_off => lut5.10.in-2
+net powerctl.spindle_enable <= lut5.10.out
+net powerctl.spindle_rpm <= spindle.0.speed-out
+net powerctl.spindle_at_speed => spindle.0.at-speed
+
+# Feed hold
+# Stop feeding until spindle is at speed.
+# This is for resuming from pause / door open, and also in case spindle fails mid-move.
+# Normally LinuxCNC only waits for spindle speed after speed change.
+# lut5.11: out = in0 & !in1
+setp lut5.11.function 0x02
+net powerctl.spindle_on => lut5.11.in-0
+net powerctl.spindle_at_speed => lut5.11.in-1
+net powerctl.feed-inhibit motion.feed-inhibit <= lut5.11.out
+
+# Spindle monitoring
+# Detect when spindle speed is requested to change
+# Throw error if spindle speedup takes more than 5 seconds
+# spindle_rpm => mux => spindle_rpm_old => near => timedelay => lut => spindle_fault
+# lut5.12: out = in0 & in1 & !in2
+setp lut5.12.function 0x08
+setp near.0.difference 10
+setp timedelay.1.on-delay 5.0
+setp timedelay.1.off-delay 0.0
+net powerctl.spindle_rpm => mux2.0.in0
+net powerctl.spindle_rpm_old mux2.0.out => mux2.0.in1
+net powerctl.spindle_rpm => near.0.in1
+net powerctl.spindle_rpm_old => near.0.in2
+net powerctl.spindle_rpm_stable near.0.out => mux2.0.sel
+net powerctl.spindle_rpm_stable => timedelay.1.in
+net powerctl.spindle_rpm_stable_delayed timedelay.1.out => lut5.12.in-0
+net powerctl.spindle_enable => lut5.12.in-1
+net powerctl.spindle_at_speed => lut5.12.in-2
+net powerctl.spindle_fault lut5.12.out => spindle.0.amp-fault-in

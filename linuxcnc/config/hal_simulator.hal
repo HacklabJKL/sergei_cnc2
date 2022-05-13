@@ -28,6 +28,9 @@ net powerctl.pause_indicator => simulator_pyvcp.run_indicator
 net powerctl.pause_indicator => simulator_pyvcp.pause_indicator
 net powerctl.power_good <= simulator_pyvcp.power_good
 net powerctl.mso1_latched => simulator_pyvcp.high_current
+net powerctl.spindle_rpm => simulator_pyvcp.spindle_rpm
+net powerctl.spindle_enable => simulator_pyvcp.spindle_enable
+net powerctl.spindle_at_speed <= simulator_pyvcp.spindle_at_speed
 
 ####################
 # X axis / joint 0 #
