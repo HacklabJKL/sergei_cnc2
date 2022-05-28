@@ -8,6 +8,8 @@ Mapping information from https://github.com/dewert/nocturn-linux-midi
 Note that this uses the Python2 module rtmidi from
 https://github.com/patrickkidd/pyrtmidi/
 not the newer python3-rtmidi.
+
+To load: halcmd loadusr hal_nocturn.py
 '''
 
 import hal
@@ -88,15 +90,15 @@ class NocturnHAL:
                 if value == 1:
                     self.c['enc%02d_up' % idx] = 1
                     self.c['enc%02d_pos' % idx] += 1
-                    time.sleep(0.003)
+                    time.sleep(0.02)
                     self.c['enc%02d_up' % idx] = 0
-                    time.sleep(0.003)
+                    time.sleep(0.02)
                 elif value == 127:
                     self.c['enc%02d_dn' % idx] = 1
                     self.c['enc%02d_pos' % idx] -= 1
-                    time.sleep(0.003)
+                    time.sleep(0.02)
                     self.c['enc%02d_dn' % idx] = 0
-                    time.sleep(0.003)
+                    time.sleep(0.02)
 
             elif addr in self.encodertouch:
                 idx = self.encodertouch.index(addr)
@@ -162,7 +164,7 @@ if __name__ == '__main__':
             while nocturn.parse_inputs():
                 last_ok = time.time()
             nocturn.update_leds()
-            time.sleep(0.01)
+            time.sleep(0.02)
             
             if time.time() - last_ok > 30:
                 last_ok = time.time()

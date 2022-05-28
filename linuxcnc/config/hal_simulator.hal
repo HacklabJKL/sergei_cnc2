@@ -58,10 +58,10 @@ net motordrive.1.control => lowpass.1.in
 net simulator.1.speed integ.1.in <= lowpass.1.out
 net motordrive.1.feedback <= integ.1.out
 
-# Y axis home switch at back edge
-setp comp.1.in0 100
+# Y axis home switch at back edge, which is negative side
+setp comp.1.in1 -100
 setp comp.1.hyst 0.1
-net motordrive.1.feedback => comp.1.in1
+net motordrive.1.feedback => comp.1.in0
 net motordrive.1.home_sw joint.1.home-sw-in <= comp.1.out
 
 ####################

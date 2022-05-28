@@ -3,3 +3,4 @@ fp-info-cache
 *.kicad_pcb-bak
 *.sch-bak
 fpga_firmware/TopPCIHostMot2*
+*.pyc

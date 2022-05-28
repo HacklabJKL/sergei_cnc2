@@ -1,11 +1,17 @@
 # Power-on and emergency stop control.
 
 loadrt not count=1
-loadrt lut5 count=13
+loadrt lut5 count=14
 loadrt timedelay count=2
 loadrt mux2 count=1
 loadrt near count=1
+loadrt scale count=1
+loadrt absmaxdecay count=1
+loadrt limit2 count=1
 
+addf limit2.0   servo-thread
+addf absmaxdecay.0 servo-thread
+addf scale.0    servo-thread
 addf not.0      servo-thread
 addf lut5.0     servo-thread
 addf lut5.1     servo-thread
@@ -24,6 +30,7 @@ addf timedelay.1 servo-thread
 addf mux2.0     servo-thread
 addf near.0     servo-thread
 addf lut5.12    servo-thread
+addf lut5.13    servo-thread
 
 # Signals to hardware / simulator panel
 newsig powerctl.mso1_switch bit
@@ -40,6 +47,9 @@ newsig powerctl.pause_indicator bit
 newsig powerctl.spindle_enable bit
 newsig powerctl.spindle_at_speed bit
 newsig powerctl.spindle_rpm float
+newsig powerctl.velocity_mm_s float
+newsig powerctl.velocity_mm_min float
+newsig powerctl.ferror float
 
 net powerctl.program_paused <= halui.program.is-paused
 net powerctl.program_running <= halui.program.is-running
@@ -152,6 +162,12 @@ net powerctl.program_paused => lut5.9.in-1
 net powerctl.in_position motion.in-position => lut5.9.in-2
 net powerctl.pause_indicator <= lut5.9.out
 
+# Spindle RPM limit
+setp limit2.0.min -[SPINDLE](MAX_RPM)
+setp limit2.0.max [SPINDLE](MAX_RPM)
+net powerctl.spindle_rpm_req spindle.0.speed-out => limit2.0.in
+net powerctl.spindle_rpm <= limit2.0.out
+
 # Spindle control
 # Stop when not in MSO1 mode or when estop hit
 # lut5.10: out = in0 & in1 & in2
@@ -160,7 +176,6 @@ net powerctl.spindle_on spindle.0.on => lut5.10.in-0
 net powerctl.mso1_latched => lut5.10.in-1
 net powerctl.estop_off => lut5.10.in-2
 net powerctl.spindle_enable <= lut5.10.out
-net powerctl.spindle_rpm <= spindle.0.speed-out
 net powerctl.spindle_at_speed => spindle.0.at-speed
 
 # Feed hold
@@ -178,7 +193,9 @@ net powerctl.feed-inhibit motion.feed-inhibit <= lut5.11.out
 # Throw error if spindle speedup takes more than 5 seconds
 # spindle_rpm => mux => spindle_rpm_old => near => timedelay => lut => spindle_fault
 # lut5.12: out = in0 & in1 & !in2
+# lut5.13: out = in0 & in1
 setp lut5.12.function 0x08
+setp lut5.13.function 0x08
 setp near.0.difference 10
 setp timedelay.1.on-delay 5.0
 setp timedelay.1.off-delay 0.0
@@ -186,9 +203,24 @@ net powerctl.spindle_rpm => mux2.0.in0
 net powerctl.spindle_rpm_old mux2.0.out => mux2.0.in1
 net powerctl.spindle_rpm => near.0.in1
 net powerctl.spindle_rpm_old => near.0.in2
-net powerctl.spindle_rpm_stable near.0.out => mux2.0.sel
+net powerctl.spindle_rpm_near_old near.0.out => lut5.13.in-0
+net powerctl.spindle_enable => lut5.13.in-1
+net powerctl.spindle_rpm_stable lut5.13.out => mux2.0.sel
 net powerctl.spindle_rpm_stable => timedelay.1.in
 net powerctl.spindle_rpm_stable_delayed timedelay.1.out => lut5.12.in-0
 net powerctl.spindle_enable => lut5.12.in-1
 net powerctl.spindle_at_speed => lut5.12.in-2
 net powerctl.spindle_fault lut5.12.out => spindle.0.amp-fault-in
+
+# Machine velocity
+setp scale.0.gain 60
+net powerctl.velocity_mm_s motion.current-vel => scale.0.in
+net powerctl.velocity_mm_min <= scale.0.out
+
+# Path following error
+# Maximum of absolute values for all axes, and lowpassed to make it easier to read.
+setp absmaxdecay.0.decay-time 200
+net powerctl.ferror-x joint.0.f-error => absmaxdecay.0.in0
+net powerctl.ferror-y joint.1.f-error => absmaxdecay.0.in1
+net powerctl.ferror-z joint.2.f-error => absmaxdecay.0.in2
+net powerctl.ferror <= absmaxdecay.0.out

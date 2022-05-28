@@ -1,0 +1,21 @@
+# External Novation Nocturn USB controller
+
+loadusr -Wn nocturn ../hal-driver-novation-nocturn/hal_nocturn.py
+
+# Jogging increment
+setp halui.axis.x.increment 1
+setp halui.axis.y.increment 1
+setp halui.axis.z.increment 1
+setp halui.axis.jog-speed 1000
+
+# X-axis jogging
+net nocturn.x-jog-plus nocturn.enc00_up => halui.axis.x.increment-plus
+net nocturn.x-jog-minus nocturn.enc00_dn => halui.axis.x.increment-minus
+
+# Y-axis jogging
+net nocturn.y-jog-plus nocturn.enc01_up => halui.axis.y.increment-plus
+net nocturn.y-jog-minus nocturn.enc01_dn => halui.axis.y.increment-minus
+
+# Z-axis jogging
+net nocturn.z-jog-plus nocturn.enc02_up => halui.axis.z.increment-plus
+net nocturn.z-jog-minus nocturn.enc02_dn => halui.axis.z.increment-minus

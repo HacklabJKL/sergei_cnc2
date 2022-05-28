@@ -1,0 +1,38 @@
+// Build and install with: halcompile --install absmaxdecay.comp
+
+component absmaxdecay "Compute the maximum of absolute values of input signals with optional lowpass";
+
+pin in float in0 "Analog input value" ;
+pin in float in1 "Analog input value" ;
+pin in float in2 "Analog input value" ;
+pin in float decay_time "Decay time in loop cycles";
+pin out float out "Analog output value, always positive";
+
+function _;
+license "GPL";
+;;
+FUNCTION(_) {
+    double abs0 = (in0 < 0) ? -in0 : in0;
+    double abs1 = (in1 < 0) ? -in1 : in1;
+    double abs2 = (in2 < 0) ? -in2 : in2;
+    
+    double max = abs0;
+    if (abs1 > max) max = abs1;
+    if (abs2 > max) max = abs2;
+
+    if (decay_time > 0)
+    {
+        if (max >= out)
+        {
+            out = max;
+        }
+        else
+        {
+            out = out * (1 - 1.0 / decay_time) + max * (1.0 / decay_time);
+        }
+    }
+    else
+    {
+        out = max;
+    }
+}
