@@ -1,8 +1,0 @@
-# HAL bindings for gladevcp sidebar
-
-net powerctl.machine_homed => gladevcp.machine_homed
-net powerctl.spindle_rpm => gladevcp.spindle_rpm
-net powerctl.spindle_at_speed => gladevcp.spindle_at_speed
-net powerctl.velocity_mm_min => gladevcp.velocity
-net powerctl.ferror => gladevcp.ferror
-net powerctl.ferror => gladevcp.ferror_label

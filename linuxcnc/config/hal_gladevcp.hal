@@ -1,0 +1,14 @@
+# HAL bindings for gladevcp sidebar
+
+net powerctl.machine_homed => gladevcp.machine_homed
+net powerctl.spindle_rpm => gladevcp.spindle_rpm
+net powerctl.spindle_at_speed => gladevcp.spindle_at_speed
+net powerctl.velocity_mm_min => gladevcp.velocity
+net powerctl.ferror => gladevcp.ferror
+net powerctl.ferror => gladevcp.ferror_label
+net powerctl.motor_ok => gladevcp.motor_ok
+net powerctl.mso1_latched => gladevcp.motor_hcurr
+net powerctl.probe_sensor => gladevcp.probe_sensor
+net powerctl.mso1_switch => gladevcp.mso1_switch
+net powerctl.power_good => gladevcp.power_good
+net powerctl.estop_off => gladevcp.estop_off
