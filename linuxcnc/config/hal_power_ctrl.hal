@@ -25,12 +25,12 @@ addf lut5.8     servo-thread
 addf lut5.9     servo-thread
 addf lut5.10    servo-thread
 addf lut5.11    servo-thread
+addf lut5.13    servo-thread
 addf timedelay.0 servo-thread
 addf timedelay.1 servo-thread
 addf mux2.0     servo-thread
 addf near.0     servo-thread
 addf lut5.12    servo-thread
-addf lut5.13    servo-thread
 
 # Signals to hardware / simulator panel
 newsig powerctl.mso1_switch bit
@@ -43,6 +43,7 @@ newsig powerctl.power_good bit
 newsig powerctl.program_paused bit
 newsig powerctl.program_running bit
 newsig powerctl.machine_homed bit
+newsig powerctl.start_homing_btn bit
 newsig powerctl.pause_indicator bit
 newsig powerctl.spindle_enable bit
 newsig powerctl.spindle_at_speed bit
@@ -50,6 +51,8 @@ newsig powerctl.spindle_rpm float
 newsig powerctl.velocity_mm_s float
 newsig powerctl.velocity_mm_min float
 newsig powerctl.ferror float
+newsig powerctl.motor_ok bit
+newsig powerctl.probe_sensor bit
 
 net powerctl.program_paused <= halui.program.is-paused
 net powerctl.program_running <= halui.program.is-running
@@ -145,11 +148,12 @@ net powerctl.homed_z joint.2.homed => lut5.7.in-2
 net powerctl.machine_homed <= lut5.7.out
 
 # Start homing with run button if not already homed
-# lut5.8: out = in0 & in1 & !in2
-setp lut5.8.function 0x08
+# lut5.8: out = (in0 & in1 & !in2) | in3
+setp lut5.8.function 0xFF08
 net powerctl.run_btn => lut5.8.in-0
 net powerctl.power_good => lut5.8.in-1
 net powerctl.machine_homed => lut5.8.in-2
+net powerctl.start_homing_btn => lut5.8.in-3
 net powerctl.start_homing lut5.8.out => halui.home-all
 
 # Pause button indicator:
