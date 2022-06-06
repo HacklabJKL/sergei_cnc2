@@ -79,6 +79,7 @@ net powerctl.program_running <= halui.program.is-running
 setp lut5.0.function 0x01
 net powerctl.estop_off lut5.0.out => iocontrol.0.emc-enable-in
 net powerctl.estop_btn => lut5.0.in-0
+net motordrive.fault => lut5.0.in-2
 
 # lut5.1: If program is not running, run button starts.
 # out = in0 & in1 & in2 & in3 & in4

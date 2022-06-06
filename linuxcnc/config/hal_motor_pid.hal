@@ -2,10 +2,17 @@
 
 # Module loading
 loadrt pid num_chan=3
+loadrt runawayprot count=3
+loadrt logic names=logic.or3 personality=0x203
 
 addf pid.0.do-pid-calcs                    servo-thread
 addf pid.1.do-pid-calcs                    servo-thread
 addf pid.2.do-pid-calcs                    servo-thread
+
+addf runawayprot.0                         servo-thread
+addf runawayprot.1                         servo-thread
+addf runawayprot.2                         servo-thread
+addf logic.or3                             servo-thread
 
 ####################
 # X axis / joint 0 #
@@ -40,6 +47,13 @@ setp pid.0.FF2 [JOINT_0]FF2
 setp pid.0.deadband [JOINT_0]DEADBAND
 setp pid.0.maxoutput [JOINT_0]MAX_OUTPUT
 
+# Monitoring PID feedback loop
+setp runawayprot.0.control-threshold 5.0
+setp runawayprot.0.feedback-threshold 0.02
+setp runawayprot.0.time-threshold 0.1
+net motordrive.0.feedback => runawayprot.0.feedback
+net motordrive.0.control => runawayprot.0.control
+net motordrive.0.runaway runawayprot.0.out => logic.or3.in-00
 
 ####################
 # Y axis / joint 1 #
@@ -74,6 +88,13 @@ setp pid.1.FF2 [JOINT_1]FF2
 setp pid.1.deadband [JOINT_1]DEADBAND
 setp pid.1.maxoutput [JOINT_1]MAX_OUTPUT
 
+# Monitoring PID feedback loop
+setp runawayprot.1.control-threshold 5.0
+setp runawayprot.1.feedback-threshold 0.02
+setp runawayprot.1.time-threshold 0.1
+net motordrive.1.feedback => runawayprot.1.feedback
+net motordrive.1.control => runawayprot.1.control
+net motordrive.1.runaway runawayprot.1.out => logic.or3.in-01
 
 ####################
 # Z axis / joint 2 #
@@ -108,5 +129,13 @@ setp pid.2.FF2 [JOINT_2]FF2
 setp pid.2.deadband [JOINT_2]DEADBAND
 setp pid.2.maxoutput [JOINT_2]MAX_OUTPUT
 
+# Monitoring PID feedback loop
+setp runawayprot.2.control-threshold 5.0
+setp runawayprot.2.feedback-threshold 0.02
+setp runawayprot.2.time-threshold 0.1
+net motordrive.2.feedback => runawayprot.2.feedback
+net motordrive.2.control => runawayprot.2.control
+net motordrive.2.runaway runawayprot.2.out => logic.or3.in-02
 
-
+# Combined OR of all fault signals
+net motordrive.fault <= logic.or3.or

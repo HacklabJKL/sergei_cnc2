@@ -1,0 +1,64 @@
+/********************************************************************
+* Description:  runawayprot.comp
+*               Protects against DC motor runaway when servo feedback
+*               fails. Can also be used for other PID runaway
+*               protection purposes.
+*
+* Author: Petteri Aimonen
+* License: GPL Version 2 or later
+*    
+* Copyright (c) 2022 All rights reserved.
+*
+* Build and install with: halcompile --install runawayprot.comp
+********************************************************************/
+
+component runawayprot "PID runaway protection";
+pin in float control "Output from the PID controller being monitored";
+pin in float feedback "Feedback signal back to PID";
+pin in float control_threshold "Threshold for the absolute control value";
+pin in float feedback_threshold "Threshold for change in feedback value";
+pin in float time_threshold "Time delay for error detection";
+pin out bit out "Output goes high if control_threshold is exceeded for time_threshold without change exceeding feedback_threshold";
+
+notes """The threshold values are inclusive, i.e. value has to be over the threshold to trigger.
+With the unconnected default of 0.0, the component will trigger if control != 0 and
+feedback being constant.
+
+For DC motor runaway protection, suggested values for parameters:
+control_threshold: The smallest PID output value (voltage or current) that should get the motor spinning.
+feedback_threshold: Largest change that can be expected from malfunctioning encoder, typically 2 encoder ticks.
+time_threshold: Mechanical delay from the PID output to when the motor should be moving.
+""";
+
+variable float prev_feedback;
+variable float time_without_change;
+
+function _;
+license "GPL";
+;;
+
+FUNCTION(_) {
+    double abs_control = (control < 0) ? -control : control;
+    double feedback_change = feedback - prev_feedback;
+    double feedback_change_abs = (feedback_change < 0) ? -feedback_change : feedback_change;
+
+    if (abs_control <= control_threshold || feedback_change > feedback_threshold)
+    {
+        time_without_change = 0.0;
+        prev_feedback = feedback;
+    }
+    else
+    {
+        time_without_change += fperiod;
+    }
+
+    bool exceeded = (time_without_change > time_threshold);
+
+    if (exceeded && !out)
+    {
+        rtapi_print_msg(RTAPI_MSG_ERR,
+            "runawayprot: PID feedback loop monitor detected malfunction");
+    }
+
+    out = exceeded;
+}
