@@ -50,7 +50,7 @@ setp pid.0.maxoutput [JOINT_0]MAX_OUTPUT
 # Monitoring PID feedback loop
 setp runawayprot.0.control-threshold 5.0
 setp runawayprot.0.feedback-threshold 0.02
-setp runawayprot.0.time-threshold 0.1
+setp runawayprot.0.time-threshold 0.2
 net motordrive.0.feedback => runawayprot.0.feedback
 net motordrive.0.control => runawayprot.0.control
 net motordrive.0.runaway runawayprot.0.out => logic.or3.in-00
@@ -91,7 +91,7 @@ setp pid.1.maxoutput [JOINT_1]MAX_OUTPUT
 # Monitoring PID feedback loop
 setp runawayprot.1.control-threshold 5.0
 setp runawayprot.1.feedback-threshold 0.02
-setp runawayprot.1.time-threshold 0.1
+setp runawayprot.1.time-threshold 0.2
 net motordrive.1.feedback => runawayprot.1.feedback
 net motordrive.1.control => runawayprot.1.control
 net motordrive.1.runaway runawayprot.1.out => logic.or3.in-01
@@ -132,7 +132,7 @@ setp pid.2.maxoutput [JOINT_2]MAX_OUTPUT
 # Monitoring PID feedback loop
 setp runawayprot.2.control-threshold 5.0
 setp runawayprot.2.feedback-threshold 0.02
-setp runawayprot.2.time-threshold 0.1
+setp runawayprot.2.time-threshold 0.2
 net motordrive.2.feedback => runawayprot.2.feedback
 net motordrive.2.control => runawayprot.2.control
 net motordrive.2.runaway runawayprot.2.out => logic.or3.in-02

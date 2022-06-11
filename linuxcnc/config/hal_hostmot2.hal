@@ -6,6 +6,8 @@ loadrt [HOSTMOT2](DRIVER) config=[HOSTMOT2](CONFIG)
 
 # Read inputs at start of servo loop and write outputs at end
 addf hm2_[HOSTMOT2](BOARD).0.read          servo-thread    1
+addf mux2.1 servo-thread
+addf scale.1 servo-thread
 addf hm2_[HOSTMOT2](BOARD).0.write         servo-thread   -1
 
 # Global PWM frequency
@@ -109,10 +111,21 @@ net motordrive.1.enable => hm2_[HOSTMOT2](BOARD).0.pwmgen.01.enable
 #####################
 # Z-axis PWM output #
 #####################
-setp hm2_[HOSTMOT2](BOARD).0.pwmgen.02.output-type 2
-setp hm2_[HOSTMOT2](BOARD).0.pwmgen.02.scale -[MOTORDRIVE]SUPPLY_VOLTAGE
-net motordrive.2.control => hm2_[HOSTMOT2](BOARD).0.pwmgen.02.value
-net motordrive.2.enable => hm2_[HOSTMOT2](BOARD).0.pwmgen.02.enable
+# Old: PWM output for 5A motor driver
+# setp hm2_[HOSTMOT2](BOARD).0.pwmgen.02.output-type 2
+# setp hm2_[HOSTMOT2](BOARD).0.pwmgen.02.scale -[MOTORDRIVE]SUPPLY_VOLTAGE
+# net motordrive.2.control => hm2_[HOSTMOT2](BOARD).0.pwmgen.02.value
+# net motordrive.2.enable => hm2_[HOSTMOT2](BOARD).0.pwmgen.02.enable
+
+# RC PWM output for FSESC 4.20
+setp hm2_[HOSTMOT2](BOARD).0.rcpwmgen.rate 1000
+setp scale.1.gain -0.006
+setp scale.1.offset 0.5
+net motordrive.2.control => scale.1.in
+net motordrive.2.scaled scale.1.out => mux2.1.in1
+setp mux2.1.in0 0
+net motordrive.2.enable => mux2.1.sel
+net motordrive.2.pwmwidth mux2.1.out => hm2_[HOSTMOT2](BOARD).0.rcpwmgen.00.width
 
 ########################
 # Spindle PWM control  #
@@ -121,4 +134,4 @@ setp hm2_[HOSTMOT2](BOARD).0.pwmgen.03.output-type 1
 setp hm2_[HOSTMOT2](BOARD).0.pwmgen.03.scale [SPINDLE]MAX_RPM
 net powerctl.spindle_rpm => hm2_[HOSTMOT2](BOARD).0.pwmgen.03.value
 net powerctl.spindle_enable => hm2_[HOSTMOT2](BOARD).0.pwmgen.03.enable
-net powerctl.spindle_at_speed <= hm2_[HOSTMOT2](BOARD).0.gpio.028.in_not
+net powerctl.spindle_at_speed <= hm2_[HOSTMOT2](BOARD).0.gpio.028.in
