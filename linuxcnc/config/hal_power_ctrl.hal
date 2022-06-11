@@ -2,7 +2,7 @@
 
 loadrt not count=1
 loadrt lut5 count=14
-loadrt timedelay count=2
+loadrt timedelay count=3
 loadrt mux2 count=2
 loadrt near count=1
 loadrt scale count=2
@@ -28,6 +28,7 @@ addf lut5.11    servo-thread
 addf lut5.13    servo-thread
 addf timedelay.0 servo-thread
 addf timedelay.1 servo-thread
+addf timedelay.2 servo-thread
 addf mux2.0     servo-thread
 addf near.0     servo-thread
 addf lut5.12    servo-thread
@@ -181,7 +182,12 @@ net powerctl.spindle_on spindle.0.on => lut5.10.in-0
 net powerctl.mso1_latched => lut5.10.in-1
 net powerctl.estop_off => lut5.10.in-2
 net powerctl.spindle_enable <= lut5.10.out
-net powerctl.spindle_at_speed => spindle.0.at-speed
+
+# Noise filtering for spindle at speed signal
+setp timedelay.2.on-delay 0.1
+setp timedelay.2.off-delay 0.1
+net powerctl.spindle_at_speed => timedelay.2.in
+net powerctl.spindle_at_speed_filtered timedelay.2.out => spindle.0.at-speed
 
 # Feed hold
 # Stop feeding until spindle is at speed.
@@ -190,7 +196,7 @@ net powerctl.spindle_at_speed => spindle.0.at-speed
 # lut5.11: out = in0 & !in1
 setp lut5.11.function 0x02
 net powerctl.spindle_on => lut5.11.in-0
-net powerctl.spindle_at_speed => lut5.11.in-1
+net powerctl.spindle_at_speed_filtered => lut5.11.in-1
 net powerctl.feed-inhibit motion.feed-inhibit <= lut5.11.out
 
 # Spindle monitoring
@@ -214,7 +220,7 @@ net powerctl.spindle_rpm_stable lut5.13.out => mux2.0.sel
 net powerctl.spindle_rpm_stable => timedelay.1.in
 net powerctl.spindle_rpm_stable_delayed timedelay.1.out => lut5.12.in-0
 net powerctl.spindle_enable => lut5.12.in-1
-net powerctl.spindle_at_speed => lut5.12.in-2
+net powerctl.spindle_at_speed_filtered => lut5.12.in-2
 net powerctl.spindle_fault lut5.12.out => spindle.0.amp-fault-in
 
 # Machine velocity

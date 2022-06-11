@@ -131,7 +131,8 @@ net motordrive.2.pwmwidth mux2.1.out => hm2_[HOSTMOT2](BOARD).0.rcpwmgen.00.widt
 # Spindle PWM control  #
 ########################
 setp hm2_[HOSTMOT2](BOARD).0.pwmgen.03.output-type 1
-setp hm2_[HOSTMOT2](BOARD).0.pwmgen.03.scale [SPINDLE]MAX_RPM
+setp hm2_[HOSTMOT2](BOARD).0.pwmgen.03.scale 20000
 net powerctl.spindle_rpm => hm2_[HOSTMOT2](BOARD).0.pwmgen.03.value
 net powerctl.spindle_enable => hm2_[HOSTMOT2](BOARD).0.pwmgen.03.enable
 net powerctl.spindle_at_speed <= hm2_[HOSTMOT2](BOARD).0.gpio.028.in
+
