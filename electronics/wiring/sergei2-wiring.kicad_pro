@@ -294,7 +294,8 @@
         "nets": [
           "/+48V",
           "/+48V_40A",
-          "/+48V_UNFUSED"
+          "/+48V_UNFUSED",
+          "/+48V_Z"
         ],
         "pcb_color": "rgba(0, 0, 0, 0.000)",
         "schematic_color": "rgb(128, 77, 0)",
@@ -314,6 +315,7 @@
         "microvia_drill": 0.1,
         "name": "ENC_A",
         "nets": [
+          "/SPINDLE_PWM",
           "/X_A",
           "/Y_A",
           "/Z_A"
@@ -439,6 +441,7 @@
         "microvia_drill": 0.1,
         "name": "MOT_FWD",
         "nets": [
+          "/SPINDLE_STATUS",
           "/X_FWD",
           "/Y_FWD",
           "/Z_FWD"
@@ -481,6 +484,7 @@
         "microvia_drill": 0.1,
         "name": "MOT_REV",
         "nets": [
+          "/SPINDLE_DIR",
           "/X_REV",
           "/Y_REV",
           "/Z_REV"
