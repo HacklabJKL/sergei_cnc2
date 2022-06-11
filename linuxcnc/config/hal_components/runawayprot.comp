@@ -42,7 +42,7 @@ FUNCTION(_) {
     double feedback_change = feedback - prev_feedback;
     double feedback_change_abs = (feedback_change < 0) ? -feedback_change : feedback_change;
 
-    if (abs_control <= control_threshold || feedback_change > feedback_threshold)
+    if (abs_control <= control_threshold || feedback_change_abs > feedback_threshold)
     {
         time_without_change = 0.0;
         prev_feedback = feedback;
