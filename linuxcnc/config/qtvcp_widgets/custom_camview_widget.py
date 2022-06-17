@@ -18,6 +18,7 @@
 import sys
 import thread as Thread
 import hal
+import time
 
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtGui import QColor, QFont, QPainter, QPen, QImage
@@ -45,9 +46,9 @@ except:
 
 
 
-class CamView(QtWidgets.QWidget, _HalWidgetBase):
+class CustomCamView(QtWidgets.QWidget, _HalWidgetBase):
     def __init__(self, parent=None):
-        super(CamView, self).__init__(parent)
+        super(CustomCamView, self).__init__(parent)
         self.video = None
         self.grabbed = None
         self.frame = None
@@ -71,6 +72,7 @@ class CamView(QtWidgets.QWidget, _HalWidgetBase):
         self.pix = None
         self.stopped = False
         self.degree = u"\N{DEGREE SIGN}".encode('utf-8')
+        self.prev_retry = time.time()
 
     def _hal_init(self):
         try:
@@ -122,15 +124,27 @@ class CamView(QtWidgets.QWidget, _HalWidgetBase):
             self.diameter = 20
 
     def nextFrameSlot(self, w):
-        if not self.video: return
         if not self.isVisible(): return
-
+        if not self.video:
+            # Try to reconnect once a second
+            if time.time() - self.prev_retry > 1.0:
+                for i in range(10):
+                    try:
+                        self.video = WebcamVideoStream(src=i).start()
+                        break
+                    except Exception as e:
+                        self.text = str(e)
+                self.prev_retry = time.time()
+            return
+        
         ############################
         # capture a freme from cam
         ############################
         ret, frame = self.video.read()
         if not ret: return
         (oh, ow) = frame.shape[:2]
+
+        if oh == 0: return
 
         #############################
         # scale image bigger
@@ -168,8 +182,8 @@ class CamView(QtWidgets.QWidget, _HalWidgetBase):
         if LIB_GOOD:
             try:
                 self.video = WebcamVideoStream(src=self._camNum).start()
-            except:
-                LOG.error('Video capture error: {}'.format(self.video))
+            except Exception as e:
+                self.text = str(e)
 
     def hideEvent(self, event):
         if LIB_GOOD:
@@ -195,7 +209,7 @@ class CamView(QtWidgets.QWidget, _HalWidgetBase):
         qp.setPen(self.text_color)
         qp.setFont(self.font)
         if self.pix:
-            qp.drawText(self.rect(), QtCore.Qt.AlignTop, '{}{}'.format(self.rotation,self.degree))
+            pass #qp.drawText(self.rect(), QtCore.Qt.AlignTop, '{}{}'.format(self.rotation,self.degree))
         else:
             qp.drawText(self.rect(), QtCore.Qt.AlignCenter, self.text)
 
@@ -252,6 +266,9 @@ class WebcamVideoStream:
         self.stopped = False
         self.grabbed = None
         self.frame = None
+    
+    def __del__(self):
+        self.stop()
 
     def start(self):
         # start the thread to read frames from the video stream
@@ -266,7 +283,11 @@ class WebcamVideoStream:
                 self.stream.release()
                 return
             # otherwise, read the next frame from the stream
-            (self.grabbed, self.frame) = self.stream.read()
+            try:
+                (self.grabbed, self.frame) = self.stream.read()
+            except:
+                self.grabbed = None
+                self.frame = None
 
     def read(self):
         # return the frame most recently read
