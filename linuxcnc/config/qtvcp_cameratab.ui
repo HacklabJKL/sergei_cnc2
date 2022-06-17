@@ -1645,7 +1645,7 @@
   <customwidget>
    <class>CamView</class>
    <extends>QWidget</extends>
-   <header>qtvcp.widgets.camview_widget</header>
+   <header>qtvcp_widgets.custom_camview_widget</header>
   </customwidget>
   <customwidget>
    <class>HALLabel</class>
