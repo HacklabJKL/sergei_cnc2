@@ -22,7 +22,7 @@ setp hm2_[HOSTMOT2](BOARD).0.watchdog.timeout_ns 10000000
 
 # GPIO 16: MOTOR_HCURR, enable higher forces when in automatic mode.
 setp hm2_[HOSTMOT2](BOARD).0.gpio.016.is_output 1
-net powerctl.mso1_latched => hm2_[HOSTMOT2](BOARD).0.gpio.016.out
+net powerctl.allow_auto => hm2_[HOSTMOT2](BOARD).0.gpio.016.out
 
 # GPIO 18: PWR_ENABLE (high = connect +48V to motors)
 # Normally this is enabled as soon as LinuxCNC is active.

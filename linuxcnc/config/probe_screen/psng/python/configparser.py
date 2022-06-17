@@ -54,4 +54,4 @@ class ProbeScreenConfigParser(RawConfigParser):
 
     def putpref(self, option, value, type=bool):
         self.set("DEFAULT", option, type(value))
-        self.write(open(self.fn, "w"))
+        # self.write(open(self.fn, "w"))

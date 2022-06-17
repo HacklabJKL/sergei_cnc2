@@ -1,0 +1,22 @@
+o<z_probe_pad> sub
+
+; Spindle must be stopped
+M5
+
+; Ensure we're in G90 / absolute mode
+G90
+
+G38.3 Z[#<_z> - 10] F50
+
+O1 if [#5070 EQ 1]
+    ; Set new offset
+    G10 L20 P0 Z[1.60 + #5063 - #<_z>]
+
+    ; Move off the Table
+    G0 Z5
+O1 else
+    (MSG,Probe did not detect contact)
+O1 endif
+
+o<z_probe_pad> endsub
+M2

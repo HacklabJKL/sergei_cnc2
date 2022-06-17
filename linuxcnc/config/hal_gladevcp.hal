@@ -7,7 +7,7 @@ net powerctl.velocity_mm_min => gladevcp.velocity
 net powerctl.ferror => gladevcp.ferror
 net powerctl.ferror => gladevcp.ferror_label
 net powerctl.motor_ok => gladevcp.motor_ok
-net powerctl.mso1_latched => gladevcp.motor_hcurr
+net powerctl.allow_auto => gladevcp.motor_hcurr
 net powerctl.probe_sensor => gladevcp.probe_sensor
 net powerctl.mso1_switch => gladevcp.mso1_switch
 net powerctl.power_good => gladevcp.power_good
@@ -15,4 +15,9 @@ net powerctl.estop_off => gladevcp.estop_off
 
 net powerctl.clear_notifications gladevcp.clear_notifications => axisui.notifications-clear
 
-net powerctl.tool_length motion.tooloffset.z => 
+net powerctl.paused_door_open => gladevcp.paused_door_open
+
+net powerctl.max_speed_xy => ini.x.max_velocity
+net powerctl.max_speed_xy => ini.y.max_velocity
+net powerctl.max_speed_xy => ini.0.max_velocity
+net powerctl.max_speed_xy => ini.1.max_velocity

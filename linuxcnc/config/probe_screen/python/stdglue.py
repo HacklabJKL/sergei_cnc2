@@ -96,13 +96,7 @@ def prepare_prolog(self,**words):
             self.set_errormsg("T requires a tool number")
             return INTERP_ERROR
         tool  = cblock.t_number
-        if tool:
-            (status, pocket) = self.find_tool_pocket(tool)
-            if status != INTERP_OK:
-                self.set_errormsg("T%d: pocket not found" % (tool))
-                return status
-        else:
-            pocket = -1 # this is a T0 - tool unload
+        pocket = cblock.t_number
         self.params["tool"] = tool
         self.params["pocket"] = pocket
         return INTERP_OK

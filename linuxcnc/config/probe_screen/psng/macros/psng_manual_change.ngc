@@ -66,8 +66,9 @@ G53 G0 Z[#<_ini[TOOLSENSOR]Z>]
 #<setterheight> = #<_hal[probe.setterheight]>
 #<blockheight> = #<_hal[probe.blockheight]>
 
-G10 L1 P#<tool> Z[#<touch_result> - #<_hal[probe.setterheight]> + #<_hal[probe.blockheight]>]
-G43
+; Apply only as dynamic offset, do not edit tool table
+; G10 L1 P#<tool> Z[#<touch_result> - #<_hal[probe.setterheight]> + #<_hal[probe.blockheight]>]
+G43.1 Z[#<touch_result> - #<_hal[probe.setterheight]> + #<_hal[probe.blockheight]>]
 
 ; BEGIN PSNG POSTAMBLE
 M71 ; Invalidate Modal Autorestore

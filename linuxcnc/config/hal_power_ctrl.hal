@@ -1,9 +1,9 @@
 # Power-on and emergency stop control.
 
 loadrt not count=1
-loadrt lut5 count=14
-loadrt timedelay count=3
-loadrt mux2 count=2
+loadrt lut5 count=15
+loadrt timedelay count=4
+loadrt mux2 count=3
 loadrt near count=1
 loadrt scale count=2
 loadrt absmaxdecay count=1
@@ -29,13 +29,16 @@ addf lut5.13    servo-thread
 addf timedelay.0 servo-thread
 addf timedelay.1 servo-thread
 addf timedelay.2 servo-thread
+addf timedelay.3 servo-thread
 addf mux2.0     servo-thread
+addf mux2.2     servo-thread
 addf near.0     servo-thread
 addf lut5.12    servo-thread
+addf lut5.14    servo-thread
 
 # Signals to hardware / simulator panel
 newsig powerctl.mso1_switch bit
-newsig powerctl.mso1_latched bit
+newsig powerctl.allow_auto bit
 newsig powerctl.estop_btn bit
 newsig powerctl.estop_off bit
 newsig powerctl.run_btn bit
@@ -54,6 +57,7 @@ newsig powerctl.velocity_mm_min float
 newsig powerctl.ferror float
 newsig powerctl.motor_ok bit
 newsig powerctl.probe_sensor bit
+newsig powerctl.paused_door_open bit
 
 net powerctl.program_paused <= halui.program.is-paused
 net powerctl.program_running <= halui.program.is-running
@@ -104,8 +108,15 @@ net powerctl.resume lut5.2.out => halui.program.resume
 setp lut5.3.function 0x8C
 net powerctl.pause_btn => lut5.3.in-0
 net powerctl.program_running => lut5.3.in-1
-net powerctl.mso1_latched => lut5.3.in-2
+net powerctl.allow_auto => lut5.3.in-2
 net powerctl.pause lut5.3.out => halui.program.pause
+
+# lut5.14: Show notification if automatic movements are attempted with door open
+# out = !(in0 & !in1)
+setp lut5.14.function 0x0D
+net powerctl.program_paused => lut5.14.in-0
+net powerctl.allow_auto => lut5.14.in-1
+net powerctl.paused_door_open <= lut5.14.out
 
 # Jogging / homing cannot be paused, so if program is not
 # running, pause button should act as estop.
@@ -116,17 +127,18 @@ net powerctl.pause_btn => lut5.4.in-0
 net powerctl.program_idle halui.program.is-idle => lut5.4.in-1
 net powerctl.estop_pause lut5.4.out => lut5.0.in-1
 
-# Latch MSO1 switch & door switch state when RUN button is held down.
+# Override MSO1 switch & door switch state when RUN button is held down.
 # This allows ISO16090 MSO3 "manual intervention" to keep running
 # with guards open. As soon as the RUN button is released the program
 # will be paused.
-# lut5.5: Update mso1_latched from mso1_switch when run_btn = 0
-# out = (in0 & in2) | (!in0 & in1)
-setp lut5.5.function 0xE4
-net powerctl.run_btn => lut5.5.in-0
+# out = in0 | in1
+setp timedelay.3.on-delay 0.5
+setp timedelay.3.off-delay 0.01
+setp lut5.5.function 0x06
+net powerctl.run_btn => timedelay.3.in
+net powerctl.run_btn_held timedelay.3.out => lut5.5.in-0
 net powerctl.mso1_switch => lut5.5.in-1
-net powerctl.mso1_latched => lut5.5.in-2
-net powerctl.mso1_latched <= lut5.5.out
+net powerctl.allow_auto <= lut5.5.out
 
 # Enable power in UI when power good signal is high
 # The power-on must be delayed to give the GUI time to react when estop turns off.
@@ -179,7 +191,7 @@ net powerctl.spindle_rpm <= limit2.0.out
 # lut5.10: out = in0 & in1 & in2
 setp lut5.10.function 0x80
 net powerctl.spindle_on spindle.0.on => lut5.10.in-0
-net powerctl.mso1_latched => lut5.10.in-1
+net powerctl.allow_auto => lut5.10.in-1
 net powerctl.estop_off => lut5.10.in-2
 net powerctl.spindle_enable <= lut5.10.out
 
@@ -223,7 +235,7 @@ net powerctl.spindle_enable => lut5.12.in-1
 net powerctl.spindle_at_speed_filtered => lut5.12.in-2
 net powerctl.spindle_fault lut5.12.out => spindle.0.amp-fault-in
 
-# Machine velocity
+# Machine velocity monitoring
 setp scale.0.gain 60
 net powerctl.velocity_mm_s motion.current-vel => scale.0.in
 net powerctl.velocity_mm_min <= scale.0.out
@@ -238,3 +250,10 @@ net powerctl.ferror <= absmaxdecay.0.out
 
 # Probe sensor
 net powerctl.probe_sensor => motion.probe-input
+
+# Maximum velocity based on door status
+# Limit to 2 m/s when door is open for ISO16090 conformance
+setp mux2.2.in1 [AXIS_X]MAX_VELOCITY
+setp mux2.2.in0 30
+net powerctl.allow_auto => mux2.2.sel
+net powerctl.max_speed_xy <= mux2.2.out
