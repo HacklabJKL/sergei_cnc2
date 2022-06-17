@@ -10,6 +10,12 @@
     <property name="command">G92.1</property>
   </object>
   <object class="EMC_Action_Home" id="vcp_action_home1"/>
+  <object class="EMC_Action_MDI" id="vcp_action_toolset">
+    <property name="command">M6</property>
+  </object>
+  <object class="EMC_Action_MDI" id="vcp_action_z_probe_pad">
+    <property name="command">o&lt;z_probe_pad&gt; call</property>
+  </object>
   <object class="EMC_Action_MDI" id="vcp_action_zerox">
     <property name="command">G10 L20 P0 X0</property>
   </object>
@@ -505,7 +511,71 @@ offsets (G54)</property>
           </packing>
         </child>
         <child>
-          <placeholder/>
+          <object class="GtkHSeparator" id="hseparator5">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="padding">10</property>
+            <property name="position">14</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="btn_probe_tool">
+            <property name="label" translatable="yes">Autoset tool length</property>
+            <property name="use_action_appearance">False</property>
+            <property name="related_action">vcp_action_toolset</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">15</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="probe_z_top">
+            <property name="label" translatable="yes">Set Z=0 with probe pad</property>
+            <property name="use_action_appearance">False</property>
+            <property name="related_action">vcp_action_z_probe_pad</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">16</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkHSeparator" id="hseparator6">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="padding">10</property>
+            <property name="position">17</property>
+          </packing>
+        </child>
+        <child>
+          <object class="HAL_Button" id="clear_notifications">
+            <property name="label" translatable="yes">Clear notifications</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">18</property>
+          </packing>
         </child>
         <child>
           <object class="GtkLabel" id="label5">
@@ -515,7 +585,7 @@ offsets (G54)</property>
           <packing>
             <property name="expand">True</property>
             <property name="fill">True</property>
-            <property name="position">15</property>
+            <property name="position">19</property>
           </packing>
         </child>
         <child>
@@ -527,7 +597,7 @@ offsets (G54)</property>
             <property name="expand">False</property>
             <property name="fill">True</property>
             <property name="padding">10</property>
-            <property name="position">16</property>
+            <property name="position">20</property>
           </packing>
         </child>
         <child>
@@ -560,7 +630,7 @@ offsets (G54)</property>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">17</property>
+            <property name="position">21</property>
           </packing>
         </child>
         <child>
@@ -619,7 +689,7 @@ offsets (G54)</property>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">18</property>
+            <property name="position">22</property>
           </packing>
         </child>
       </object>

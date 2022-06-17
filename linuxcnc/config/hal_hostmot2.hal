@@ -56,7 +56,7 @@ net powerctl.pause_indicator =>  hm2_[HOSTMOT2](BOARD).0.gpio.033.out
 net powerctl.motor_ok <= hm2_[HOSTMOT2](BOARD).0.gpio.001.in
 
 # GPIO 27: Probe sensor
-net powerctl.probe_sensor <= hm2_[HOSTMOT2](BOARD).0.gpio.027.out
+net powerctl.probe_sensor <= hm2_[HOSTMOT2](BOARD).0.gpio.027.in_not
 
 ########################
 # X-axis encoder input #

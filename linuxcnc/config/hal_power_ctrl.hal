@@ -235,3 +235,6 @@ net powerctl.ferror-x joint.0.f-error => absmaxdecay.0.in0
 net powerctl.ferror-y joint.1.f-error => absmaxdecay.0.in1
 net powerctl.ferror-z joint.2.f-error => absmaxdecay.0.in2
 net powerctl.ferror <= absmaxdecay.0.out
+
+# Probe sensor
+net powerctl.probe_sensor => motion.probe-input

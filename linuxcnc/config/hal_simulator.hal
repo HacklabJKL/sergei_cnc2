@@ -4,7 +4,7 @@ loadusr -Wn simulator_pyvcp pyvcp -c simulator_pyvcp simulator_pyvcp.xml
 
 loadrt integ count=3
 loadrt lowpass count=3
-loadrt comp count=3
+loadrt comp count=4
 
 addf integ.0 servo-thread
 addf integ.1 servo-thread
@@ -15,6 +15,7 @@ addf lowpass.2 servo-thread
 addf comp.0 servo-thread
 addf comp.1 servo-thread
 addf comp.2 servo-thread
+addf comp.3 servo-thread
 
 ####################
 # Power control interface to simulated panel
@@ -80,3 +81,8 @@ setp comp.2.hyst 0.1
 net motordrive.2.feedback => comp.2.in1
 net motordrive.2.home_sw joint.2.home-sw-in <= comp.2.out
 
+# Probe simulator
+setp comp.3.in1 -10
+setp comp.3.hyst 0.01
+net motordrive.2.feedback => comp.3.in0
+net powerctl.probe_sensor <= comp.3.out

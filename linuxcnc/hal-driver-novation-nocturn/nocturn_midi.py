@@ -156,15 +156,17 @@ class NocturnMidi:
             4: single led,
             5: single led, inverted
         '''
-        value = min(127, max(0, int(value * 127)))
-        self.midi_out.sendMessage(rtmidi.MidiMessage.controllerEvent(1,
-            self.encodermodes[index], 16 * mode))
-        self.midi_out.sendMessage(rtmidi.MidiMessage.controllerEvent(1,
-            self.encoderleds[index], value))
+        if self.midi_out.isPortOpen():
+            value = min(127, max(0, int(value * 127)))
+            self.midi_out.sendMessage(rtmidi.MidiMessage.controllerEvent(1,
+                self.encodermodes[index], 16 * mode))
+            self.midi_out.sendMessage(rtmidi.MidiMessage.controllerEvent(1,
+                self.encoderleds[index], value))
     
     def set_button_led(self, index, enabled):
-        self.midi_out.sendMessage(rtmidi.MidiMessage.controllerEvent(1,
-            self.buttonaddrs[index], int(enabled)))
+        if self.midi_out.isPortOpen():
+            self.midi_out.sendMessage(rtmidi.MidiMessage.controllerEvent(1,
+                self.buttonaddrs[index], int(enabled)))
 
 if __name__ == '__main__':
     try:
