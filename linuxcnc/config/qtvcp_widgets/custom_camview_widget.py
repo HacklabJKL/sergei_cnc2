@@ -49,6 +49,7 @@ except:
 class CustomCamView(QtWidgets.QWidget, _HalWidgetBase):
     def __init__(self, parent=None):
         super(CustomCamView, self).__init__(parent)
+        print("CustomCamView init")
         self.video = None
         self.grabbed = None
         self.frame = None
@@ -72,7 +73,7 @@ class CustomCamView(QtWidgets.QWidget, _HalWidgetBase):
         self.pix = None
         self.stopped = False
         self.degree = u"\N{DEGREE SIGN}".encode('utf-8')
-        self.prev_retry = time.time()
+        self.prev_frame = time.time()
 
     def _hal_init(self):
         try:
@@ -90,7 +91,7 @@ class CustomCamView(QtWidgets.QWidget, _HalWidgetBase):
     # right button scroll = cross hair rotation
     ##################################
     def wheelEvent(self, event):
-        super(CamView, self).wheelEvent(event)
+        super(CustomCamView, self).wheelEvent(event)
         mouse_state = QtWidgets.qApp.mouseButtons()
         size = self.size()
         w = size.width()
@@ -125,17 +126,15 @@ class CustomCamView(QtWidgets.QWidget, _HalWidgetBase):
 
     def nextFrameSlot(self, w):
         if not self.isVisible(): return
-        if not self.video:
-            # Try to reconnect once a second
-            if time.time() - self.prev_retry > 1.0:
-                for i in range(10):
-                    try:
-                        self.video = WebcamVideoStream(src=i).start()
-                        break
-                    except Exception as e:
-                        self.text = str(e)
-                self.prev_retry = time.time()
+        # Try to reconnect once a second
+        if time.time() - self.prev_frame > 1.0:
+            if self.video: self.video.stop()
+            time.sleep(1.0)
+            self.video = WebcamVideoStream(src=-1).start()
+            self.prev_frame = time.time()
             return
+
+        if not self.video: return
         
         ############################
         # capture a freme from cam
@@ -151,6 +150,8 @@ class CustomCamView(QtWidgets.QWidget, _HalWidgetBase):
         #############################
         scale = self.scale
         frame = cv2.resize(frame, None, fx=scale, fy=scale, interpolation=cv2.INTER_CUBIC)
+
+        self.prev_frame = time.time()
 
         ##########################
         # crop to the original size of the frame
@@ -278,6 +279,7 @@ class WebcamVideoStream:
     def _update(self):
         # keep looping infinitely until the thread is stopped
         while True:
+            time.sleep(0.05)
             # if the thread indicator variable is set, stop the thread
             if self.stopped:
                 self.stream.release()
@@ -291,7 +293,9 @@ class WebcamVideoStream:
 
     def read(self):
         # return the frame most recently read
-        return (self.grabbed, self.frame)
+        result = (self.grabbed, self.frame)
+        self.grabbed, self.frame = None, None
+        return result
 
     def stop(self):
         # indicate that the thread should be stopped
