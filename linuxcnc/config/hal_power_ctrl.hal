@@ -1,7 +1,7 @@
 # Power-on and emergency stop control.
 
 loadrt not count=1
-loadrt lut5 count=15
+loadrt lut5 count=16
 loadrt timedelay count=4
 loadrt mux2 count=3
 loadrt near count=1
@@ -26,6 +26,7 @@ addf lut5.9     servo-thread
 addf lut5.10    servo-thread
 addf lut5.11    servo-thread
 addf lut5.13    servo-thread
+addf lut5.15    servo-thread
 addf timedelay.0 servo-thread
 addf timedelay.1 servo-thread
 addf timedelay.2 servo-thread
@@ -142,10 +143,11 @@ net powerctl.allow_auto <= lut5.5.out
 
 # Enable power in UI when power good signal is high
 # The power-on must be delayed to give the GUI time to react when estop turns off.
+# Additional delay is needed to wait for Z axis driver to boot
 # lut5.6: out = !in0 | !in1
 setp lut5.6.function 0x06
-setp timedelay.0.on-delay 0.2
-setp timedelay.0.off-delay 0.0
+setp timedelay.0.on-delay 5.0
+setp timedelay.0.off-delay 0.01
 net powerctl.power_good => lut5.6.in-0
 net powerctl.estop_off => lut5.6.in-1
 net powerctl.machine_off lut5.6.out => halui.machine.off
@@ -160,15 +162,6 @@ net powerctl.homed_x joint.0.homed => lut5.7.in-0
 net powerctl.homed_y joint.1.homed => lut5.7.in-1
 net powerctl.homed_z joint.2.homed => lut5.7.in-2
 net powerctl.machine_homed <= lut5.7.out
-
-# Start homing with run button if not already homed
-# lut5.8: out = (in0 & in1 & !in2) | in3
-setp lut5.8.function 0xFF08
-net powerctl.run_btn => lut5.8.in-0
-net powerctl.power_good => lut5.8.in-1
-net powerctl.machine_homed => lut5.8.in-2
-net powerctl.start_homing_btn => lut5.8.in-3
-net powerctl.start_homing lut5.8.out => halui.home-all
 
 # Pause button indicator:
 # If program running, use program state.
@@ -249,7 +242,12 @@ net powerctl.ferror-z joint.2.f-error => absmaxdecay.0.in2
 net powerctl.ferror <= absmaxdecay.0.out
 
 # Probe sensor
-net powerctl.probe_sensor => motion.probe-input
+# For 3d probe the signal levels are inverted.
+# lut5.15: in0 xor in1
+setp lut5.15.function 0x06
+net powerctl.probe_polarity => lut5.15.in-0
+net powerctl.probe_sensor => lut5.15.in-1
+net powerctl.probe_xored lut5.15.out => motion.probe-input
 
 # Maximum velocity based on door status
 # Limit to 2 m/s when door is open for ISO16090 conformance
