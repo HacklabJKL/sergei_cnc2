@@ -16,13 +16,16 @@ net nocturn.s_jog_increment => axis.z.jog-scale
 net nocturn.s_jog_x_plus nocturn.jog_x_counts => axis.x.jog-counts
 setp axis.x.jog-enable 1
 setp axis.x.jog-vel-mode 1
+setp axis.x.jog-accel-fraction 0.5
 
 # Y-axis jogging
 net nocturn.s_jog_y_plus nocturn.jog_y_counts => axis.y.jog-counts
 setp axis.y.jog-enable 1
 setp axis.y.jog-vel-mode 1
+setp axis.y.jog-accel-fraction 0.5
 
 # Z-axis jogging
 net nocturn.s_jog_z_plus nocturn.jog_z_counts => axis.z.jog-counts
 setp axis.z.jog-enable 1
 setp axis.z.jog-vel-mode 1
+setp axis.z.jog-accel-fraction 0.25
