@@ -13,7 +13,7 @@ X axis ballscrew assembly moves up and down on two Z axis columns.
 Y axis moves the table.
 
 ![](notes/general_plan_2021_10.png)
-![](photos/build_2021_11.jpg)
+![](photos/cabinet_2022_06.jpg)
 
 
 Documentation index
