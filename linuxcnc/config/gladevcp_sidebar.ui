@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <!-- interface-requires gladevcp 0.0 -->
   <requires lib="gtk+" version="2.24"/>
+  <!-- interface-requires gladevcp 0.0 -->
   <!-- interface-naming-policy project-wide -->
   <object class="EMC_Action_MDI" id="vcp_action_clearg54">
     <property name="command">G10 L2 P0 X0 Y0 Z0 R0</property>
@@ -11,7 +11,7 @@
   </object>
   <object class="EMC_Action_Home" id="vcp_action_home1"/>
   <object class="EMC_Action_MDI" id="vcp_action_toolset">
-    <property name="command">M6 T1</property>
+    <property name="command">o&lt;tool_length_probe&gt; call</property>
   </object>
   <object class="EMC_Action_MDI" id="vcp_action_z_probe_pad">
     <property name="command">o&lt;z_probe_pad&gt; call</property>
@@ -511,6 +511,249 @@ offsets (G54)</property>
           </packing>
         </child>
         <child>
+          <object class="GtkTable" id="table1">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="n_rows">4</property>
+            <property name="n_columns">4</property>
+            <child>
+              <object class="GtkLabel" id="label13">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">0.89999997615814209</property>
+                <property name="label" translatable="yes">X</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="label14">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">0.89999997615814209</property>
+                <property name="label" translatable="yes">Y</property>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="right_attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="label15">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">0.89999997615814209</property>
+                <property name="label" translatable="yes">Z</property>
+              </object>
+              <packing>
+                <property name="left_attach">3</property>
+                <property name="right_attach">4</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="label16">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">G54:</property>
+              </object>
+              <packing>
+                <property name="top_attach">2</property>
+                <property name="bottom_attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="label17">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Extra:</property>
+              </object>
+              <packing>
+                <property name="top_attach">3</property>
+                <property name="bottom_attach">4</property>
+              </packing>
+            </child>
+            <child>
+              <object class="HAL_Offset" id="hal_offset1">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">1</property>
+                <property name="label" translatable="yes">label</property>
+                <property name="display_units_mm">True</property>
+                <property name="imperial_text_template">%6.2f</property>
+                <property name="mm_text_template">%6.2f</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">2</property>
+                <property name="bottom_attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="label18">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">G92:</property>
+              </object>
+              <packing>
+                <property name="top_attach">1</property>
+                <property name="bottom_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="HAL_Offset" id="hal_offset2">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">1</property>
+                <property name="label" translatable="yes">label</property>
+                <property name="display_units_mm">True</property>
+                <property name="imperial_text_template">%6.2f</property>
+                <property name="mm_text_template">%6.2f</property>
+                <property name="reference_type">2</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">1</property>
+                <property name="bottom_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="HAL_Offset" id="hal_offset3">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">1</property>
+                <property name="label" translatable="yes">label</property>
+                <property name="display_units_mm">True</property>
+                <property name="imperial_text_template">%6.2f</property>
+                <property name="joint_number">1</property>
+                <property name="mm_text_template">%6.2f</property>
+                <property name="reference_type">2</property>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="right_attach">3</property>
+                <property name="top_attach">1</property>
+                <property name="bottom_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="HAL_Offset" id="hal_offset4">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">1</property>
+                <property name="label" translatable="yes">label</property>
+                <property name="display_units_mm">True</property>
+                <property name="imperial_text_template">%6.2f</property>
+                <property name="joint_number">2</property>
+                <property name="mm_text_template">%6.2f</property>
+                <property name="reference_type">2</property>
+              </object>
+              <packing>
+                <property name="left_attach">3</property>
+                <property name="right_attach">4</property>
+                <property name="top_attach">1</property>
+                <property name="bottom_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="HAL_Offset" id="hal_offset5">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">1</property>
+                <property name="label" translatable="yes">label</property>
+                <property name="display_units_mm">True</property>
+                <property name="imperial_text_template">%6.2f</property>
+                <property name="joint_number">1</property>
+                <property name="mm_text_template">%6.2f</property>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="right_attach">3</property>
+                <property name="top_attach">2</property>
+                <property name="bottom_attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="HAL_Offset" id="hal_offset6">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">1</property>
+                <property name="label" translatable="yes">label</property>
+                <property name="display_units_mm">True</property>
+                <property name="imperial_text_template">%6.2f</property>
+                <property name="joint_number">2</property>
+                <property name="mm_text_template">%6.2f</property>
+              </object>
+              <packing>
+                <property name="left_attach">3</property>
+                <property name="right_attach">4</property>
+                <property name="top_attach">2</property>
+                <property name="bottom_attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="HAL_Label" id="eoffset_x">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">1</property>
+                <property name="label" translatable="yes">0.00</property>
+                <property name="label_pin_type">1</property>
+                <property name="text_template">%+6.2f</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">3</property>
+                <property name="bottom_attach">4</property>
+              </packing>
+            </child>
+            <child>
+              <object class="HAL_Label" id="eoffset_y">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">1</property>
+                <property name="label" translatable="yes">0.00</property>
+                <property name="label_pin_type">1</property>
+                <property name="text_template">%+6.2f</property>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="right_attach">3</property>
+                <property name="top_attach">3</property>
+                <property name="bottom_attach">4</property>
+              </packing>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <object class="HAL_Label" id="eoffset_z">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">1</property>
+                <property name="label" translatable="yes">0.00</property>
+                <property name="label_pin_type">1</property>
+                <property name="text_template">%+6.2f</property>
+              </object>
+              <packing>
+                <property name="left_attach">3</property>
+                <property name="right_attach">4</property>
+                <property name="top_attach">3</property>
+                <property name="bottom_attach">4</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="padding">2</property>
+            <property name="position">14</property>
+          </packing>
+        </child>
+        <child>
           <object class="GtkHSeparator" id="hseparator5">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
@@ -519,7 +762,23 @@ offsets (G54)</property>
             <property name="expand">False</property>
             <property name="fill">True</property>
             <property name="padding">10</property>
-            <property name="position">14</property>
+            <property name="position">15</property>
+          </packing>
+        </child>
+        <child>
+          <object class="HAL_Offset" id="hal_offset7">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">label</property>
+            <property name="display_units_mm">True</property>
+            <property name="joint_number">2</property>
+            <property name="mm_text_template">Tool length: %6.2f mm</property>
+            <property name="reference_type">1</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">16</property>
           </packing>
         </child>
         <child>
@@ -534,7 +793,7 @@ offsets (G54)</property>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">15</property>
+            <property name="position">17</property>
           </packing>
         </child>
         <child>
@@ -549,7 +808,7 @@ offsets (G54)</property>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">16</property>
+            <property name="position">18</property>
           </packing>
         </child>
         <child>
@@ -561,7 +820,7 @@ offsets (G54)</property>
             <property name="expand">False</property>
             <property name="fill">True</property>
             <property name="padding">10</property>
-            <property name="position">17</property>
+            <property name="position">19</property>
           </packing>
         </child>
         <child>
@@ -574,7 +833,7 @@ offsets (G54)</property>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">18</property>
+            <property name="position">20</property>
           </packing>
         </child>
         <child>
@@ -602,7 +861,7 @@ movements!</property>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">19</property>
+            <property name="position">21</property>
           </packing>
         </child>
         <child>
@@ -613,7 +872,7 @@ movements!</property>
           <packing>
             <property name="expand">True</property>
             <property name="fill">True</property>
-            <property name="position">20</property>
+            <property name="position">22</property>
           </packing>
         </child>
         <child>
@@ -625,7 +884,7 @@ movements!</property>
             <property name="expand">False</property>
             <property name="fill">True</property>
             <property name="padding">10</property>
-            <property name="position">21</property>
+            <property name="position">23</property>
           </packing>
         </child>
         <child>
@@ -658,7 +917,7 @@ movements!</property>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">22</property>
+            <property name="position">24</property>
           </packing>
         </child>
         <child>
@@ -717,8 +976,11 @@ movements!</property>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">23</property>
+            <property name="position">25</property>
           </packing>
+        </child>
+        <child>
+          <placeholder/>
         </child>
       </object>
     </child>

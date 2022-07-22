@@ -1,0 +1,13 @@
+o<tool_change_pos> sub
+
+; Spindle must be stopped
+M5
+
+; Ensure we're in G90 / absolute mode
+G90
+
+G53 G0 Z#<_ini[CHANGE_POSITION]Z>
+G53 G0 X#<_ini[CHANGE_POSITION]X> Y#<_ini[CHANGE_POSITION]Y>
+
+o<tool_change_pos> endsub
+M2

@@ -1,0 +1,42 @@
+// Build and install with: halcompile --install abslimit.comp
+
+component abslimit "Limit the minimum and maximum absolute value, preserving sign";
+
+pin in float in "Analog input value" ;
+pin in float min "Minimum absolute value != 0";
+pin in float max "Maximum absolute value";
+pin out float out "Limited output value";
+
+function _;
+license "GPL";
+;;
+FUNCTION(_) {
+    if (in > max)
+    {
+        out = max;
+    }
+    else if (in > min)
+    {
+        out = in;
+    }
+    else if (in > 0)
+    {
+        out = min;
+    }
+    else if (in == 0)
+    {
+        out = 0;
+    }
+    else if (in > -min)
+    {
+        out = -min;
+    }
+    else if (in > -max)
+    {
+        out = in;
+    }
+    else
+    {
+        out = -max;
+    }
+}

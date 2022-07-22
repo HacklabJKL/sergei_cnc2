@@ -2,9 +2,7 @@
 
 loadusr -Wn nocturn ../hal-driver-novation-nocturn/nocturn_controller.py
 
-# Homing button
-net powerctl.machine_homed => nocturn.machine_homed
-net powerctl.start_homing_btn <= nocturn.home_all
+addf lut5.16 servo-thread
 
 # Jogging increment
 net nocturn.s_jog_speed nocturn.jog_speed => halui.axis.jog-speed
@@ -12,20 +10,72 @@ net nocturn.s_jog_increment nocturn.jog_increment => axis.x.jog-scale
 net nocturn.s_jog_increment => axis.y.jog-scale
 net nocturn.s_jog_increment => axis.z.jog-scale
 
+# Automatically change from MDI mode to jog mode
+setp lut5.16.function 0x08
+net nocturn.s_is_mdi_mode halui.mode.is-mdi => lut5.16.in-0
+net nocturn.s_jog_mode nocturn.start_jog => lut5.16.in-1
+net nocturn.s_teleop lut5.16.out => halui.mode.teleop
+net nocturn.is_jog_mode halui.mode.is-teleop => nocturn.jog_enabled
+
 # X-axis jogging
-net nocturn.s_jog_x_plus nocturn.jog_x_counts => axis.x.jog-counts
+net nocturn.s_jog_x_enc nocturn.jog_x_counts => axis.x.jog-counts
 setp axis.x.jog-enable 1
 setp axis.x.jog-vel-mode 1
 setp axis.x.jog-accel-fraction 0.5
 
+net nocturn.s_jog_x_plus nocturn.x_plus => halui.axis.x.plus
+net nocturn.s_jog_x_minus nocturn.x_minus => halui.axis.x.minus
+
 # Y-axis jogging
-net nocturn.s_jog_y_plus nocturn.jog_y_counts => axis.y.jog-counts
+net nocturn.s_jog_y_enc nocturn.jog_y_counts => axis.y.jog-counts
 setp axis.y.jog-enable 1
 setp axis.y.jog-vel-mode 1
 setp axis.y.jog-accel-fraction 0.5
 
+net nocturn.s_jog_y_plus nocturn.y_plus => halui.axis.y.plus
+net nocturn.s_jog_y_minus nocturn.y_minus => halui.axis.y.minus
+
 # Z-axis jogging
-net nocturn.s_jog_z_plus nocturn.jog_z_counts => axis.z.jog-counts
+net nocturn.s_jog_z_enc nocturn.jog_z_counts => axis.z.jog-counts
 setp axis.z.jog-enable 1
 setp axis.z.jog-vel-mode 1
 setp axis.z.jog-accel-fraction 0.25
+
+net nocturn.s_jog_z_plus nocturn.z_plus => halui.axis.z.plus
+net nocturn.s_jog_z_minus nocturn.z_minus => halui.axis.z.minus
+
+# Overrides are reset when machine is powered off
+net powerctl.machine_is_on => nocturn.machine-is-on
+
+# Feed and spindle overrides
+net nocturn.s_feed_override nocturn.feed_override => halui.feed-override.counts
+net nocturn.s_led_feed_override halui.feed-override.value => nocturn.led_feed_override
+net nocturn.s_spindle_override nocturn.spindle_override => halui.spindle.0.override.counts
+net nocturn.s_led_spindle_override halui.spindle.0.override.value => nocturn.led_spindle_override
+
+# Live offsets
+setp axis.x.eoffset-enable 1
+setp axis.x.eoffset-scale 0.01
+net nocturn.s_offset_x nocturn.x_offset => axis.x.eoffset-counts
+net nocturn.s_clear_offsets nocturn.clear_offsets => axis.x.eoffset-clear
+net nocturn.s_led_offset_x axis.x.eoffset => nocturn.led_x_offset
+
+setp axis.y.eoffset-enable 1
+setp axis.y.eoffset-scale 0.01
+net nocturn.s_offset_y nocturn.y_offset => axis.y.eoffset-counts
+net nocturn.s_clear_offsets => axis.y.eoffset-clear
+net nocturn.s_led_offset_y axis.y.eoffset => nocturn.led_y_offset
+
+setp axis.z.eoffset-enable 1
+setp axis.z.eoffset-scale 0.01
+net nocturn.s_offset_z nocturn.z_offset => axis.z.eoffset-counts
+net nocturn.s_clear_offsets => axis.z.eoffset-clear
+net nocturn.s_led_offset_z axis.z.eoffset => nocturn.led_z_offset
+
+# Z raise button
+net powerctl.lift_z <= nocturn.lift_z
+
+# Relative zero button LEDs
+net machine.rel_x => nocturn.rel_x
+net machine.rel_y => nocturn.rel_y
+net machine.rel_z => nocturn.rel_z

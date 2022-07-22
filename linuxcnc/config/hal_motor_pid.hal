@@ -4,6 +4,8 @@
 loadrt pid num_chan=3
 loadrt runawayprot count=3
 loadrt logic names=logic.or3 personality=0x203
+loadrt offset count=1
+loadrt limit2 count=2
 
 addf pid.0.do-pid-calcs                    servo-thread
 addf pid.1.do-pid-calcs                    servo-thread
@@ -13,6 +15,14 @@ addf runawayprot.0                         servo-thread
 addf runawayprot.1                         servo-thread
 addf runawayprot.2                         servo-thread
 addf logic.or3                             servo-thread
+
+addf mux2.3                                servo-thread
+addf sum2.3                                servo-thread
+addf limit2.0                              servo-thread
+addf limit2.1                              servo-thread
+
+addf offset.0.update-feedback              servo-thread 1
+addf offset.0.update-output                servo-thread -1
 
 #########################
 # Calibrated kinematics #
@@ -123,14 +133,16 @@ net motordrive.2.enable <= joint.2.amp-enable-out
 # Feedback signal from encoder
 newsig motordrive.2.feedback float
 net motordrive.2.feedback => pid.2.feedback        # Feedback to PID control
-net motordrive.2.feedback => joint.2.motor-pos-fb  # Feedback to GUI
+net motordrive.2.feedback => offset.0.fb-in  # Feedback to GUI
+net motordrive.2.offset_fb offset.0.fb-out => joint.2.motor-pos-fb
 
 # PWM output drive signal
 newsig motordrive.2.control float
 net motordrive.2.control <= pid.2.output
 
 # Commanded position from motion controller
-net motordrive.2.command joint.2.motor-pos-cmd => pid.2.command
+net motordrive.2.offset_cmd joint.2.motor-pos-cmd => offset.0.in
+net motordrive.2.command offset.0.out => pid.2.command
 
 # PID parameters from ini file
 setp pid.2.Pgain [JOINT_2]P
@@ -153,3 +165,25 @@ net motordrive.2.runaway runawayprot.2.out => logic.or3.in-02
 
 # Combined OR of all fault signals
 net motordrive.fault <= logic.or3.or
+
+######################
+# Z axis lift offset #
+######################
+
+# Select either +0 or +100mm offset for Z axis.
+# This can be used for e.g. tool changing or for dry run
+net powerctl.lift_z => mux2.3.sel
+setp mux2.3.in0 0
+setp mux2.3.in1 100
+
+# Calculate maximum offset to not exceed Z axis maximum
+net motordrive.2.cmd_abs axis.z.pos-cmd => sum2.3.in0
+setp sum2.3.gain0 -1.0
+setp sum2.3.offset [AXIS_Z]MAX_LIMIT
+
+# Limit velocity and maximum value
+setp limit2.0.maxv 10
+net motordrive.2.offset-req mux2.3.out => limit2.0.in
+net motordrive.2.offset-limv limit2.0.out => limit2.1.in
+net motordrive.2.max-offset sum2.3.out => limit2.1.max
+net motordrive.2.offset limit2.1.out => offset.0.offset

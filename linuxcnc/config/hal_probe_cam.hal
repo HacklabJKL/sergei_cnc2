@@ -1,7 +1,5 @@
 # LinuxCNC HAL configuration for camera & probing
 
-loadrt sum2 count=3
-
 addf sum2.0 servo-thread
 addf sum2.1 servo-thread
 addf sum2.2 servo-thread

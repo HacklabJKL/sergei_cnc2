@@ -1,15 +1,17 @@
 # Power-on and emergency stop control.
 
+# Note: some components loaded here are used from other files.
 loadrt not count=1
-loadrt lut5 count=16
+loadrt lut5 count=17
 loadrt timedelay count=4
-loadrt mux2 count=3
+loadrt mux2 count=4
 loadrt near count=1
 loadrt scale count=2
 loadrt absmaxdecay count=1
-loadrt limit2 count=1
+loadrt abslimit count=1
+loadrt sum2 count=4
 
-addf limit2.0   servo-thread
+addf abslimit.0   servo-thread
 addf absmaxdecay.0 servo-thread
 addf scale.0    servo-thread
 addf not.0      servo-thread
@@ -48,6 +50,7 @@ newsig powerctl.power_good bit
 newsig powerctl.program_paused bit
 newsig powerctl.program_running bit
 newsig powerctl.machine_homed bit
+newsig powerctl.machine_is_on bit
 newsig powerctl.start_homing_btn bit
 newsig powerctl.pause_indicator bit
 newsig powerctl.spindle_enable bit
@@ -59,6 +62,7 @@ newsig powerctl.ferror float
 newsig powerctl.motor_ok bit
 newsig powerctl.probe_sensor bit
 newsig powerctl.paused_door_open bit
+newsig powerctl.lift_z bit
 
 net powerctl.program_paused <= halui.program.is-paused
 net powerctl.program_running <= halui.program.is-running
@@ -154,6 +158,7 @@ net powerctl.machine_off lut5.6.out => halui.machine.off
 net powerctl.machine_off => not.0.in
 net powerctl.machine_on not.0.out => timedelay.0.in
 net powerctl.machine_on_delayed timedelay.0.out => halui.machine.on
+net powerctl.machine_is_on <= halui.machine.is-on
 
 # Check machine homing status
 # lut5.7: out = in0 & in1 & in2
@@ -174,10 +179,10 @@ net powerctl.in_position motion.in-position => lut5.9.in-2
 net powerctl.pause_indicator <= lut5.9.out
 
 # Spindle RPM limit
-setp limit2.0.min -[SPINDLE](MAX_RPM)
-setp limit2.0.max [SPINDLE](MAX_RPM)
-net powerctl.spindle_rpm_req spindle.0.speed-out => limit2.0.in
-net powerctl.spindle_rpm <= limit2.0.out
+setp abslimit.0.min [SPINDLE](MIN_RPM)
+setp abslimit.0.max [SPINDLE](MAX_RPM)
+net powerctl.spindle_rpm_req spindle.0.speed-out => abslimit.0.in
+net powerctl.spindle_rpm <= abslimit.0.out
 
 # Spindle control
 # Stop when not in MSO1 mode or when estop hit

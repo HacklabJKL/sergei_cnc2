@@ -68,6 +68,15 @@ class NocturnMidi:
                 self.midi_in.openPort(self.midi_port_idx)
                 self.midi_out.openPort(self.midi_port_idx)
 
+                for i in range(len(self.buttonaddrs)):
+                    self.set_button_led(i, False)
+                    time.sleep(0.01)
+                
+                for i in range(len(self.encoderleds)):
+                    self.set_encoder_leds(i, 0, 0)
+                    time.sleep(0.01)
+                
+
     def parse_inputs(self):
         '''Parse midi messages from the controller and return a tuple:
         ('btn09', True) <-- Button 9 down
