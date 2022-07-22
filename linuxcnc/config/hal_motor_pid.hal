@@ -14,6 +14,20 @@ addf runawayprot.1                         servo-thread
 addf runawayprot.2                         servo-thread
 addf logic.or3                             servo-thread
 
+#########################
+# Calibrated kinematics #
+#########################
+
+setp matrixkins.c0 [MATRIXKINS]C0
+setp matrixkins.c1 [MATRIXKINS]C1
+setp matrixkins.c2 [MATRIXKINS]C2
+setp matrixkins.c3 [MATRIXKINS]C3
+setp matrixkins.c4 [MATRIXKINS]C4
+setp matrixkins.c5 [MATRIXKINS]C5
+setp matrixkins.c6 [MATRIXKINS]C6
+setp matrixkins.c7 [MATRIXKINS]C7
+setp matrixkins.c8 [MATRIXKINS]C8
+
 ####################
 # X axis / joint 0 #
 ####################
