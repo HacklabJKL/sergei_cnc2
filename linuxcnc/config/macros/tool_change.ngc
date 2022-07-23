@@ -4,11 +4,11 @@ o<tool_change> sub
 #<absolute> = #<_absolute>
 #<feed> = #<_feed>
 
-o<tool_change_pos> call
+; o<tool_change_pos> call
 
 M6
 
-o<tool_length_probe> call
+; o<tool_length_probe> call
 
 O<restore> call [#<metric>] [#<absolute>] [#<feed>]
 
