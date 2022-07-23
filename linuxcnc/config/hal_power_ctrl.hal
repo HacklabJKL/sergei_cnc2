@@ -257,6 +257,6 @@ net powerctl.probe_xored lut5.15.out => motion.probe-input
 # Maximum velocity based on door status
 # Limit to 2 m/s when door is open for ISO16090 conformance
 setp mux2.2.in1 [AXIS_X]MAX_VELOCITY
-setp mux2.2.in0 30
+setp mux2.2.in0 33.4
 net powerctl.allow_auto => mux2.2.sel
 net powerctl.max_speed_xy <= mux2.2.out
