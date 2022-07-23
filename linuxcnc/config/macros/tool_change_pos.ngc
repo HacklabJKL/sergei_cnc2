@@ -4,6 +4,7 @@ o<tool_change_pos> sub
 M5
 
 ; Ensure we're in G90 / absolute mode
+G21
 G90
 
 G53 G0 Z#<_ini[CHANGE_POSITION]Z>

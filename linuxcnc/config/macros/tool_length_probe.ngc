@@ -4,20 +4,23 @@ o<tool_length_probe> sub
 M5
 
 ; Ensure we're in G90 / absolute mode
+G21
 G90
 
 G53 G0 Z#<_ini[TOOLSENSOR]Z>
-G53 G0 X#<_ini[TOOLSENSOR]X> Y#<_ini[TOOLSENSOR]Y>
+G53 G0 X#<_ini[TOOLSENSOR]X>
 
-G38.3 Z[#<_z> + #<_ini[TOOLSENSOR]MAXPROBE>] F500
+G43.1 X0 Y0 Z0
+G38.3 Z[#<_z> + #<_ini[TOOLSENSOR]MAXPROBE>] F600
 
 O1 if [#5070 EQ 1]
+	G38.4 Z[#<_z> + 10] F100
+
     ; Set new tool length
-    G49
     G43.1 Z[#5063 - #<_ini[TOOLSENSOR]ZPOS>]
-    
+
     ; Move off the sensor
-    G53 G0 Z#<_ini[TOOLSENSOR]Z>
+	G53 G0 Z#<_ini[TOOLSENSOR]Z>
 O1 else
     (MSG,Probe did not detect contact)
 O1 endif

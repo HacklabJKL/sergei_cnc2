@@ -3,7 +3,7 @@
 # Note: some components loaded here are used from other files.
 loadrt not count=1
 loadrt lut5 count=17
-loadrt timedelay count=4
+loadrt timedelay count=5
 loadrt mux2 count=4
 loadrt near count=1
 loadrt scale count=2
@@ -33,6 +33,7 @@ addf timedelay.0 servo-thread
 addf timedelay.1 servo-thread
 addf timedelay.2 servo-thread
 addf timedelay.3 servo-thread
+addf timedelay.4 servo-thread
 addf mux2.0     servo-thread
 addf mux2.2     servo-thread
 addf near.0     servo-thread
@@ -66,6 +67,9 @@ newsig powerctl.lift_z bit
 
 net powerctl.program_paused <= halui.program.is-paused
 net powerctl.program_running <= halui.program.is-running
+
+net tool-prep-loop iocontrol.0.tool-prepare => iocontrol.0.tool-prepared
+net tool-change-loop iocontrol.0.tool-change => iocontrol.0.tool-changed
 
 #######################
 # Run / pause buttons
@@ -250,9 +254,12 @@ net powerctl.ferror <= absmaxdecay.0.out
 # For 3d probe the signal levels are inverted.
 # lut5.15: in0 xor in1
 setp lut5.15.function 0x06
+setp timedelay.4.on-delay 0.005
+setp timedelay.4.off-delay 0.005
 net powerctl.probe_polarity => lut5.15.in-0
 net powerctl.probe_sensor => lut5.15.in-1
-net powerctl.probe_xored lut5.15.out => motion.probe-input
+net powerctl.probe_xored lut5.15.out => timedelay.4.in
+net powerctl.probe_filt timedelay.4.out => motion.probe-input
 
 # Maximum velocity based on door status
 # Limit to 2 m/s when door is open for ISO16090 conformance
