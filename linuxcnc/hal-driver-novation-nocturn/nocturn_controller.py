@@ -60,11 +60,6 @@ class AutoZeroEncoder:
         self.comp = comp
         self.pinname = pinname
         self.comp.newpin(self.pinname, hal.HAL_S32, hal.HAL_OUT)
-
-        try:
-            self.comp.newpin('machine-is-on', hal.HAL_BIT, hal.HAL_IN)
-        except ValueError:
-            pass
     
     def __call__(self, event):
         if self.comp['machine-is-on'] == 0:
@@ -91,7 +86,9 @@ class ToggleButton:
         self.comp[self.pinname] = default
     
     def __call__(self, event):
-        if event[1]:
+        if self.comp['machine-is-on'] == 0:
+            self.comp[self.pinname] = False
+        elif event[1]:
             self.comp[self.pinname] = not self.comp[self.pinname]
 
 class MDIButton:
@@ -146,6 +143,9 @@ class Led:
         else:
             state = False
         
+        if self.comp['machine-is-on'] == 0:
+            state = False
+
         if self.hw.midi_port_idx is None:
             self.prev_state = None
         elif state != self.prev_state:
@@ -164,6 +164,9 @@ class RelativeZeroLed:
     
     def __call__(self, event):
         state = abs(self.comp[self.pinname]) < 0.01
+
+        if self.comp['machine-is-on'] == 0:
+            state = False
 
         if self.hw.midi_port_idx is None:
             self.prev_state = None
@@ -186,13 +189,17 @@ class EncoderRing:
         self.comp.newpin(self.pinname, hal.HAL_FLOAT, hal.HAL_IN)
     
     def __call__(self, event):
-        v = (self.comp[self.pinname] - self.minval) / (self.maxval - self.minval)
-        if self.wrap: v = v % 1.0
-        self.hw.set_encoder_leds(self.enc_idx, self.ledmode, v)
+        if self.comp['machine-is-on'] == 0:
+            self.hw.set_encoder_leds(self.enc_idx, 0, 0)
+        else:
+            v = (self.comp[self.pinname] - self.minval) / (self.maxval - self.minval)
+            if self.wrap: v = v % 1.0
+            self.hw.set_encoder_leds(self.enc_idx, self.ledmode, v)
 
 class NocturnController:
     def __init__(self):
         self.comp = hal.component("nocturn")
+        self.comp.newpin('machine-is-on', hal.HAL_BIT, hal.HAL_IN)
         self.hw = nocturn_midi.NocturnMidi()
         self.handlers = {
             'slider00': JogSpeed(self.comp),
