@@ -102,14 +102,15 @@ net powerctl.run_btn => lut5.1.in-0
 net powerctl.program_idle halui.program.is-idle => lut5.1.in-1
 net powerctl.machine_homed => lut5.1.in-2
 net powerctl.power_good => lut5.1.in-3
-net powerctl.mso1_switch => lut5.1.in-4
+net powerctl.allow_auto => lut5.1.in-4
 net powerctl.run lut5.1.out => halui.program.run
 
 # lut5.2: If program is paused, run button resumes.
-# out = in0 & in1
-setp lut5.2.function 0x08
+# out = in0 & in1 & in3
+setp lut5.2.function 0x80
 net powerctl.run_btn => lut5.2.in-0
 net powerctl.program_paused halui.program.is-paused => lut5.2.in-1
+net powerctl.allow_auto => lut5.2.in-2
 net powerctl.resume lut5.2.out => halui.program.resume
 
 # lut5.3: Pause with button, prevent running if not in MSO1 mode
