@@ -1,0 +1,67 @@
+commit 3975857a70ab0b7a42b87ffecd0c421a0df7cf25
+Author: Petteri Aimonen <jpa@git.mail.kapsi.fi>
+Date:   Sun Jul 31 12:01:19 2022 +0300
+
+    AXIS: Add [DISPLAY] PREVIEW_TIMEOUT setting.
+    
+    Previously AXIS would freeze when loading a G-code file that takes very
+    long to execute and/or never terminates. This commit adds an optional
+    timeout that stops the loading of preview and shows a notice.
+    
+    Retains old behavior if the .ini file setting is not specified.
+
+diff --git a/docs/src/config/ini-config.adoc b/docs/src/config/ini-config.adoc
+index 03ad8baffe..64d93329e2 100644
+--- a/docs/src/config/ini-config.adoc
++++ b/docs/src/config/ini-config.adoc
+@@ -305,6 +305,7 @@ User Manual.
+   If the update time is not set right the screen can become unresponsive or very jerky.
+   A value of 100ms (0.1 seconds) is a common setting though a range of 50 - 200ms (.05 - .2 seconds) may be useable.
+   An under powered CPU may see improvement with a longer setting. Usually the default is fine.
++* 'PREVIEW_TIMEOUT = 5' - Timeout (in seconds) for loading graphical preview of G-code. Currently AXIS only.
+ 
+ [NOTE]
+ The following [DISPLAY] items are used by GladeVCP, see the
+diff --git a/src/emc/usr_intf/axis/scripts/axis.py b/src/emc/usr_intf/axis/scripts/axis.py
+index 864d22355a..cd22ba05e3 100755
+--- a/src/emc/usr_intf/axis/scripts/axis.py
++++ b/src/emc/usr_intf/axis/scripts/axis.py
+@@ -1069,6 +1069,15 @@ class AxisCanon(GLCanon, StatMixin):
+         self.progress = progress
+         self.aborted = False
+         self.arcdivision = arcdivision
++        self.timeout_time = None
++
++    def set_timeout(self, timeout):
++        '''Abort loading of G-code if it takes more than timeout seconds from
++        the time this method was called. Set timeout to None to disable.'''
++        if timeout is None or timeout <= 0:
++            self.timeout_time = None
++        else:
++            self.timeout_time = time.time() + timeout
+ 
+     def change_tool(self, pocket):
+         GLCanon.change_tool(self, pocket)
+@@ -1081,6 +1090,11 @@ class AxisCanon(GLCanon, StatMixin):
+ 
+     def check_abort(self):
+         root_window.update()
++
++        if self.timeout_time is not None and self.timeout_time < time.time():
++            notifications.add("info", _("G-code preview loading timed out"))
++            self.aborted = True
++
+         if self.aborted: raise KeyboardInterrupt
+ 
+     def next_line(self, st):
+@@ -1217,6 +1231,10 @@ def open_file_guts(f, filtered=False, addrecent=True):
+             shutil.copy(parameter, temp_parameter)
+         canon.parameter_file = temp_parameter
+ 
++        timeout = inifile.find("DISPLAY", "PREVIEW_TIMEOUT") or ""
++        if timeout:
++            canon.set_timeout(float(timeout))
++
+         initcode = inifile.find("EMC", "RS274NGC_STARTUP_CODE") or ""
+         if initcode == "":
+             initcode = inifile.find("RS274NGC", "RS274NGC_STARTUP_CODE") or ""
