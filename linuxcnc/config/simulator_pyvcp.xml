@@ -10,6 +10,9 @@
             <button halpin="pause_btn" text="Pause" />
             <rectled halpin="pause_indicator" on_color="yellow" off_color="black" />
         </hbox>
+        <hbox>
+            <button halpin="probe" text="Probe" />
+        </hbox>
         <checkbutton halpin="power_good" text="Power good" />
         <checkbutton halpin="mso1_switch" text="MSO1 switch" />
         <checkbutton halpin="estop" text="Emergency stop on" />

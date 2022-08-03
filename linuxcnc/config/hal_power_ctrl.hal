@@ -95,14 +95,14 @@ net powerctl.estop_off lut5.0.out => iocontrol.0.emc-enable-in
 net powerctl.estop_btn => lut5.0.in-0
 net motordrive.fault => lut5.0.in-2
 
-# lut5.1: If program is not running, run button starts.
+# lut5.1: If program is not running and door is closed, run button starts.
 # out = in0 & in1 & in2 & in3 & in4
 setp lut5.1.function 0x80000000
 net powerctl.run_btn => lut5.1.in-0
 net powerctl.program_idle halui.program.is-idle => lut5.1.in-1
 net powerctl.machine_homed => lut5.1.in-2
 net powerctl.power_good => lut5.1.in-3
-net powerctl.allow_auto => lut5.1.in-4
+net powerctl.mso1_switch => lut5.1.in-4
 net powerctl.run lut5.1.out => halui.program.run
 
 # lut5.2: If program is paused, run button resumes.

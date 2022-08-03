@@ -32,6 +32,7 @@ net powerctl.allow_auto => simulator_pyvcp.high_current
 net powerctl.spindle_rpm => simulator_pyvcp.spindle_rpm
 net powerctl.spindle_enable => simulator_pyvcp.spindle_enable
 net powerctl.spindle_at_speed <= simulator_pyvcp.spindle_at_speed
+net powerctl.probe_sensor <= simulator_pyvcp.probe
 
 ####################
 # X axis / joint 0 #
@@ -80,9 +81,3 @@ setp comp.2.in0 100
 setp comp.2.hyst 0.1
 net motordrive.2.feedback => comp.2.in1
 net motordrive.2.home_sw joint.2.home-sw-in <= comp.2.out
-
-# Probe simulator
-setp comp.3.in1 -10
-setp comp.3.hyst 0.01
-net motordrive.2.feedback => comp.3.in0
-net powerctl.probe_sensor <= comp.3.out
