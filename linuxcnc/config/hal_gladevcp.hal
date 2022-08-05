@@ -8,7 +8,6 @@ net powerctl.ferror => gladevcp.ferror
 net powerctl.ferror => gladevcp.ferror_label
 net powerctl.motor_ok => gladevcp.motor_ok
 net powerctl.allow_auto => gladevcp.motor_hcurr
-net powerctl.probe_sensor => gladevcp.probe_sensor
 net powerctl.mso1_switch => gladevcp.mso1_switch
 net powerctl.power_good => gladevcp.power_good
 net powerctl.estop_off => gladevcp.estop_off
@@ -25,3 +24,6 @@ net powerctl.max_speed_xy => ini.1.max_velocity
 net powerctl.eoffset_x axis.x.eoffset-request => gladevcp.eoffset_x
 net powerctl.eoffset_y axis.y.eoffset-request => gladevcp.eoffset_y
 net powerctl.eoffset_z axis.z.eoffset-request => gladevcp.eoffset_z
+
+net powerctl.probe_xored => gladevcp.probe_sensor
+net powerctl.probe_polarity <= gladevcp.probetype_3d
