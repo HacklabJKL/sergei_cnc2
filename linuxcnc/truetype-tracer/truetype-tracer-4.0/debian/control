@@ -1,0 +1,16 @@
+Source: truetype-tracer
+Section: unknown
+Priority: optional
+Maintainer: Chris Radek <chris@timeguy.com>
+Build-Depends: debhelper (>= 4.0.0), autotools-dev
+Standards-Version: 3.6.1
+
+Package: truetype-tracer
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends} ttf-freefont
+Description: TTT, the True Type Tracer, an outline-generator.
+ TTT generates G-code compatible with the Enhanced Machine Controller
+ [www.linuxcnc.org] or DXF output.  Given a truetype font and a string
+ of text, it generates vector outlines that represent the edges of the
+ font.  Because of the large number of quality True Type fonts available,
+ this output can be very useful for CNC engraving.

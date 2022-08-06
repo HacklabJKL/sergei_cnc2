@@ -1,0 +1,39 @@
+truetype-tracer (4.0-1) unstable; urgency=low
+
+  * Display the extents of the string and its final X advance in
+    a comment, in order to help with assembling multiple strings.
+  * Allow an XY offset to be set at the beginning of a string.
+    [many thanks to John Kasunich for these two changes]
+  * export biarcs for dxf [thanks to Jeff Epler]
+  * export splines/nurbs for gcode
+  * optional filling of characters with -l 
+
+ -- Chris Radek <chris@timeguy.com>  Sun, 13 Jun 2010 13:24:26 -0500
+
+truetype-tracer (3.0-3) unstable; urgency=low
+
+  * man page formatting and spelling fix
+
+ -- Chris Radek <chris@timeguy.com>  Sat,  3 Feb 2007 11:06:45 -0600
+
+truetype-tracer (3.0-2) unstable; urgency=low
+
+  * man page
+
+ -- Chris Radek <chris@timeguy.com>  Tue, 28 Feb 2006 18:02:57 -0600
+
+truetype-tracer (3.0-1) unstable; urgency=low
+
+  * Unicode support!
+
+ -- Chris Radek <chris@timeguy.com>  Mon, 27 Feb 2006 18:36:08 -0600
+
+truetype-tracer (2.0-1) unstable; urgency=low
+
+  * Initial public release in debian form
+  * Update TTT to use the new FT_Outline API
+  * pfb font file support 
+    [many thanks to Lawrence Glaister <ve7it@shaw.ca> for these two changes]
+
+ -- Chris Radek <chris@timeguy.com>  Thu, 16 Feb 2006 19:01:39 -0600
+

@@ -1,0 +1,5 @@
+*.ngc
+*.dxf
+truetype-tracer
+truetype-tracer-dxf
+*.o

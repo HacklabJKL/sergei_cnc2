@@ -1,0 +1,94 @@
+.\" Copyright (c) 2006 Chris Radek <chris@timeguy.com>
+.\"
+.\" This is free documentation; you can redistribute it and/or
+.\" modify it under the terms of the GNU General Public License as
+.\" published by the Free Software Foundation; either version 2 of
+.\" the License, or (at your option) any later version.
+.\"
+.\" The GNU General Public License's references to "object code"
+.\" and "executables" are to be interpreted as the output of any
+.\" document formatting or typesetting system, including
+.\" intermediate and printed output.
+.\"
+.\" This manual is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public
+.\" License along with this manual; if not, write to the Free
+.\" Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111,
+.\" USA.
+.\"
+.\"
+.\"
+.TH truetype-tracer "1"  "2008-04-26" "TTT Documentation" "The Truetype Tracer"
+.SH NAME
+The Truetype Tracer
+.SH SYNOPSIS
+.B truetype-tracer
+[\fI-?\fR] [\fI-u\fR] [-s subdist] [\fI-f font.ttf\fR] 'Text to trace'
+
+.B truetype-tracer-dxf
+[\fI-?\fR] [\fI-u\fR] [-s subdist] [\fI-f font.ttf\fR] 'Text to trace'
+.SH DESCRIPTION
+\fBtruetype-tracer\fR is used to generate vector outlines of truetype fonts.
+The output format is either G Code meant for use by \fBEMC (the Enhanced
+Machine Controller)\fR or DXF, a popular drawing interchange format read by
+\fBAutoCad\fR and many other CAD programs.  These generated outlines are
+useful for running engraving machines.  Output is on stdout, so you will want
+to redirect it to a file.
+.SH OPTIONS
+.TP
+\fB\-?\fR 
+Print a summary of command line options and exit.
+.TP
+\fB\-u\fR
+Input string is in Unicode encoding.  The default encoding is ASCII.
+.TP
+\fB\-s\fR
+Specifies the degree of subdivision of conic and cubic splines.  The number of
+subdivisions is the approximate curve length in font coordinates divided by
+\fB\-s\fR value; each subdivision gives two arcs.  The default value is 200, so
+a curve of length 1000 is broken up into 5 arc pairs.  No curve is broken into
+fewer than 2 arc pairs.  Higher s values give higher contouring speeds on
+low-acceleration machines, while lower s values more accurately follow the true
+contours of the font.
+.TP
+\fB\-f font.ttf\fR
+Use the specified font for tracing.  There is a default font specified at
+compile-time, but typically you will want to specify the desired font on the
+command line.  Chances are you have many nice TrueType fonts on your system
+already; try invoking \fBlocate .ttf\fR.
+.TP
+\fB 'Text to trace'\fR
+This is the desired output string; it should be specified in single quotes to
+avoid shell expansion.
+.SH EXAMPLES
+\fBtruetype-tracer\fR 'Hello world!' > hello.ngc
+
+\fBtruetype-tracer-dxf\fR 'Hello world!' > hello.dxf
+
+\fBtruetype-tracer\fR -f myfont.ttf 'Hello' > myhello.ngc
+
+\fBtruetype-tracer\fR -u -f japanese.ttf '[Unicode japanese text]' > ja.ngc
+.SH "SEE ALSO"
+\fBemc(1)\fR
+.SH BUGS
+Encodings other than Unicode should be accepted and the encoding should be
+determined by the environment in the natural way.
+
+There should be only one binary and the desired output format should be
+specified on the commandline.  If more output formats are added, this cleanup
+will be more necessary.
+.SH AUTHOR
+The Truetype Tracer and this man page were written by Chris Radek 
+<chris@timeguy.com>.
+.SH ACKNOWLEDGEMENTS
+I acknowledge and appreciate the significant contributions of Lawrence Glaister,
+Jeff Epler, and John Kasunich to this project.
+.SH COPYRIGHT
+Copyright \(co 2004, 2005, 2006, 2007, 2008 Chris Radek.
+.br
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
