@@ -1,7 +1,7 @@
 # Power-on and emergency stop control.
 
 # Note: some components loaded here are used from other files.
-loadrt not count=1
+loadrt not count=2
 loadrt lut5 count=17
 loadrt timedelay count=5
 loadrt mux2 count=4
@@ -15,6 +15,7 @@ addf abslimit.0   servo-thread
 addf absmaxdecay.0 servo-thread
 addf scale.0    servo-thread
 addf not.0      servo-thread
+addf not.1      servo-thread
 addf lut5.0     servo-thread
 addf lut5.1     servo-thread
 addf lut5.2     servo-thread
@@ -266,5 +267,9 @@ net powerctl.probe_filt timedelay.4.out => motion.probe-input
 # Limit to 2 m/s when door is open for ISO16090 conformance
 setp mux2.2.in1 [AXIS_X]MAX_VELOCITY
 setp mux2.2.in0 33.4
-net powerctl.allow_auto => mux2.2.sel
+net powerctl.mso1_switch => mux2.2.sel
 net powerctl.max_speed_xy <= mux2.2.out
+
+# Disable homing until door closed
+net powerctl.allow_auto => not.1.in
+net powerctl.home_inhibit not.1.out => motion.homing-inhibit

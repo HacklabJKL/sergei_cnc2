@@ -29,6 +29,8 @@ class ProbeOperation:
             return self.error
         elif self.result:
             return "Probe " + self.resultname + " done"
+        elif self.stat.paused:
+            return self.status + " (paused)"
         else:
             return self.status
 
@@ -46,14 +48,21 @@ class ProbeOperation:
         if self.done():
             return True # All done
 
-        self.stat.poll()
         status = self.command.wait_complete(0.1)
         if status < 0:
             # Command still running
             return False
-
+        
         if status == linuxcnc.RCS_ERROR:
             self.error = "Command failed"
+            return
+
+        self.stat.poll()
+        if self.stat.paused:
+            return
+
+        if self.stat.probing:
+            return
 
         if self.step == 0:
             # First step: go to MDI mode
@@ -63,6 +72,10 @@ class ProbeOperation:
         
         elif self.step == 1:
             # Start probing towards workpiece, stop on contact
+            if self.stat.probe_val:
+                self.error = self.resultname + ": Probe already tripped at start!"
+                return
+
             self.status = self.resultname + ': Probe towards surface'
             self.original_pos = self.stat.position
             self.original_g91 = 910 in self.stat.gcodes
@@ -84,6 +97,10 @@ class ProbeOperation:
                 self.step = 3
         
         elif self.step == 3:
+            if self.stat.probe_val:
+                self.error = self.resultname + ": Failed to probe away from surface!"
+                return
+
             # Got accurate position, return to original position
             self.status = self.resultname + ': Return to original position'
             self.command.mdi("G90 G53 G0 X%0.3f Y%0.3f Z%0.3f F%0.3f" %
@@ -93,8 +110,14 @@ class ProbeOperation:
         elif self.step == 4:
             self.status = self.resultname + ': Complete'
             if self.original_g91: self.command.mdi("G91")
-            self.result = self.stat.probed_position
-            self.parent.add_log(self.resultname + " result X%0.2f Y%0.2f Z%0.2f" % self.result[:3])
+            self.result = list(self.stat.probed_position)
+
+            # Adjust for probe ball diameter
+            if self.probe_deltas[0] > 0: self.result[0] += self.parent.diameter / 2
+            if self.probe_deltas[0] < 0: self.result[0] -= self.parent.diameter / 2
+            if self.probe_deltas[1] > 0: self.result[1] += self.parent.diameter / 2
+            if self.probe_deltas[1] < 0: self.result[1] -= self.parent.diameter / 2
+
             self.parent.set_result(self.resultname, self.result)
 
 class ProbeHoleCenter:
@@ -109,11 +132,12 @@ class ProbeHoleCenter:
         self.distance = distance
         self.step = 0
         self.status = ''
+        self.error = None
     
     def __str__(self):
         if self.suboperation and self.suboperation.error:
             return self.suboperation.error
-        elif self.result:
+        elif self.done():
             return "Hole center probe done"
         else:
             return self.status
@@ -127,7 +151,13 @@ class ProbeHoleCenter:
     def poll(self):
         if self.suboperation and not self.suboperation.done():
             self.suboperation.poll()
+
+        elif self.suboperation and self.suboperation.error:
+            self.error = self.suboperation.error
             
+        elif self.error:
+            return
+
         elif self.step == 0:
             self.status = 'Locate initial X center'
             self.suboperation = ProbeOperation(self.parent, "XMinus", [-self.distance, 0, 0])
@@ -139,8 +169,9 @@ class ProbeHoleCenter:
         
         elif self.step == 2:
             # Go to initial X center
-            center = (self.parent.results['XMinus'][0] + self.parent.results['XPlus'][0]) / 2.0
+            center = (self.parent.results['XMinus'][0] + self.parent.results['XPlus'][0]) / 2.0 - self.parent.offset_x
             self.command.mdi("G53 G0 X%0.3f F%0.3f" % (center, self.parent.search_speed))
+            print("G53 G0 X%0.3f F%0.3f" % (center, self.parent.search_speed))
             self.command.wait_complete()
 
             self.status = 'Locate Y center'
@@ -153,7 +184,7 @@ class ProbeHoleCenter:
         
         elif self.step == 4:
             # Go to measured Y center
-            center = (self.parent.results['YMinus'][0] + self.parent.results['YPlus'][0]) / 2.0
+            center = (self.parent.results['YMinus'][1] + self.parent.results['YPlus'][1]) / 2.0 - self.parent.offset_y
             self.command.mdi("G53 G0 Y%0.3f F%0.3f" % (center, self.parent.search_speed))
             self.command.wait_complete()
 
@@ -168,8 +199,8 @@ class ProbeHoleCenter:
         
         elif self.step == 6:
             # Go to measured center
-            center_x = (self.parent.results['XMinus'][0] + self.parent.results['XPlus'][0]) / 2.0
-            center_y = (self.parent.results['YMinus'][0] + self.parent.results['YPlus'][0]) / 2.0
+            center_x = (self.parent.results['XMinus'][0] + self.parent.results['XPlus'][0]) / 2.0 - self.parent.offset_x
+            center_y = (self.parent.results['YMinus'][1] + self.parent.results['YPlus'][1]) / 2.0 - self.parent.offset_y
             self.parent.add_log("Hole center: X %0.3f, Y %0.3f" % (center_x, center_y))
             self.command.mdi("G53 G0 X%0.3f Y%0.3f F%0.3f" % (center_x, center_y, self.parent.search_speed))
             self.command.wait_complete()
@@ -184,17 +215,25 @@ class ProbeGUI(object):
 
         glib.timeout_add(100, self.update_status)
 
-        self.inifile = linuxcnc.ini(os.environ["INI_FILE_NAME"])
-        self.probe_distance = 10
+        try:
+            self.inifile = linuxcnc.ini(os.environ["INI_FILE_NAME"])
+        except KeyError:
+            self.inifile = None
+
+        self.probe_distance = 20
+        self.hole_radius = 50
         self.search_speed = 100
-        self.latch_speed = 50
+        self.latch_speed = 10
+        self.diameter = 4
         self.offset_x = 0
         self.offset_y = 0
         self.offset_z = 0
         if self.inifile:
             self.probe_distance = float(self.inifile.find("PROBE", "DISTANCE") or self.probe_distance)
+            self.hole_radius = float(self.inifile.find("PROBE", "HOLERADIUS") or self.hole_radius)
             self.search_speed = float(self.inifile.find("PROBE", "SEARCH_SPEED") or self.search_speed)
             self.latch_speed = float(self.inifile.find("PROBE", "LATCH_SPEED") or self.latch_speed)
+            self.diameter = float(self.inifile.find("PROBE", "DIAMETER") or self.diameter)
             self.offset_x = float(self.inifile.find("PROBE", "OFFSET_X") or self.offset_x)
             self.offset_y = float(self.inifile.find("PROBE", "OFFSET_Y") or self.offset_y)
             self.offset_z = float(self.inifile.find("PROBE", "OFFSET_Z") or self.offset_z)
@@ -221,7 +260,7 @@ class ProbeGUI(object):
         self.operation = ProbeOperation(self, 'ZMinus', (0, 0, -self.probe_distance))
 
     def onBtnHole(self, button, data = None):
-        self.operation = ProbeHoleCenter(self)
+        self.operation = ProbeHoleCenter(self, self.hole_radius)
 
     def onBtnZeroXMinus(self, button, data = None):
         self.setG5xOffset([self.results.get('XMinus')], 0, 0.0)
@@ -259,10 +298,10 @@ class ProbeGUI(object):
             self.builder.get_object('adjYPlus').get_value())
     
     def onBtnZeroYCenter(self, button, data = None):
-        self.setG5xOffset([self.results.get('YPlus'), self.results.get('YMinus')], 0, 0.0)
+        self.setG5xOffset([self.results.get('YPlus'), self.results.get('YMinus')], 1, 0.0)
 
     def onBtnSetYCenter(self, button, data = None):
-        self.setG5xOffset([self.results.get('YPlus'), self.results.get('YMinus')], 0,
+        self.setG5xOffset([self.results.get('YPlus'), self.results.get('YMinus')], 1,
             self.builder.get_object('adjYCenter').get_value())
 
     def onBtnZeroZMinus(self, button, data = None):
@@ -321,11 +360,11 @@ class ProbeGUI(object):
         self.update_label_text('lblXPlus',  [self.results.get('XPlus')],  0)
         self.update_label_text('lblXCenter',[self.results.get('XMinus'),
                                              self.results.get('XPlus')],  0)
-        self.update_label_text('lblYMinus', [self.results.get('YMinus')], 0)
-        self.update_label_text('lblYPlus',  [self.results.get('YPlus')],  0)
+        self.update_label_text('lblYMinus', [self.results.get('YMinus')], 1)
+        self.update_label_text('lblYPlus',  [self.results.get('YPlus')],  1)
         self.update_label_text('lblYCenter',[self.results.get('YMinus'),
-                                             self.results.get('YPlus')],  0)
-        self.update_label_text('lblZMinus', [self.results.get('ZMinus')], 0)
+                                             self.results.get('YPlus')],  1)
+        self.update_label_text('lblZMinus', [self.results.get('ZMinus')], 2)
         
     def update_progressbar(self):
         progressbar = self.builder.get_object('progress')
@@ -348,6 +387,7 @@ class ProbeGUI(object):
         return True
     
     def add_log(self, msg):
+        scroll = self.builder.get_object('swProbeLog')
         txtview = self.builder.get_object('txtProbeLog')
         buffer = txtview.get_property('buffer')
         timestamp = datetime.datetime.now().strftime("%H:%M:%S")
@@ -359,12 +399,16 @@ class ProbeGUI(object):
             buffer.delete(buffer.get_start_iter(), iter)
         
         buffer.insert(buffer.get_end_iter(), msg)
-        buffer.place_cursor(buffer.get_end_iter())
+        
+        scrollvert = scroll.get_vadjustment()
+        scrollvert.set_value(scrollvert.get_upper())
+        
     
     def set_result(self, result_name, point):
         x = point[0] + self.offset_x
         y = point[1] + self.offset_y
         z = point[2] + self.offset_z
+        self.add_log(result_name + " result X%0.3f Y%0.3f Z%0.3f" % (x, y, z))
         self.results[result_name] = [x, y, z]
     
 def get_handlers(halcomp, builder, useropts):

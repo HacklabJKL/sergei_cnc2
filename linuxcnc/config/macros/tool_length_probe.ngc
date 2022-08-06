@@ -11,16 +11,18 @@ G53 G0 Z#<_ini[TOOLSENSOR]Z>
 G53 G0 X#<_ini[TOOLSENSOR]X>
 
 G43.1 X0 Y0 Z0
+#<_zoffset>=[#<_z>-#<_ini[TOOLSENSOR]Z>]
+
 G38.3 Z[#<_z> + #<_ini[TOOLSENSOR]MAXPROBE>] F600
 
 O1 if [#5070 EQ 1]
-	G38.4 Z[#<_z> + 10] F100
+	G38.4 Z[#<_z> + 10] F50
 
     ; Set new tool length
-    G43.1 Z[#5063 - #<_ini[TOOLSENSOR]ZPOS>]
+    G43.1 Z[#5063 - #<_ini[TOOLSENSOR]ZPOS> - #<_zoffset>]
 
     ; Move off the sensor
-	G53 G0 Z#<_ini[TOOLSENSOR]Z>
+	G0 Z[#<_z> + 10]
 O1 else
     (MSG,Probe did not detect contact)
 O1 endif
