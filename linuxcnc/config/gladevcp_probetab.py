@@ -411,21 +411,23 @@ class ProbeGUI(object):
         z = point[2] + self.offset_z
 
         angletext = ''
-        if result_name == prev_result_name:
+        if result_name == self.prev_result_name:
             # Compute angle from previous measurement
             delta_x = x - self.results[result_name][0]
             delta_y = y - self.results[result_name][1]
             delta_z = z - self.results[result_name][2]
             
             # Choose reference axis based on probe direction
-            if 'X' in result_name:
-                angle = math.atan(delta_x / delta_y)
-            elif 'Y' in result_name:
-                angle = math.atan(-delta_y / delta_x)
-            elif 'Z' in result_name:
+            angle = None
+            if 'X' in result_name and abs(delta_y) > 0.1:
+                angle = math.atan(-delta_x / delta_y)
+            elif 'Y' in result_name and abs(delta_x) > 0.1:
+                angle = math.atan(delta_y / delta_x)
+            elif 'Z' in result_name and math.sqrt(delta_x**2 + delta_y**2) > 0.1:
                 angle = math.atan(delta_z / math.sqrt(delta_x**2 + delta_y**2))
 
-            angletext = ' Angle %0.3f deg' % (math.degrees(angle))
+            if angle is not None:
+                angletext = ' Angle %0.3f deg' % (math.degrees(angle))
 
         self.add_log(result_name + " result X %0.3f Y %0.3f Z %0.3f" % (x, y, z) + angletext)
         self.results[result_name] = [x, y, z]
