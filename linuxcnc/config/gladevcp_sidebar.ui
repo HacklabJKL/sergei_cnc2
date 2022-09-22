@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <requires lib="gtk+" version="2.16"/>
   <!-- interface-requires gladevcp 0.0 -->
+  <requires lib="gtk+" version="2.16"/>
   <!-- interface-naming-policy project-wide -->
   <object class="EMC_Action_MDI" id="vcp_action_clearg54">
     <property name="command">G10 L2 P0 X0 Y0 Z0 R0</property>
@@ -9,12 +9,24 @@
   <object class="EMC_Action_MDI" id="vcp_action_clearg92">
     <property name="command">G92.1</property>
   </object>
-  <object class="EMC_Action_Home" id="vcp_action_home1"/>
-  <object class="EMC_Action_MDI" id="vcp_action_toolset">
-    <property name="command">o&lt;tool_length_probe&gt; call</property>
-  </object>
   <object class="EMC_Action_MDI" id="vcp_action_cleartoollen">
     <property name="command">G43.1 X0 Y0 Z0</property>
+  </object>
+  <object class="EMC_Action_Home" id="vcp_action_home1"/>
+  <object class="EMC_Action_MDI" id="vcp_action_selectg54">
+    <property name="command">G54</property>
+  </object>
+  <object class="EMC_Action_MDI" id="vcp_action_selectg55">
+    <property name="command">G55</property>
+  </object>
+  <object class="EMC_Action_MDI" id="vcp_action_selectg56">
+    <property name="command">G56</property>
+  </object>
+  <object class="EMC_Action_MDI" id="vcp_action_selectg57">
+    <property name="command">G57</property>
+  </object>
+  <object class="EMC_Action_MDI" id="vcp_action_toolset">
+    <property name="command">o&lt;tool_length_probe&gt; call</property>
   </object>
   <object class="EMC_Action_MDI" id="vcp_action_z_probe_pad">
     <property name="command">o&lt;z_probe_pad&gt; call</property>
@@ -86,6 +98,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="led_blink_rate">0</property>
+                <property name="led_size">5</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -177,6 +190,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="led_blink_rate">0</property>
+                <property name="led_size">5</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -226,6 +240,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="led_blink_rate">0</property>
+                <property name="led_size">5</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -263,6 +278,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="led_blink_rate">0</property>
+                <property name="led_size">5</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -300,6 +316,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="led_blink_rate">0</property>
+                <property name="led_size">5</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -337,6 +354,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="led_blink_rate">0</property>
+                <property name="led_size">5</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -374,6 +392,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="led_blink_rate">0</property>
+                <property name="led_size">5</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -402,6 +421,90 @@
           </packing>
         </child>
         <child>
+          <object class="GtkHBox" id="hbox13">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <child>
+              <object class="GtkRadioButton" id="selectg54">
+                <property name="label" translatable="yes">G54</property>
+                <property name="use_action_appearance">False</property>
+                <property name="related_action">vcp_action_selectg54</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">False</property>
+                <property name="focus_on_click">False</property>
+                <property name="inconsistent">True</property>
+                <property name="draw_indicator">False</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkRadioButton" id="selectg55">
+                <property name="label" translatable="yes">G55</property>
+                <property name="use_action_appearance">False</property>
+                <property name="related_action">vcp_action_selectg55</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">False</property>
+                <property name="focus_on_click">False</property>
+                <property name="draw_indicator">False</property>
+                <property name="group">selectg54</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkRadioButton" id="selectg56">
+                <property name="label" translatable="yes">G56</property>
+                <property name="use_action_appearance">False</property>
+                <property name="related_action">vcp_action_selectg56</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">False</property>
+                <property name="focus_on_click">False</property>
+                <property name="active">True</property>
+                <property name="draw_indicator">False</property>
+                <property name="group">selectg54</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkRadioButton" id="selectg57">
+                <property name="label" translatable="yes">G57</property>
+                <property name="use_action_appearance">False</property>
+                <property name="related_action">vcp_action_selectg57</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">False</property>
+                <property name="focus_on_click">False</property>
+                <property name="draw_indicator">False</property>
+                <property name="group">selectg54</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">3</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">13</property>
+          </packing>
+        </child>
+        <child>
           <object class="GtkHBox" id="hbox6">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
@@ -424,7 +527,7 @@ offsets (G92)</property>
             <child>
               <object class="GtkButton" id="clearg54">
                 <property name="label" translatable="yes">Clear work
-offsets (G54)</property>
+offsets (G5x)</property>
                 <property name="use_action_appearance">False</property>
                 <property name="related_action">vcp_action_clearg54</property>
                 <property name="visible">True</property>
@@ -441,7 +544,7 @@ offsets (G54)</property>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">13</property>
+            <property name="position">14</property>
           </packing>
         </child>
         <child>
@@ -500,7 +603,7 @@ offsets (G54)</property>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">14</property>
+            <property name="position">15</property>
           </packing>
         </child>
         <child>
@@ -549,7 +652,7 @@ offsets (G54)</property>
               <object class="GtkLabel" id="label16">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">G54:</property>
+                <property name="label" translatable="yes">G5x:</property>
               </object>
               <packing>
                 <property name="top_attach">2</property>
@@ -743,7 +846,7 @@ offsets (G54)</property>
             <property name="expand">False</property>
             <property name="fill">True</property>
             <property name="padding">2</property>
-            <property name="position">15</property>
+            <property name="position">16</property>
           </packing>
         </child>
         <child>
@@ -755,7 +858,7 @@ offsets (G54)</property>
             <property name="expand">False</property>
             <property name="fill">True</property>
             <property name="padding">10</property>
-            <property name="position">16</property>
+            <property name="position">17</property>
           </packing>
         </child>
         <child>
@@ -780,6 +883,7 @@ offsets (G54)</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="led_blink_rate">0</property>
+                <property name="led_size">5</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -792,7 +896,7 @@ offsets (G54)</property>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">17</property>
+            <property name="position">18</property>
           </packing>
         </child>
         <child>
@@ -835,7 +939,7 @@ offsets (G54)</property>
             <property name="expand">False</property>
             <property name="fill">True</property>
             <property name="padding">5</property>
-            <property name="position">18</property>
+            <property name="position">19</property>
           </packing>
         </child>
         <child>
@@ -847,7 +951,7 @@ offsets (G54)</property>
             <property name="expand">False</property>
             <property name="fill">True</property>
             <property name="padding">10</property>
-            <property name="position">19</property>
+            <property name="position">20</property>
           </packing>
         </child>
         <child>
@@ -863,7 +967,7 @@ offsets (G54)</property>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">20</property>
+            <property name="position">21</property>
           </packing>
         </child>
         <child>
@@ -878,7 +982,7 @@ offsets (G54)</property>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">21</property>
+            <property name="position">22</property>
           </packing>
         </child>
         <child>
@@ -893,7 +997,7 @@ offsets (G54)</property>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">22</property>
+            <property name="position">23</property>
           </packing>
         </child>
         <child>
@@ -908,7 +1012,7 @@ offsets (G54)</property>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">23</property>
+            <property name="position">24</property>
           </packing>
         </child>
         <child>
@@ -920,7 +1024,7 @@ offsets (G54)</property>
             <property name="expand">False</property>
             <property name="fill">True</property>
             <property name="padding">10</property>
-            <property name="position">24</property>
+            <property name="position">25</property>
           </packing>
         </child>
         <child>
@@ -948,11 +1052,8 @@ movements!</property>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">25</property>
+            <property name="position">26</property>
           </packing>
-        </child>
-        <child>
-          <placeholder/>
         </child>
         <child>
           <object class="GtkLabel" id="label5">
@@ -962,7 +1063,7 @@ movements!</property>
           <packing>
             <property name="expand">True</property>
             <property name="fill">True</property>
-            <property name="position">26</property>
+            <property name="position">27</property>
           </packing>
         </child>
         <child>
@@ -974,13 +1075,14 @@ movements!</property>
             <property name="expand">False</property>
             <property name="fill">True</property>
             <property name="padding">10</property>
-            <property name="position">27</property>
+            <property name="position">28</property>
           </packing>
         </child>
         <child>
           <object class="GtkExpander" id="expander">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
+            <property name="label_fill">True</property>
             <child>
               <object class="HAL_Graph" id="velocity">
                 <property name="height_request">150</property>
@@ -1000,20 +1102,25 @@ movements!</property>
               <object class="GtkLabel" id="label4">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="xalign">0</property>
                 <property name="label" translatable="yes">Velocity graph (mm / min)</property>
+                <attributes>
+                  <attribute name="background" value="#eeeeeeeeecec"/>
+                </attributes>
               </object>
             </child>
           </object>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">28</property>
+            <property name="position">29</property>
           </packing>
         </child>
         <child>
           <object class="GtkExpander" id="expander1">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
+            <property name="label_fill">True</property>
             <child>
               <object class="GtkVBox" id="vbox2">
                 <property name="visible">True</property>
@@ -1059,15 +1166,22 @@ movements!</property>
               <object class="GtkLabel" id="label3">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="xalign">0</property>
                 <property name="label" translatable="yes">Path follow error graph (mm)</property>
+                <attributes>
+                  <attribute name="background" value="#eeeeeeeeecec"/>
+                </attributes>
               </object>
             </child>
           </object>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">29</property>
+            <property name="position">30</property>
           </packing>
+        </child>
+        <child>
+          <placeholder/>
         </child>
       </object>
     </child>
