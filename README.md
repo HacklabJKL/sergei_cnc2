@@ -21,3 +21,4 @@ Documentation index
 
 * [Parts list](PARTS.md)
 * [Wiring diagram](electronics/wiring/images/sergei2-wiring.pdf)
+* [Usage instructions (wiki)](https://github.com/HacklabJKL/sergei_cnc2/wiki)
