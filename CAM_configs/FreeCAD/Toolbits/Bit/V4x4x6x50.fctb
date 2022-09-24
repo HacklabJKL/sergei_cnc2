@@ -1,0 +1,17 @@
+{
+  "version": 2,
+  "name": "V4x4x6x50",
+  "shape": "v-bit.fcstd",
+  "parameter": {
+    "Chipload": "0,05 mm",
+    "CuttingEdgeAngle": "90,00 \u00b0",
+    "CuttingEdgeHeight": "4,00 mm",
+    "Diameter": "4,00 mm",
+    "Flutes": "2",
+    "Length": "50,00 mm",
+    "Material": "Carbide",
+    "ShankDiameter": "4,00 mm",
+    "TipDiameter": "0,00 mm"
+  },
+  "attribute": {}
+}

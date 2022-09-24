@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "name": "6x6x30x68",
+  "shape": "endmill.fcstd",
+  "parameter": {
+    "Chipload": "0.05 mm",
+    "CuttingEdgeHeight": "30.000 mm",
+    "Diameter": "6.000 mm",
+    "Flutes": "2",
+    "Length": "68.000 mm",
+    "Material": "HSS",
+    "ShankDiameter": "6.000 mm",
+    "SpindleDirection": "Forward"
+  },
+  "attribute": {}
+}

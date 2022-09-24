@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "name": "2x3.2x8x38",
+  "shape": "endmill.fcstd",
+  "parameter": {
+    "Chipload": "0.05 mm",
+    "CuttingEdgeHeight": "8.000 mm",
+    "Diameter": "2.000 mm",
+    "Flutes": "2",
+    "Length": "38.000 mm",
+    "Material": "Carbide",
+    "ShankDiameter": "3.200 mm",
+    "SpindleDirection": "Forward"
+  },
+  "attribute": {}
+}

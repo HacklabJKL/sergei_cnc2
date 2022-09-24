@@ -1,0 +1,73 @@
+{
+  "tools": [
+    {
+      "nr": "10",
+      "path": "1x6x4x51.fctb"
+    },
+    {
+      "nr": "20",
+      "path": "2x4x6x50.fctb"
+    },
+    {
+      "nr": "21",
+      "path": "2x3.2x8x38.fctb"
+    },
+    {
+      "nr": "30",
+      "path": "3x3x8x25.fctb"
+    },
+    {
+      "nr": "31",
+      "path": "3x6x8x52.fctb"
+    },
+    {
+      "nr": "32",
+      "path": "3x3x11x39.fctb"
+    },
+    {
+      "nr": "40",
+      "path": "4x4x10x50.fctb"
+    },
+    {
+      "nr": "41",
+      "path": "4x4x22x45.fctb"
+    },
+    {
+      "nr": "60",
+      "path": "6x6x15x50.fctb"
+    },
+    {
+      "nr": "61",
+      "path": "6x6x38x76.fctb"
+    },
+    {
+      "nr": "62",
+      "path": "6x6x21x63.fctb"
+    },
+    {
+      "nr": "63",
+      "path": "6x6x30x68.fctb"
+    },
+    {
+      "nr": "69",
+      "path": "6x6x40x150.fctb"
+    },
+    {
+      "nr": "81",
+      "path": "8x8x70x120.fctb"
+    },
+    {
+      "nr": "94",
+      "path": "V4x4x6x50.fctb"
+    },
+    {
+      "nr": "91",
+      "path": "V3x3x6x38.fctb"
+    },
+    {
+      "nr": 95,
+      "path": "B3x3x20x38.fctb"
+    }
+  ],
+  "version": 1
+}

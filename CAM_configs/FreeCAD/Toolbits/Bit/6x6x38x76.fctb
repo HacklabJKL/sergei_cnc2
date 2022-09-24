@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "name": "6x6x38x76",
+  "shape": "endmill.fcstd",
+  "parameter": {
+    "Chipload": "0,05 mm",
+    "CuttingEdgeHeight": "38,00 mm",
+    "Diameter": "6,00 mm",
+    "Flutes": "1",
+    "Length": "76,00 mm",
+    "Material": "Carbide",
+    "ShankDiameter": "6,00 mm",
+    "SpindleDirection": "Forward"
+  },
+  "attribute": {}
+}

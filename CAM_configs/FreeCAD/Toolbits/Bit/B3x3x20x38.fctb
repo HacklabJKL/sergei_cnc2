@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "name": "B3x3x20x38",
+  "shape": "ballend.fcstd",
+  "parameter": {
+    "Chipload": "0,05 mm",
+    "CuttingEdgeHeight": "20,00 mm",
+    "Diameter": "3,00 mm",
+    "Flutes": "2",
+    "Length": "38,00 mm",
+    "Material": "Carbide",
+    "ShankDiameter": "3,00 mm"
+  },
+  "attribute": {}
+}
