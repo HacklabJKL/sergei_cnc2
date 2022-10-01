@@ -143,7 +143,7 @@ net powerctl.estop_pause lut5.4.out => lut5.0.in-1
 # with guards open. As soon as the RUN button is released the program
 # will be paused.
 # out = in0 | in1
-setp timedelay.3.on-delay 0.5
+setp timedelay.3.on-delay 0.2
 setp timedelay.3.off-delay 0.01
 setp lut5.5.function 0x0E
 net powerctl.run_btn => timedelay.3.in
