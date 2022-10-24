@@ -7,11 +7,14 @@ class SidebarHandler:
     def __init__(self, halcomp, builder, useropts):
         self.builder = builder
         self.command = linuxcnc.command()
+        self.program_was_running = False
 
         GSTAT.connect("user-system-changed", self.update_coordinate_selection)
         GSTAT.connect("all-homed", self.activate_default_g54)
         GSTAT.connect("all-homed", self.verify_g64)
         GSTAT.connect("state-on", self.verify_g64)
+        GSTAT.connect("command-running", self.check_program_running)
+        GSTAT.connect("command-stopped", self.check_program_stopped)
 
     def activate_default_g54(self, w):
         '''Make sure G54 coordinate system is active after start.'''
@@ -50,6 +53,16 @@ class SidebarHandler:
         if all_homed and g64_active:
             self.command.mode(linuxcnc.MODE_MDI)
             self.command.mdi("G64 P0.01 Q0.01")
+
+    def check_program_running(self, w, data = None):
+        self.program_was_running = GSTAT.is_auto_running()
+
+    def check_program_stopped(self, w, data = None):
+        '''When program is aborted, make sure M2 gets run to restore any modal settings.'''
+        if self.program_was_running:
+            self.command.mode(linuxcnc.MODE_MDI)
+            self.command.mdi("M2")
+            self.program_was_running = False
 
 def get_handlers(halcomp,builder,useropts):
     return [SidebarHandler(halcomp,builder,useropts)]
