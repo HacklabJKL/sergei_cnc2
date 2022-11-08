@@ -74,7 +74,7 @@ package PIN_HACKLAB_6I25 is
 	 -- ModuleTag     Version  ClockType     Instances BaseAddr                   NumRegisters         Strides  MultRegs
 		(WatchDogTag,	x"00",	ClockLowTag,	x"01",	WatchDogTimeAddr&PadT,		WatchDogNumRegs,		x"00",	WatchDogMPBitMask),
 		(IOPortTag,		x"00",	ClockLowTag,	x"02",	PortAddr&PadT,					IOPortNumRegs,			x"00",	IOPortMPBitMask),
-		(PWMTag,			x"00",	ClockHighTag,	x"04",	PWMValAddr&PadT,				PWMNumRegs,				x"00",	PWMMPBitMask),
+		(PWMTag,			x"00",	ClockHighTag,	x"05",	PWMValAddr&PadT,				PWMNumRegs,				x"00",	PWMMPBitMask),
 		(QcountTag,		x"02",	ClockLowTag,	x"03",	QcounterAddr&PadT,			QCounterNumRegs,		x"00",	QCounterMPBitMask),
 		(StepGenTag,	x"02",	ClockLowTag,	x"01",	StepGenRateAddr&PadT,		StepGenNumRegs,		x"00",	StepGenMPBitMask),
 		(LEDTag,			x"00",	ClockLowTag,	x"01",	LEDAddr&PadT,					LEDNumRegs,				x"00",	LEDMPBitMask),
@@ -132,16 +132,16 @@ package PIN_HACKLAB_6I25 is
 		IOPortTag & x"00" & StepGenTag & StepGenStepPin,	-- I/O 17 / Pin  1: Rotary axis step
 		IOPortTag & x"00" & NullTag    & x"00",				-- I/O 18 / Pin 14
 		IOPortTag & x"00" & StepGenTag & StepGenDirPin,		-- I/O 19 / Pin  2: Rotary axis dir
-		IOPortTag & x"00" & NullTag    & x"00",			-- I/O 20 / Pin 15: FET1_CTRL
+		IOPortTag & x"00" & NullTag    & x"00",	  			-- I/O 20 / Pin 15
 		IOPortTag & x"00" & NullTag    & x"00",				-- I/O 21 / Pin  3
-		IOPortTag & x"00" & NullTag    & x"00",			-- I/O 22 / Pin 16: FET2_CTRL
+		IOPortTag & x"00" & NullTag    & x"00",				-- I/O 22 / Pin 16
 		IOPortTag & x"00" & NullTag    & x"00",				-- I/O 23 / Pin  4
-		IOPortTag & x"00" & NullTag    & x"00",			-- I/O 24 / Pin 17: FET3_CTRL
+		IOPortTag & x"00" & NullTag    & x"00",				-- I/O 24 / Pin 17
 		IOPortTag & x"00" & NullTag    & x"00",				-- I/O 25 / Pin  5
-		IOPortTag & x"00" & NullTag    & x"00",				-- I/O 26 / Pin  6
+		IOPortTag & x"04" & NullTag    & PWMAOutPin,		-- I/O 26 / Pin  6: Coolant pump, PWM 4
 		IOPortTag & x"00" & NullTag    & x"00",				-- I/O 27 / Pin  7
 		IOPortTag & x"00" & NullTag    & x"00",				-- I/O 28 / Pin  8
-		IOPortTag & x"03" & PWMTag    & PWMBDirPin,			-- I/O 29 / Pin  9: SPINDLE_DIR
+		IOPortTag & x"03" & PWMTag    & PWMBDirPin,			-- I/O 29 / Pin  9: SPINDLE_DIR, PWM 3
 		IOPortTag & x"03" & PWMTag    & PWMAOutPin,			-- I/O 30 / Pin 10: SPINDLE_PWM
 		IOPortTag & x"00" & NullTag    & x"00",				-- I/O 31 / Pin 11
 		IOPortTag & x"00" & NullTag    & x"00",				-- I/O 32 / Pin 12
