@@ -5,7 +5,7 @@ loadrt pid num_chan=3
 loadrt runawayprot count=3
 loadrt logic names=logic.or3 personality=0x203
 loadrt offset count=1
-loadrt limit2 count=2
+loadrt limit3 count=2
 
 addf pid.0.do-pid-calcs                    servo-thread
 addf pid.1.do-pid-calcs                    servo-thread
@@ -18,8 +18,8 @@ addf logic.or3                             servo-thread
 
 addf mux2.3                                servo-thread
 addf sum2.3                                servo-thread
-addf limit2.0                              servo-thread
-addf limit2.1                              servo-thread
+addf limit3.0                              servo-thread
+addf limit3.1                              servo-thread
 
 addf offset.0.update-feedback              servo-thread 1
 addf offset.0.update-output                servo-thread -1
@@ -182,8 +182,10 @@ setp sum2.3.gain0 -1.0
 setp sum2.3.offset [AXIS_Z]MAX_LIMIT
 
 # Limit velocity and maximum value
-setp limit2.0.maxv 10
-net motordrive.2.offset-req mux2.3.out => limit2.0.in
-net motordrive.2.offset-limv limit2.0.out => limit2.1.in
-net motordrive.2.max-offset sum2.3.out => limit2.1.max
-net motordrive.2.offset limit2.1.out => offset.0.offset
+setp limit3.0.maxv 10
+setp limit3.0.maxa 50
+setp limit3.0.smooth-steps 100
+net motordrive.2.offset-req mux2.3.out => limit3.0.in
+net motordrive.2.offset-limv limit3.0.out => limit3.1.in
+net motordrive.2.max-offset sum2.3.out => limit3.1.max
+net motordrive.2.offset limit3.1.out => offset.0.offset
