@@ -3,6 +3,12 @@
   <!-- interface-requires gladevcp 0.0 -->
   <requires lib="gtk+" version="2.16"/>
   <!-- interface-naming-policy project-wide -->
+  <object class="GtkAdjustment" id="coolant_adj">
+    <property name="upper">100</property>
+    <property name="value">25</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
   <object class="EMC_Action_MDI" id="vcp_action_clearg54">
     <property name="command">G10 L2 P0 X0 Y0 Z0 R0</property>
   </object>
@@ -409,6 +415,44 @@
           </packing>
         </child>
         <child>
+          <object class="GtkHBox" id="hbox9">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <child>
+              <object class="GtkLabel" id="label8">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">0</property>
+                <property name="label" translatable="yes">Probe sensor:</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="HAL_LED" id="probe_sensor">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="led_blink_rate">0</property>
+                <property name="led_size">5</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="padding">5</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">12</property>
+          </packing>
+        </child>
+        <child>
           <object class="GtkHSeparator" id="hseparator2">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
@@ -417,7 +461,7 @@
             <property name="expand">False</property>
             <property name="fill">True</property>
             <property name="padding">10</property>
-            <property name="position">12</property>
+            <property name="position">13</property>
           </packing>
         </child>
         <child>
@@ -501,7 +545,7 @@
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">13</property>
+            <property name="position">14</property>
           </packing>
         </child>
         <child>
@@ -544,7 +588,7 @@ offsets (G5x)</property>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">14</property>
+            <property name="position">15</property>
           </packing>
         </child>
         <child>
@@ -603,7 +647,7 @@ offsets (G5x)</property>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">15</property>
+            <property name="position">16</property>
           </packing>
         </child>
         <child>
@@ -846,7 +890,7 @@ offsets (G5x)</property>
             <property name="expand">False</property>
             <property name="fill">True</property>
             <property name="padding">2</property>
-            <property name="position">16</property>
+            <property name="position">17</property>
           </packing>
         </child>
         <child>
@@ -858,44 +902,6 @@ offsets (G5x)</property>
             <property name="expand">False</property>
             <property name="fill">True</property>
             <property name="padding">10</property>
-            <property name="position">17</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkHBox" id="hbox9">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <child>
-              <object class="GtkLabel" id="label8">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="xalign">0</property>
-                <property name="label" translatable="yes">Probe sensor:</property>
-              </object>
-              <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
-                <property name="position">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="HAL_LED" id="probe_sensor">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="led_blink_rate">0</property>
-                <property name="led_size">5</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="padding">5</property>
-                <property name="position">1</property>
-              </packing>
-            </child>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
             <property name="position">18</property>
           </packing>
         </child>
@@ -904,13 +910,11 @@ offsets (G5x)</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <child>
-              <object class="HAL_RadioButton" id="probetype_contact">
-                <property name="label" translatable="yes">Contact probe</property>
+              <object class="GtkLabel" id="label19">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">False</property>
-                <property name="active">True</property>
-                <property name="draw_indicator">False</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">0</property>
+                <property name="label" translatable="yes">Coolant:</property>
               </object>
               <packing>
                 <property name="expand">True</property>
@@ -919,14 +923,13 @@ offsets (G5x)</property>
               </packing>
             </child>
             <child>
-              <object class="HAL_RadioButton" id="probetype_3d">
-                <property name="label" translatable="yes">3D probe</property>
+              <object class="HAL_RadioButton" id="coolant_off">
+                <property name="label" translatable="yes">Off</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">False</property>
                 <property name="active">True</property>
                 <property name="draw_indicator">False</property>
-                <property name="group">probetype_contact</property>
               </object>
               <packing>
                 <property name="expand">True</property>
@@ -934,12 +937,58 @@ offsets (G5x)</property>
                 <property name="position">1</property>
               </packing>
             </child>
+            <child>
+              <object class="HAL_RadioButton" id="coolant_auto">
+                <property name="label" translatable="yes">Auto</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">False</property>
+                <property name="active">True</property>
+                <property name="draw_indicator">False</property>
+                <property name="group">coolant_off</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="HAL_RadioButton" id="coolant_on">
+                <property name="label" translatable="yes">On</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">False</property>
+                <property name="active">True</property>
+                <property name="draw_indicator">False</property>
+                <property name="group">coolant_off</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">3</property>
+              </packing>
+            </child>
           </object>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="padding">5</property>
             <property name="position">19</property>
+          </packing>
+        </child>
+        <child>
+          <object class="HAL_HScale" id="coolant_rate">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="adjustment">coolant_adj</property>
+            <property name="round_digits">1</property>
+            <property name="digits">0</property>
+            <property name="value_pos">left</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">20</property>
           </packing>
         </child>
         <child>
@@ -951,7 +1000,7 @@ offsets (G5x)</property>
             <property name="expand">False</property>
             <property name="fill">True</property>
             <property name="padding">10</property>
-            <property name="position">20</property>
+            <property name="position">21</property>
           </packing>
         </child>
         <child>
@@ -967,7 +1016,7 @@ offsets (G5x)</property>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">21</property>
+            <property name="position">22</property>
           </packing>
         </child>
         <child>
@@ -982,7 +1031,7 @@ offsets (G5x)</property>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">22</property>
+            <property name="position">23</property>
           </packing>
         </child>
         <child>
@@ -997,7 +1046,7 @@ offsets (G5x)</property>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">23</property>
+            <property name="position">24</property>
           </packing>
         </child>
         <child>
@@ -1012,7 +1061,7 @@ offsets (G5x)</property>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">24</property>
+            <property name="position">25</property>
           </packing>
         </child>
         <child>
@@ -1024,7 +1073,7 @@ offsets (G5x)</property>
             <property name="expand">False</property>
             <property name="fill">True</property>
             <property name="padding">10</property>
-            <property name="position">25</property>
+            <property name="position">26</property>
           </packing>
         </child>
         <child>
@@ -1052,7 +1101,7 @@ movements!</property>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">26</property>
+            <property name="position">27</property>
           </packing>
         </child>
         <child>
@@ -1063,7 +1112,7 @@ movements!</property>
           <packing>
             <property name="expand">True</property>
             <property name="fill">True</property>
-            <property name="position">27</property>
+            <property name="position">28</property>
           </packing>
         </child>
         <child>
@@ -1075,7 +1124,7 @@ movements!</property>
             <property name="expand">False</property>
             <property name="fill">True</property>
             <property name="padding">10</property>
-            <property name="position">28</property>
+            <property name="position">29</property>
           </packing>
         </child>
         <child>
@@ -1113,7 +1162,7 @@ movements!</property>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">29</property>
+            <property name="position">30</property>
           </packing>
         </child>
         <child>
@@ -1177,7 +1226,7 @@ movements!</property>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">30</property>
+            <property name="position">31</property>
           </packing>
         </child>
         <child>

@@ -13,8 +13,8 @@
         <hbox>
             <button halpin="probe" text="Probe" />
         </hbox>
-        <checkbutton halpin="power_good" text="Power good" />
-        <checkbutton halpin="mso1_switch" text="MSO1 switch" />
+        <checkbutton halpin="power_good" text="Power good" initval="1" />
+        <checkbutton halpin="mso1_switch" text="MSO1 switch" initval="1" />
         <checkbutton halpin="estop" text="Emergency stop on" />
         <hbox>
             <label text="High current" />
@@ -28,7 +28,11 @@
             <label text="Spindle enable:" />
             <rectled halpin="spindle_enable" on_color="green" off_color="black" />
         </hbox> 
-        <checkbutton halpin="spindle_at_speed" text="Spindle at speed" />
+        <checkbutton halpin="spindle_at_speed" text="Spindle at speed" initval="1" />
+        <hbox>
+            <label text="Coolant enable:" />
+            <rectled halpin="coolant_enabled" on_color="green" off_color="black" />
+        </hbox> 
     </vbox>
 </labelframe>
 </pyvcp>

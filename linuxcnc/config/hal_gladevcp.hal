@@ -26,4 +26,7 @@ net powerctl.eoffset_y axis.y.eoffset-request => gladevcp.eoffset_y
 net powerctl.eoffset_z axis.z.eoffset-request => gladevcp.eoffset_z
 
 net powerctl.probe_xored => gladevcp.probe_sensor
-net powerctl.probe_polarity <= gladevcp.probetype_3d
+
+net powerctl.coolant_on <= gladevcp.coolant_on
+net powerctl.coolant_auto <= gladevcp.coolant_auto
+net powerctl.coolant_rate <= gladevcp.coolant_rate

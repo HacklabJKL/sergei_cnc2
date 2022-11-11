@@ -2,7 +2,7 @@
 
 # Note: some components loaded here are used from other files.
 loadrt not count=2
-loadrt lut5 count=17
+loadrt lut5 count=18
 loadrt timedelay count=5
 loadrt mux2 count=4
 loadrt near count=1
@@ -10,6 +10,7 @@ loadrt scale count=2
 loadrt absmaxdecay count=1
 loadrt abslimit count=1
 loadrt sum2 count=4
+loadrt select8 count=1
 
 addf abslimit.0   servo-thread
 addf absmaxdecay.0 servo-thread
@@ -40,6 +41,8 @@ addf mux2.2     servo-thread
 addf near.0     servo-thread
 addf lut5.12    servo-thread
 addf lut5.14    servo-thread
+addf select8.0  servo-thread
+addf lut5.17    servo-thread
 
 # Signals to hardware / simulator panel
 newsig powerctl.mso1_switch bit
@@ -65,6 +68,10 @@ newsig powerctl.motor_ok bit
 newsig powerctl.probe_sensor bit
 newsig powerctl.paused_door_open bit
 newsig powerctl.lift_z bit
+newsig powerctl.coolant_on bit
+newsig powerctl.coolant_auto bit
+newsig powerctl.coolant_rate float
+newsig powerctl.coolant_enabled bit
 
 net powerctl.program_paused <= halui.program.is-paused
 net powerctl.program_running <= halui.program.is-running
@@ -273,3 +280,17 @@ net powerctl.max_speed_xy <= mux2.2.out
 # Disable homing until door closed
 net powerctl.allow_auto => not.1.in
 net powerctl.home_inhibit not.1.out => motion.homing-inhibit
+
+# Coolant pump
+# On: constantly enabled
+# Auto: enabled during cutting moves
+# lut5.17: in0 or (in1 and (in2 or in3))
+setp lut5.17.function 0xEEEA
+net powerctl.coolant_on => lut5.17.in-0
+net powerctl.coolant_auto => lut5.17.in-1
+net powerctl.coolant_enabled <= lut5.17.out
+
+net powerctl.program_running => select8.0.enable
+net powerctl.motion_type motion.motion-type => select8.0.sel
+net powerctl.motion_linfeed select8.0.out2 => lut5.17.in-2
+net powerctl.motion_arcfeed select8.0.out3 => lut5.17.in-3

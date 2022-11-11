@@ -136,3 +136,10 @@ net powerctl.spindle_rpm => hm2_[HOSTMOT2](BOARD).0.pwmgen.03.value
 net powerctl.spindle_enable => hm2_[HOSTMOT2](BOARD).0.pwmgen.03.enable
 net powerctl.spindle_at_speed <= hm2_[HOSTMOT2](BOARD).0.gpio.028.in
 
+########################
+# Coolant PWM control  #
+########################
+setp hm2_[HOSTMOT2](BOARD).0.pwmgen.04.output-type 1
+setp hm2_[HOSTMOT2](BOARD).0.pwmgen.04.scale 100
+net powerctl.coolant_rate => hm2_[HOSTMOT2](BOARD).0.pwmgen.04.value
+net powerctl.coolant_enabled => hm2_[HOSTMOT2](BOARD).0.pwmgen.04.enable
