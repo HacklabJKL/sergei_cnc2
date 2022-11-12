@@ -11,6 +11,8 @@ loadrt absmaxdecay count=1
 loadrt abslimit count=1
 loadrt sum2 count=4
 loadrt select8 count=1
+loadrt pwmgen output_type=0
+loadrt limit1 count=1
 
 addf abslimit.0   servo-thread
 addf absmaxdecay.0 servo-thread
@@ -43,6 +45,9 @@ addf lut5.12    servo-thread
 addf lut5.14    servo-thread
 addf select8.0  servo-thread
 addf lut5.17    servo-thread
+addf limit1.0   servo-thread
+addf pwmgen.update servo-thread
+addf pwmgen.make-pulses servo-thread
 
 # Signals to hardware / simulator panel
 newsig powerctl.mso1_switch bit
@@ -71,7 +76,9 @@ newsig powerctl.lift_z bit
 newsig powerctl.coolant_on bit
 newsig powerctl.coolant_auto bit
 newsig powerctl.coolant_rate float
+newsig powerctl.coolant_rate_hw float
 newsig powerctl.coolant_enabled bit
+newsig powerctl.coolant_squirts bit
 
 net powerctl.program_paused <= halui.program.is-paused
 net powerctl.program_running <= halui.program.is-running
@@ -284,13 +291,30 @@ net powerctl.home_inhibit not.1.out => motion.homing-inhibit
 # Coolant pump
 # On: constantly enabled
 # Auto: enabled during cutting moves
+#
+# Software PWM gen is used to generate intermittent squirts,
+# hardware PWM gen is used to adjust pump speed.
 # lut5.17: in0 or (in1 and (in2 or in3))
 setp lut5.17.function 0xEEEA
 net powerctl.coolant_on => lut5.17.in-0
 net powerctl.coolant_auto => lut5.17.in-1
 net powerctl.coolant_enabled <= lut5.17.out
 
+# Detect feed moves
 net powerctl.program_running => select8.0.enable
 net powerctl.motion_type motion.motion-type => select8.0.sel
 net powerctl.motion_linfeed select8.0.out2 => lut5.17.in-2
 net powerctl.motion_arcfeed select8.0.out3 => lut5.17.in-3
+
+# Generate squirts when coolant rate set below 50%
+setp pwmgen.0.pwm-freq 1
+setp pwmgen.0.scale 50
+net powerctl.coolant_enabled => pwmgen.0.enable
+net powerctl.coolant_squirts <= pwmgen.0.pwm
+net powerctl.coolant_rate => pwmgen.0.value
+
+# Don't set hardware PWM level too low, it would stop the pump.
+setp limit1.0.min 25
+setp limit1.0.max 100
+net powerctl.coolant_rate => limit1.0.in
+net powerctl.coolant_rate_hw <= limit1.0.out

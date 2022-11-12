@@ -13,6 +13,9 @@ addf hm2_[HOSTMOT2](BOARD).0.write         servo-thread   -1
 # Global PWM frequency
 setp hm2_[HOSTMOT2](BOARD).0.pwmgen.pwm_frequency 40000
 
+# PDM generator is used for slower FETs
+setp hm2_[HOSTMOT2](BOARD).0.pwmgen.pdm_frequency 5000
+
 # Watchdog timeout 10ms
 setp hm2_[HOSTMOT2](BOARD).0.watchdog.timeout_ns 10000000
 
@@ -137,9 +140,9 @@ net powerctl.spindle_enable => hm2_[HOSTMOT2](BOARD).0.pwmgen.03.enable
 net powerctl.spindle_at_speed <= hm2_[HOSTMOT2](BOARD).0.gpio.028.in
 
 ########################
-# Coolant PWM control  #
+# Coolant PDM control  #
 ########################
-setp hm2_[HOSTMOT2](BOARD).0.pwmgen.04.output-type 1
+setp hm2_[HOSTMOT2](BOARD).0.pwmgen.04.output-type 3
 setp hm2_[HOSTMOT2](BOARD).0.pwmgen.04.scale 100
-net powerctl.coolant_rate => hm2_[HOSTMOT2](BOARD).0.pwmgen.04.value
-net powerctl.coolant_enabled => hm2_[HOSTMOT2](BOARD).0.pwmgen.04.enable
+net powerctl.coolant_rate_hw => hm2_[HOSTMOT2](BOARD).0.pwmgen.04.value
+net powerctl.coolant_squirts => hm2_[HOSTMOT2](BOARD).0.pwmgen.04.enable
