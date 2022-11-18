@@ -5,7 +5,6 @@ loadrt not count=2
 loadrt lut5 count=18
 loadrt timedelay count=5
 loadrt mux2 count=4
-loadrt near count=1
 loadrt scale count=2
 loadrt absmaxdecay count=1
 loadrt abslimit count=1
@@ -31,7 +30,8 @@ addf lut5.8     servo-thread
 addf lut5.9     servo-thread
 addf lut5.10    servo-thread
 addf lut5.11    servo-thread
-addf lut5.13    servo-thread
+# addf lut5.13    servo-thread # lut5.13 is free
+addf lut5.12    servo-thread
 addf lut5.15    servo-thread
 addf timedelay.0 servo-thread
 addf timedelay.1 servo-thread
@@ -40,8 +40,6 @@ addf timedelay.3 servo-thread
 addf timedelay.4 servo-thread
 addf mux2.0     servo-thread
 addf mux2.2     servo-thread
-addf near.0     servo-thread
-addf lut5.12    servo-thread
 addf lut5.14    servo-thread
 addf select8.0  servo-thread
 addf lut5.17    servo-thread
@@ -230,28 +228,17 @@ net powerctl.spindle_at_speed_filtered => lut5.11.in-1
 net powerctl.feed-inhibit motion.feed-inhibit <= lut5.11.out
 
 # Spindle monitoring
-# Detect when spindle speed is requested to change
-# Throw error if spindle speedup takes more than 5 seconds
-# spindle_rpm => mux => spindle_rpm_old => near => timedelay => lut => spindle_fault
-# lut5.12: out = in0 & in1 & !in2
-# lut5.13: out = in0 & in1
-setp lut5.12.function 0x08
-setp lut5.13.function 0x08
-setp near.0.difference 10
+# Throw error if spindle_at_speed is low for more than 5 seconds
+# If spindle fails at middle of move, feed-inhibit will stop immediately and amp-fault will throw an error after 5 seconds.
+# spindle_at_speed_filtered => lut => timedelay => spindle_fault
+# lut5.12: out = in0 & !in2
+setp lut5.12.function 0x02
 setp timedelay.1.on-delay 5.0
 setp timedelay.1.off-delay 0.0
-net powerctl.spindle_rpm => mux2.0.in0
-net powerctl.spindle_rpm_old mux2.0.out => mux2.0.in1
-net powerctl.spindle_rpm => near.0.in1
-net powerctl.spindle_rpm_old => near.0.in2
-net powerctl.spindle_rpm_near_old near.0.out => lut5.13.in-0
-net powerctl.spindle_enable => lut5.13.in-1
-net powerctl.spindle_rpm_stable lut5.13.out => mux2.0.sel
-net powerctl.spindle_rpm_stable => timedelay.1.in
-net powerctl.spindle_rpm_stable_delayed timedelay.1.out => lut5.12.in-0
-net powerctl.spindle_enable => lut5.12.in-1
-net powerctl.spindle_at_speed_filtered => lut5.12.in-2
-net powerctl.spindle_fault lut5.12.out => spindle.0.amp-fault-in
+net powerctl.spindle_enable => lut5.12.in-0
+net powerctl.spindle_at_speed_filtered => lut5.12.in-1
+net powerctl.spindle_wait_speed lut5.12.out => timedelay.1.in
+net powerctl.spindle_fault timedelay.1.out => spindle.0.amp-fault-in
 
 # Machine velocity monitoring
 setp scale.0.gain 60
