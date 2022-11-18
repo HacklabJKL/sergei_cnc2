@@ -3,7 +3,7 @@
 # Note: some components loaded here are used from other files.
 loadrt not count=2
 loadrt lut5 count=18
-loadrt timedelay count=5
+loadrt timedelay count=6
 loadrt mux2 count=4
 loadrt scale count=2
 loadrt absmaxdecay count=1
@@ -38,6 +38,7 @@ addf timedelay.1 servo-thread
 addf timedelay.2 servo-thread
 addf timedelay.3 servo-thread
 addf timedelay.4 servo-thread
+addf timedelay.5 servo-thread
 addf mux2.0     servo-thread
 addf mux2.2     servo-thread
 addf lut5.14    servo-thread
@@ -285,7 +286,13 @@ net powerctl.home_inhibit not.1.out => motion.homing-inhibit
 setp lut5.17.function 0xEEEA
 net powerctl.coolant_on => lut5.17.in-0
 net powerctl.coolant_auto => lut5.17.in-1
-net powerctl.coolant_enabled <= lut5.17.out
+net powerctl.coolant_enabled_raw <= lut5.17.out
+
+# Filtering for short travel moves
+setp timedelay.5.on-delay 0
+setp timedelay.5.off-delay 0.5
+net powerctl.coolant_enabled_raw => timedelay.5.in
+net powerctl.coolant_enabled <= timedelay.5.out
 
 # Detect feed moves
 net powerctl.program_running => select8.0.enable
