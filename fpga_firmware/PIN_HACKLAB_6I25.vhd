@@ -122,8 +122,8 @@ package PIN_HACKLAB_6I25 is
 		IOPortTag & x"01" & PWMTag    & PWMBDirPin,			-- I/O 09 / Pin  6:  Y_REV
 		IOPortTag & x"01" & QCountTag & QCountQAPin,		-- I/O 10 / Pin  7:  Y_A
 		IOPortTag & x"01" & QCountTag & QCountQBPin,		-- I/O 11 / Pin  8:  Y_B
-		IOPortTag & x"00" & RCPWMTag  & RCPWMOutPin,		-- I/O 12 / Pin  9:  Z_PWM
-		IOPortTag & x"02" & NullTag   & x"00",				-- I/O 13 / Pin 10:  
+		IOPortTag & x"02" & PWMTag    & PWMAOutPin,			-- I/O 12 / Pin  9:  Z_FWD
+		IOPortTag & x"02" & PWMTag    & PWMBDirPin,			-- I/O 13 / Pin 10:  Z_REV
 		IOPortTag & x"02" & QCountTag & QCountQAPin,		-- I/O 14 / Pin 11:  Z_A
 		IOPortTag & x"02" & QCountTag & QCountQBPin,		-- I/O 15 / Pin 12:  Z_B
 		IOPortTag & x"00" & NullTag   & x"00",				-- I/O 16 / Pin 13:  GPIO / MOTOR_HCURR
