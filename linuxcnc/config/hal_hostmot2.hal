@@ -120,15 +120,21 @@ net motordrive.1.enable => hm2_[HOSTMOT2](BOARD).0.pwmgen.01.enable
 # net motordrive.2.control => hm2_[HOSTMOT2](BOARD).0.pwmgen.02.value
 # net motordrive.2.enable => hm2_[HOSTMOT2](BOARD).0.pwmgen.02.enable
 
-# RC PWM output for FSESC 4.20
-setp hm2_[HOSTMOT2](BOARD).0.rcpwmgen.rate 1000
-setp scale.1.gain -0.006
-setp scale.1.offset 0.5
-net motordrive.2.control => scale.1.in
-net motordrive.2.scaled scale.1.out => mux2.1.in1
-setp mux2.1.in0 0
-net motordrive.2.enable => mux2.1.sel
-net motordrive.2.pwmwidth mux2.1.out => hm2_[HOSTMOT2](BOARD).0.rcpwmgen.00.width
+# Old: RC PWM output for FSESC 4.20 servo port input
+#setp hm2_[HOSTMOT2](BOARD).0.rcpwmgen.rate 1000
+#setp scale.1.gain -0.006
+#setp scale.1.offset 0.5
+#net motordrive.2.control => scale.1.in
+#net motordrive.2.scaled scale.1.out => mux2.1.in1
+#setp mux2.1.in0 0
+#net motordrive.2.enable => mux2.1.sel
+#net motordrive.2.pwmwidth mux2.1.out => hm2_[HOSTMOT2](BOARD).0.rcpwmgen.00.width
+
+# PWM & DIR output for FSESC ADC input
+setp hm2_[HOSTMOT2](BOARD).0.pwmgen.02.output-type 1
+setp hm2_[HOSTMOT2](BOARD).0.pwmgen.02.scale [MOTORDRIVE]SUPPLY_VOLTAGE
+net motordrive.2.control => hm2_[HOSTMOT2](BOARD).0.pwmgen.02.value
+net motordrive.2.enable => hm2_[HOSTMOT2](BOARD).0.pwmgen.02.enable
 
 ########################
 # Spindle PWM control  #
