@@ -7,6 +7,9 @@ loadrt logic names=logic.or3 personality=0x203
 loadrt offset count=1
 loadrt limit3 count=2
 
+addf offset.0.update-feedback              servo-thread 1
+addf offset.0.update-output                servo-thread
+
 addf pid.0.do-pid-calcs                    servo-thread
 addf pid.1.do-pid-calcs                    servo-thread
 addf pid.2.do-pid-calcs                    servo-thread
@@ -20,9 +23,6 @@ addf mux2.3                                servo-thread
 addf sum2.3                                servo-thread
 addf limit3.0                              servo-thread
 addf limit3.1                              servo-thread
-
-addf offset.0.update-feedback              servo-thread 1
-addf offset.0.update-output                servo-thread -1
 
 #########################
 # Calibrated kinematics #

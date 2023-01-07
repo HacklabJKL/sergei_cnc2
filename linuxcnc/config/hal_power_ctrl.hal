@@ -166,10 +166,9 @@ net powerctl.allow_auto <= lut5.5.out
 
 # Enable power in UI when power good signal is high
 # The power-on must be delayed to give the GUI time to react when estop turns off.
-# Additional delay is needed to wait for Z axis driver to boot
 # lut5.6: out = !in0 | !in1
 setp lut5.6.function 0x06
-setp timedelay.0.on-delay 5.0
+setp timedelay.0.on-delay 0.5
 setp timedelay.0.off-delay 0.01
 net powerctl.power_good => lut5.6.in-0
 net powerctl.estop_off => lut5.6.in-1

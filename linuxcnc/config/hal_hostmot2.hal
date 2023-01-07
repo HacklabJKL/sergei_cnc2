@@ -11,7 +11,7 @@ addf scale.1 servo-thread
 addf hm2_[HOSTMOT2](BOARD).0.write         servo-thread   -1
 
 # Global PWM frequency
-setp hm2_[HOSTMOT2](BOARD).0.pwmgen.pwm_frequency 40000
+setp hm2_[HOSTMOT2](BOARD).0.pwmgen.pwm_frequency 22000
 
 # PDM generator is used for slower FETs
 setp hm2_[HOSTMOT2](BOARD).0.pwmgen.pdm_frequency 5000
@@ -130,9 +130,10 @@ net motordrive.1.enable => hm2_[HOSTMOT2](BOARD).0.pwmgen.01.enable
 #net motordrive.2.enable => mux2.1.sel
 #net motordrive.2.pwmwidth mux2.1.out => hm2_[HOSTMOT2](BOARD).0.rcpwmgen.00.width
 
-# PWM & DIR output for FSESC ADC input
+# PWM & DIR output for BLDC servo amplifier
 setp hm2_[HOSTMOT2](BOARD).0.pwmgen.02.output-type 1
 setp hm2_[HOSTMOT2](BOARD).0.pwmgen.02.scale [MOTORDRIVE]SUPPLY_VOLTAGE
+setp hm2_[HOSTMOT2](BOARD).0.pwmgen.02.out0.invert_output 1
 net motordrive.2.control => hm2_[HOSTMOT2](BOARD).0.pwmgen.02.value
 net motordrive.2.enable => hm2_[HOSTMOT2](BOARD).0.pwmgen.02.enable
 
