@@ -35,11 +35,14 @@ Columns / Z-axis
 * Trapezoidal screws TR12x3 installed inside each column
 * Cable chain inside columns
 * Belt drive from a central motor:
-  * 2x GT2 belt, 6 mm wide, 1140 mm loop
+  * 2x GT2 belt, 6 mm wide:
+    * 1140-1150 mm loop on left side
+    * 1130-1140 mm loop on right side
   * 2x 100 tooth pulleys, 12 mm bore
   * 1x dual 20T pulley, 8 mm bore
-  * 2x 16 mm wide smooth bearing belt tensioners
-* [Motor MY1016](notes/Motor_MY1016.txt)
+  * 2x belt tensioners
+* [Motor 57BLF02](datasheets/Motor_57BLF02.jpg)
+* [Motor driver BD15A8](datasheets/bd15a8.pdf)
 * [Encoder AS5134](electronics/motor_encoder)
 
 Spindle
