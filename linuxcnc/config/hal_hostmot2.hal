@@ -32,7 +32,7 @@ net powerctl.allow_auto => hm2_[HOSTMOT2](BOARD).0.gpio.016.out
 # Hardware mode switch controls 230 VAC supply to the +48 V power supply.
 # When estop is pressed, this switch is used to cut power fast.
 setp hm2_[HOSTMOT2](BOARD).0.gpio.018.is_output 1
-net powerctl.estop_off => hm2_[HOSTMOT2](BOARD).0.gpio.018.out
+net powerctl.power_enable => hm2_[HOSTMOT2](BOARD).0.gpio.018.out
 
 # GPIO 20: POWER_GOOD (pullup, low state = +48V supply ok)
 # Inverted because powerctl.power_good is active high

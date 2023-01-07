@@ -3,7 +3,7 @@
 # Note: some components loaded here are used from other files.
 loadrt not count=2
 loadrt lut5 count=18
-loadrt timedelay count=6
+loadrt timedelay count=7
 loadrt mux2 count=4
 loadrt scale count=2
 loadrt absmaxdecay count=1
@@ -39,6 +39,7 @@ addf timedelay.2 servo-thread
 addf timedelay.3 servo-thread
 addf timedelay.4 servo-thread
 addf timedelay.5 servo-thread
+addf timedelay.6 servo-thread
 addf mux2.0     servo-thread
 addf mux2.2     servo-thread
 addf lut5.14    servo-thread
@@ -56,6 +57,7 @@ newsig powerctl.estop_off bit
 newsig powerctl.run_btn bit
 newsig powerctl.pause_btn bit
 newsig powerctl.power_good bit
+newsig powerctl.power_enable bit
 newsig powerctl.program_paused bit
 newsig powerctl.program_running bit
 newsig powerctl.machine_homed bit
@@ -163,6 +165,13 @@ net powerctl.run_btn => timedelay.3.in
 net powerctl.run_btn_held timedelay.3.out => lut5.5.in-0
 net powerctl.mso1_switch => lut5.5.in-1
 net powerctl.allow_auto <= lut5.5.out
+
+# Hardware power enable after e-stop is off
+# This needs a bit of on-delay to avoid partial resets due to short estop press
+setp timedelay.6.on-delay 1
+setp timedelay.6.off-delay 0.01
+net powerctl.estop_off => timedelay.6.in
+net powerctl.power_enable <= timedelay.6.out
 
 # Enable power in UI when power good signal is high
 # The power-on must be delayed to give the GUI time to react when estop turns off.
