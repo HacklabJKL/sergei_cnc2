@@ -39,7 +39,7 @@ net nocturn.s_jog_y_minus nocturn.y_minus => halui.axis.y.minus
 net nocturn.s_jog_z_enc nocturn.jog_z_counts => axis.z.jog-counts
 setp axis.z.jog-enable 1
 setp axis.z.jog-vel-mode 1
-setp axis.z.jog-accel-fraction 0.5
+setp axis.z.jog-accel-fraction 0.25
 
 net nocturn.s_jog_z_plus nocturn.z_plus => halui.axis.z.plus
 net nocturn.s_jog_z_minus nocturn.z_minus => halui.axis.z.minus
