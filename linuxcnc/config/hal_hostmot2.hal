@@ -4,8 +4,11 @@
 loadrt hostmot2
 loadrt [HOSTMOT2](DRIVER) config=[HOSTMOT2](CONFIG)
 
+loadrt debounce cfg=5
+
 # Read inputs at start of servo loop and write outputs at end
 addf hm2_[HOSTMOT2](BOARD).0.read          servo-thread    1
+addf debounce.0 servo-thread 2
 addf mux2.1 servo-thread
 addf scale.1 servo-thread
 addf hm2_[HOSTMOT2](BOARD).0.write         servo-thread   -1
@@ -23,6 +26,9 @@ setp hm2_[HOSTMOT2](BOARD).0.watchdog.timeout_ns 10000000
 # Power control #
 #################
 
+# 10 ms filtering for button inputs
+setp debounce.0.delay 10
+
 # GPIO 16: MOTOR_HCURR, enable higher forces when in automatic mode.
 setp hm2_[HOSTMOT2](BOARD).0.gpio.016.is_output 1
 net powerctl.allow_auto => hm2_[HOSTMOT2](BOARD).0.gpio.016.out
@@ -36,20 +42,30 @@ net powerctl.power_enable => hm2_[HOSTMOT2](BOARD).0.gpio.018.out
 
 # GPIO 20: POWER_GOOD (pullup, low state = +48V supply ok)
 # Inverted because powerctl.power_good is active high
-net powerctl.power_good <= hm2_[HOSTMOT2](BOARD).0.gpio.020.in_not
+net powerctl.power_good_raw <= hm2_[HOSTMOT2](BOARD).0.gpio.020.in_not
+net powerctl.power_good_raw => debounce.0.0.in
+net powerctl.power_good <= debounce.0.0.out
 
 # GPIO 22: ESTOP_INFO (pullup, high state = estop pressed)
-net powerctl.estop_btn <= hm2_[HOSTMOT2](BOARD).0.gpio.022.in
+net powerctl.estop_btn_raw <= hm2_[HOSTMOT2](BOARD).0.gpio.022.in
+net powerctl.estop_btn_raw => debounce.0.1.in
+net powerctl.estop_btn <= debounce.0.1.out
 
 # GPIO 24: MSO1_ACTIVE (pullup, low state = MSO1 is active and door closed)
 # Inverted because powerctl.mso1_switch is active high
-net powerctl.mso1_switch <= hm2_[HOSTMOT2](BOARD).0.gpio.024.in_not
+net powerctl.mso1_switch_raw <= hm2_[HOSTMOT2](BOARD).0.gpio.024.in_not
+net powerctl.mso1_switch_raw => debounce.0.2.in
+net powerctl.mso1_switch <= debounce.0.2.out
 
-# GPIO 31: Run button (pullup, low state = button pressed)
-net powerctl.pause_btn <= hm2_[HOSTMOT2](BOARD).0.gpio.031.in_not
+# GPIO 31: Pause button (pullup, low state = button pressed)
+net powerctl.pause_btn_raw <= hm2_[HOSTMOT2](BOARD).0.gpio.031.in_not
+net powerctl.pause_btn_raw => debounce.0.3.in
+net powerctl.pause_btn <= debounce.0.3.out
 
 # GPIO 32: Run button (pullup, low state = button pressed)
-net powerctl.run_btn <= hm2_[HOSTMOT2](BOARD).0.gpio.032.in_not
+net powerctl.run_btn_raw <= hm2_[HOSTMOT2](BOARD).0.gpio.032.in_not
+net powerctl.run_btn_raw => debounce.0.4.in
+net powerctl.run_btn <= debounce.0.4.out
 
 # GPIO 33: Run / pause indicator LEDs (low = run, high = pause)
 setp hm2_[HOSTMOT2](BOARD).0.gpio.033.is_output 1
