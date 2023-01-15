@@ -2,4 +2,4 @@
 
 net camera.dro_x => qtvcp_cameratab.dro_x
 net camera.dro_y => qtvcp_cameratab.dro_y
-net camera.dro_z => qtvcp_cameratab.dro_z
+#net camera.dro_z => qtvcp_cameratab.dro_z
