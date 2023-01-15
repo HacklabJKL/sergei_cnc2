@@ -103,7 +103,8 @@ class ProbeOperation:
 
             # Got accurate position, return to original position
             self.status = self.resultname + ': Return to original position'
-            self.command.mdi("G90 G53 G0 X%0.3f Y%0.3f Z%0.3f F%0.3f" %
+            self.command.mdi("G90")
+            self.command.mdi("G53 G0 X%0.3f Y%0.3f Z%0.3f F%0.3f" %
                 (self.original_pos[0], self.original_pos[1], self.original_pos[2], self.parent.search_speed))
             self.step = 4
         

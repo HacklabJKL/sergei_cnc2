@@ -7,8 +7,9 @@ M5
 G21
 G90
 
+G53 G0 Z#<_ini[TOOLSENSOR]ZTRAVEL>
+G53 G0 X#<_ini[TOOLSENSOR]X> Y#<_ini[TOOLSENSOR]Y>
 G53 G0 Z#<_ini[TOOLSENSOR]Z>
-G53 G0 X#<_ini[TOOLSENSOR]X>
 
 G43.1 X0 Y0 Z0
 #<_zoffset>=[#<_z>-#<_ini[TOOLSENSOR]Z>]
@@ -22,7 +23,7 @@ O1 if [#5070 EQ 1]
     G43.1 Z[#5063 - #<_ini[TOOLSENSOR]ZPOS> - #<_zoffset>]
 
     ; Move off the sensor
-	G0 Z[#<_z> + 10]
+	G0 Z#<_ini[TOOLSENSOR]ZTRAVEL>
 O1 else
     (MSG,Probe did not detect contact)
 O1 endif
