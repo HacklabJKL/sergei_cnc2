@@ -11,7 +11,7 @@ G53 G0 Z#<_ini[TOOLSENSOR]ZTRAVEL>
 G53 G0 X#<_ini[TOOLSENSOR]X> Y#<_ini[TOOLSENSOR]Y>
 G53 G0 Z#<_ini[TOOLSENSOR]Z>
 
-G43.1 X0 Y0 Z0
+G43.1 X0 Y0 Z0 ; Clear old tool length offset
 #<_zoffset>=[#<_z>-#<_ini[TOOLSENSOR]Z>]
 
 G38.3 Z[#<_z> + #<_ini[TOOLSENSOR]MAXPROBE>] F600

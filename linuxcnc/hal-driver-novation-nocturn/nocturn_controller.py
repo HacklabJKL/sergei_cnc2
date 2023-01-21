@@ -30,8 +30,8 @@ class JogSpeed:
         self.comp.newpin(self.speed, hal.HAL_FLOAT, hal.HAL_OUT)
 
         # Default settings in case we don't get initial slider position from the hardware
-        self.comp[self.increment] = 0.1
-        self.comp[self.speed] = 100
+        self.comp[self.increment] = 1.0
+        self.comp[self.speed] = 1000
     
     def __call__(self, event):
         pos = round(event[1] * 3)
