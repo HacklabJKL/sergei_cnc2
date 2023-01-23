@@ -17,6 +17,12 @@ root_window.tk.call("wm","geometry",".",fullsize)
 root_window.tk.call('.pane.top.tabs','itemconfigure','manual','-text','Manual control')
 root_window.tk.call('.pane.top.tabs','itemconfigure','mdi','-text','Manual G-code')
 
+# Reduce tab widths
+root_window.tk.call('.pane.top.tabs', 'configure', '-width', '50')
+root_window.tk.call('.pane.top.maxvel.l0', 'configure', '-text', 'Max Speed:')
+manual_tab = root_window.tk.call('.pane.top.tabs', 'getframe', 'manual')
+root_window.tk.call('grid', 'forget', manual_tab + '.jogf.zerohome.tooltouch')
+
 # Show remaining time in LinuxCNC Axis status bar
 # Place this code in your axis_usercommands.py
 class RemainingTime:
