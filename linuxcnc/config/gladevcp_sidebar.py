@@ -1,20 +1,104 @@
+#!/usr/bin/env python2
+# -*- coding: utf-8 -*-
+
 import linuxcnc
+import gtk
+import glib
+import hal
+import hal_glib
+import time
 from hal_glib import GStat
 import time
 GSTAT = GStat()
 
 class SidebarHandler:
     def __init__(self, halcomp, builder, useropts):
+        self.halcomp = halcomp
         self.builder = builder
         self.command = linuxcnc.command()
         self.program_was_running = False
+        self.paused_door_open = hal_glib.GPin(halcomp.newpin('paused_door_open', hal.HAL_BIT, hal.HAL_IN))
+        self.stat = linuxcnc.stat()
+        self.prev_status = None
+        self.next_time = 0
 
+        GSTAT.connect("periodic", self.update_status)
         GSTAT.connect("user-system-changed", self.update_coordinate_selection)
         GSTAT.connect("all-homed", self.activate_default_g54)
         GSTAT.connect("all-homed", self.verify_g64)
         GSTAT.connect("state-on", self.verify_g64)
         GSTAT.connect("command-running", self.check_program_running)
         GSTAT.connect("command-stopped", self.check_program_stopped)
+
+        self.set_status()
+
+    def set_status(self, msg = None, warn = False, info = True):
+        '''Set status indication text'''
+
+        if msg == self.prev_status:
+            return
+        self.prev_status = msg
+
+        # Gtk.Label does not have background, so set the background of the parent.
+        lbl = self.builder.get_object('lblstatus')
+        eb = self.builder.get_object('ebstatus')
+
+        if not msg:
+            lbl.set_text("")
+            eb.modify_bg(gtk.STATE_NORMAL, None)
+        elif warn:
+            lbl.set_text("⚠\n" + msg)
+            eb.modify_bg(gtk.STATE_NORMAL, gtk.gdk.Color("#ffffaa"))
+        elif info:
+            lbl.set_text(msg)
+            eb.modify_bg(gtk.STATE_NORMAL, gtk.gdk.Color("#aaaaff"))
+        else:
+            lbl.set_text(msg)
+            eb.modify_bg(gtk.STATE_NORMAL, None)
+
+    def update_status(self, w):
+        if time.time() < self.next_time:
+            return
+
+        try:
+            self.stat.poll()
+            self.next_time = time.time() + 0.2
+        except:
+            # Delay a bit if we lose connection for some reason
+            self.set_status('?', False, False)
+            self.stat = linuxcnc.stat()
+            self.next_time = time.time() + 5.0
+            return
+
+        s = self.stat
+
+        if s.estop:
+            self.set_status("Emergency stop active")
+        elif hal.get_value("powerctl.power_enable") and not hal.get_value("powerctl.power_good"):
+            self.set_status("+48V power is off\nPossible fuse trip?\nTurn off and on to reset", True)
+        elif not s.enabled:
+            self.set_status("Software stop\nRe-enable power on toolbar")
+        elif (0 in s.homed[:3]):
+            if not s.inpos:
+                self.set_status("Homing in progress")
+            elif hal.get_value("powerctl.allow_auto"):
+                self.set_status("Press \"Home all\"\nto initialize machine")
+            else:
+                self.set_status("Close door and\npress \"Home all\"\nto initialize machine")
+        elif s.feedrate <= 0.01:
+            self.set_status("Feedrate override is set to 0\nMovements paused", True)
+        elif s.rapidrate <= 0.01:
+            self.set_status("Rapid override is set to 0\nMovements paused", True)
+        elif s.spindle[0]['override'] <= 0.01:
+            self.set_status("Spindle override is set to 0\nMovements paused", True)
+        elif self.paused_door_open.get():
+            self.set_status("Close door or hold down RUN\nto enable automatic moves")
+        elif hal.get_value("powerctl.spindle_on") and not hal.get_value("powerctl.spindle_enable"):
+            self.set_status("Close door to start spindle", True)
+        elif hal.get_value("powerctl.spindle_enable") and not hal.get_value("powerctl.spindle_at_speed_filtered"):
+            self.set_status("Waiting for spindle to start")
+        else:
+            self.set_status()
 
     def activate_default_g54(self, w):
         '''Make sure G54 coordinate system is active after start.'''

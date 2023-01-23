@@ -1077,37 +1077,25 @@ offsets (G5x)</property>
           </packing>
         </child>
         <child>
-          <object class="HAL_HideTable" id="paused_door_open">
+          <placeholder/>
+        </child>
+        <child>
+          <object class="GtkEventBox" id="ebstatus">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <child>
-              <object class="GtkLabel" id="label12">
+              <object class="GtkLabel" id="lblstatus">
+                <property name="height_request">50</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Close door or hold RUN
-to enable automatic
-movements!</property>
+                <property name="yalign">0</property>
+                <property name="xpad">10</property>
+                <property name="ypad">10</property>
                 <property name="justify">center</property>
-                <attributes>
-                  <attribute name="background" value="#ffffd9698ba7"/>
-                  <attribute name="scale" value="1"/>
-                </attributes>
+                <property name="wrap">True</property>
+                <property name="wrap_mode">word-char</property>
               </object>
-              <packing>
-                <property name="y_padding">5</property>
-              </packing>
             </child>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">27</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="label5">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
           </object>
           <packing>
             <property name="expand">True</property>

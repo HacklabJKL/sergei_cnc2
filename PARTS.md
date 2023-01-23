@@ -33,6 +33,8 @@ Columns / Z-axis
 
 * Two premade [1100 mm linear assemblies](mechanical/plans_solvespace/linear_assembly_1100mm.txt)
 * Trapezoidal screws TR12x3 installed inside each column
+* Top end: 2x angular contact ball bearings 3201-2RS
+* Bottom end (trapezoidal screw tensioner): 2x single row ball bearings 6201-2RS
 * Cable chain inside columns
 * Belt drive from a central motor:
   * 2x GT2 belt, 6 mm wide:

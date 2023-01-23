@@ -138,8 +138,8 @@ net powerctl.allow_auto => lut5.3.in-2
 net powerctl.pause lut5.3.out => halui.program.pause
 
 # lut5.14: Show notification if automatic movements are attempted with door open
-# out = !(in0 & !in1)
-setp lut5.14.function 0x0D
+# out = in0 & !in1
+setp lut5.14.function 0x02
 net powerctl.program_paused => lut5.14.in-0
 net powerctl.allow_auto => lut5.14.in-1
 net powerctl.paused_door_open <= lut5.14.out
