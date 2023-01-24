@@ -21,6 +21,8 @@ class SidebarHandler:
         self.stat = linuxcnc.stat()
         self.prev_status = None
         self.next_time = 0
+        self.prev_offset = None
+        self.prev_display_update = None
 
         GSTAT.connect("periodic", self.update_status)
         GSTAT.connect("user-system-changed", self.update_coordinate_selection)
@@ -70,6 +72,11 @@ class SidebarHandler:
             self.next_time = time.time() + 5.0
             return
 
+        if hal.get_value("axisui.display-update-count") != self.prev_display_update:
+            # Store offsets that were active when display was last updated
+            self.prev_display_update = hal.get_value("axisui.display-update-count")
+            self.prev_offset = self.get_offsets()
+
         s = self.stat
 
         if s.estop:
@@ -97,8 +104,13 @@ class SidebarHandler:
             self.set_status("Close door to start spindle", True)
         elif hal.get_value("powerctl.spindle_enable") and not hal.get_value("powerctl.spindle_at_speed_filtered"):
             self.set_status("Waiting for spindle to start")
+        elif self.stat.file and self.get_offsets() != self.prev_offset:
+            self.set_status("Coordinate system changed,\npress reload to update preview.")
         else:
             self.set_status()
+
+    def get_offsets(self):
+        return (self.stat.g5x_offset, self.stat.g92_offset, self.stat.rotation_xy)
 
     def activate_default_g54(self, w):
         '''Make sure G54 coordinate system is active after start.'''

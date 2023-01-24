@@ -23,6 +23,26 @@ root_window.tk.call('.pane.top.maxvel.l0', 'configure', '-text', 'Max Speed:')
 manual_tab = root_window.tk.call('.pane.top.tabs', 'getframe', 'manual')
 root_window.tk.call('grid', 'forget', manual_tab + '.jogf.zerohome.tooltouch')
 
+class DisplayUpdate:
+    def __init__(self):
+        self.prev_id = 0
+
+    def hal_pins(self, comp):
+        self.comp = comp
+        comp.newpin("display-update-count", hal.HAL_U32, hal.HAL_OUT)
+        comp["display-update-count"] = 0
+
+    def update(self):
+        if self.prev_id != id(o.canon):
+            self.prev_id = id(o.canon)
+            self.comp["display-update-count"] = comp["display-update-count"] + 1
+
+displayupdate = DisplayUpdate()
+
+def user_hal_pins():
+    displayupdate.hal_pins(comp)
+
+
 # Show remaining time in LinuxCNC Axis status bar
 # Place this code in your axis_usercommands.py
 class RemainingTime:
@@ -114,3 +134,4 @@ class RemainingTime:
 remainingtime = RemainingTime()
 def user_live_update():
     remainingtime.update()
+    displayupdate.update()
