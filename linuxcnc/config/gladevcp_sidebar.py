@@ -23,6 +23,7 @@ class SidebarHandler:
         self.next_time = 0
         self.prev_offset = None
         self.prev_display_update = None
+        self.last_unhomed_time = time.time()
 
         GSTAT.connect("periodic", self.update_status)
         GSTAT.connect("user-system-changed", self.update_coordinate_selection)
@@ -77,15 +78,20 @@ class SidebarHandler:
             self.prev_display_update = hal.get_value("axisui.display-update-count")
             self.prev_offset = self.get_offsets()
 
+        if not (0 in self.stat.homed[:3]) and (time.time() - self.last_unhomed_time) < 1:
+            # Homing complete
+            self.prev_offset = self.get_offsets()
+
         s = self.stat
 
         if s.estop:
-            self.set_status("Emergency stop active")
+            self.set_status("Emergency stop active\nor power off")
         elif hal.get_value("powerctl.power_enable") and not hal.get_value("powerctl.power_good"):
             self.set_status("+48V power is off\nPossible fuse trip?\nTurn off and on to reset", True)
-        elif not s.enabled:
+        elif not s.enabled and hal.get_value("halui.machine.on"):
             self.set_status("Software stop\nRe-enable power on toolbar")
         elif (0 in s.homed[:3]):
+            self.last_unhomed_time = time.time()
             if not s.inpos:
                 self.set_status("Homing in progress")
             elif hal.get_value("powerctl.allow_auto"):
@@ -105,7 +111,7 @@ class SidebarHandler:
         elif hal.get_value("powerctl.spindle_enable") and not hal.get_value("powerctl.spindle_at_speed_filtered"):
             self.set_status("Waiting for spindle to start")
         elif self.stat.file and self.get_offsets() != self.prev_offset:
-            self.set_status("Coordinate system changed,\npress reload to update preview.")
+            self.set_status("Coordinate system\nchanged, press\nreload to update preview.")
         else:
             self.set_status()
 
