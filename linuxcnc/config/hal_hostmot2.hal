@@ -165,7 +165,14 @@ net powerctl.spindle_at_speed <= hm2_[HOSTMOT2](BOARD).0.gpio.028.in
 ########################
 # Coolant PDM control  #
 ########################
+# Motor is 6V motor => scale is set to 200 to limit max duty to 50%
 setp hm2_[HOSTMOT2](BOARD).0.pwmgen.04.output-type 3
-setp hm2_[HOSTMOT2](BOARD).0.pwmgen.04.scale 100
-net powerctl.coolant_rate_hw => hm2_[HOSTMOT2](BOARD).0.pwmgen.04.value
-net powerctl.coolant_squirts => hm2_[HOSTMOT2](BOARD).0.pwmgen.04.enable
+setp hm2_[HOSTMOT2](BOARD).0.pwmgen.04.scale 200
+net powerctl.coolant_rate => hm2_[HOSTMOT2](BOARD).0.pwmgen.04.value
+net powerctl.coolant_enabled => hm2_[HOSTMOT2](BOARD).0.pwmgen.04.enable
+
+# Air valve control
+setp hm2_[HOSTMOT2](BOARD).0.gpio.023.is_output 1
+net powerctl.coolant_air =>  hm2_[HOSTMOT2](BOARD).0.gpio.023.out
+
+
