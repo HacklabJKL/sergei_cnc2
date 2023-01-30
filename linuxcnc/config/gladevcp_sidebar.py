@@ -108,6 +108,8 @@ class SidebarHandler:
             self.set_status("Spindle override is set to 0\nMovements paused", True)
         elif self.paused_door_open.get():
             self.set_status("Close door or hold down RUN\nto enable automatic moves", True)
+        elif hal.get_value("powerctl.spindle_on") and hal.get_value("powerctl.probe_connected"):
+            self.set_status("Cannot start spindle when probe connected!", True)
         elif hal.get_value("powerctl.spindle_on") and not hal.get_value("powerctl.spindle_enable"):
             self.set_status("Close door to start spindle", True)
         elif hal.get_value("powerctl.spindle_enable") and not hal.get_value("powerctl.spindle_at_speed_filtered"):

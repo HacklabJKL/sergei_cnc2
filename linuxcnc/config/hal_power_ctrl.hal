@@ -67,6 +67,7 @@ newsig powerctl.velocity_mm_min float
 newsig powerctl.ferror float
 newsig powerctl.motor_ok bit
 newsig powerctl.probe_sensor bit
+newsig powerctl.probe_connected bit
 newsig powerctl.paused_door_open bit
 newsig powerctl.lift_z bit
 newsig powerctl.coolant_on bit
@@ -206,12 +207,13 @@ net powerctl.spindle_rpm_req spindle.0.speed-out => abslimit.0.in
 net powerctl.spindle_rpm <= abslimit.0.out
 
 # Spindle control
-# Stop when not in MSO1 mode or when estop hit
-# lut5.10: out = in0 & in1 & in2
+# Stop when not in MSO1 mode, when estop hit or when probe connected
+# lut5.10: out = in0 & in1 & in2 & !in3
 setp lut5.10.function 0x80
 net powerctl.spindle_on spindle.0.on => lut5.10.in-0
 net powerctl.allow_auto => lut5.10.in-1
 net powerctl.estop_off => lut5.10.in-2
+net powerctl.probe_connected => lut5.10.in-3
 net powerctl.spindle_enable <= lut5.10.out
 
 # Noise filtering for spindle at speed signal

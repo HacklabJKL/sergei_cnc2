@@ -76,6 +76,7 @@ net powerctl.motor_ok <= hm2_[HOSTMOT2](BOARD).0.gpio.001.in
 
 # GPIO 27: Probe sensor
 net powerctl.probe_sensor <= hm2_[HOSTMOT2](BOARD).0.gpio.027.in_not
+net powerctl.probe_connected <= hm2_[HOSTMOT2](BOARD).0.gpio.025.in_not
 
 ########################
 # X-axis encoder input #
