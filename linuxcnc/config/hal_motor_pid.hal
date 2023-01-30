@@ -5,7 +5,8 @@ loadrt pid num_chan=3
 loadrt runawayprot count=3
 loadrt logic names=logic.or3 personality=0x203
 loadrt offset count=1
-loadrt limit3 count=2
+loadrt limit3 count=1
+loadrt limit2 count=1
 
 addf offset.0.update-feedback              servo-thread 1
 addf offset.0.update-output                servo-thread
@@ -20,9 +21,10 @@ addf runawayprot.2                         servo-thread
 addf logic.or3                             servo-thread
 
 addf mux2.3                                servo-thread
+addf mux2.4                                servo-thread
 addf sum2.3                                servo-thread
 addf limit3.0                              servo-thread
-addf limit3.1                              servo-thread
+addf limit2.0                              servo-thread
 
 #########################
 # Calibrated kinematics #
@@ -185,7 +187,12 @@ setp sum2.3.offset [AXIS_Z]MAX_LIMIT
 setp limit3.0.maxv 10
 setp limit3.0.maxa 50
 setp limit3.0.smooth-steps 100
-net motordrive.2.offset-req mux2.3.out => limit3.0.in
-net motordrive.2.offset-limv limit3.0.out => limit3.1.in
-net motordrive.2.max-offset sum2.3.out => limit3.1.max
-net motordrive.2.offset limit3.1.out => offset.0.offset
+net motordrive.2.offset-req2 mux2.4.out => limit3.0.in
+net motordrive.2.offset-limv limit3.0.out => limit2.0.in
+net motordrive.2.max-offset sum2.3.out => limit2.0.max
+net motordrive.2.offset limit2.0.out => offset.0.offset
+
+# Don't move when door is open
+net motordrive.2.offset-limv => mux2.4.in0
+net motordrive.2.offset-req mux2.3.out => mux2.4.in1
+net powerctl.allow_auto => mux2.4.sel

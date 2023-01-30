@@ -23,7 +23,7 @@ class SidebarHandler:
         self.next_time = 0
         self.prev_offset = None
         self.prev_display_update = None
-        self.last_unhomed_time = time.time()
+        self.last_home_time = time.time()
 
         GSTAT.connect("periodic", self.update_status)
         GSTAT.connect("user-system-changed", self.update_coordinate_selection)
@@ -78,7 +78,7 @@ class SidebarHandler:
             self.prev_display_update = hal.get_value("axisui.display-update-count")
             self.prev_offset = self.get_offsets()
 
-        if not (0 in self.stat.homed[:3]) and (time.time() - self.last_unhomed_time) < 1:
+        if not (0 in self.stat.homed[:3]) and (time.time() - self.last_home_time) < 1:
             # Homing complete
             self.prev_offset = self.get_offsets()
 
@@ -91,8 +91,10 @@ class SidebarHandler:
         elif not s.enabled and hal.get_value("halui.machine.on"):
             self.set_status("Software stop\nRe-enable power on toolbar")
         elif (0 in s.homed[:3]):
-            self.last_unhomed_time = time.time()
             if not s.inpos:
+                self.last_home_time = time.time()
+                self.set_status("Homing in progress")
+            elif (time.time() - self.last_home_time) < 1:
                 self.set_status("Homing in progress")
             elif hal.get_value("powerctl.allow_auto"):
                 self.set_status("Press \"Home all\"\nto initialize machine")
@@ -105,13 +107,26 @@ class SidebarHandler:
         elif s.spindle[0]['override'] <= 0.01:
             self.set_status("Spindle override is set to 0\nMovements paused", True)
         elif self.paused_door_open.get():
-            self.set_status("Close door or hold down RUN\nto enable automatic moves")
+            self.set_status("Close door or hold down RUN\nto enable automatic moves", True)
         elif hal.get_value("powerctl.spindle_on") and not hal.get_value("powerctl.spindle_enable"):
             self.set_status("Close door to start spindle", True)
         elif hal.get_value("powerctl.spindle_enable") and not hal.get_value("powerctl.spindle_at_speed_filtered"):
             self.set_status("Waiting for spindle to start")
+        elif abs(hal.get_value("motordrive.2.offset") - hal.get_value("motordrive.2.offset-req")) > 0.1:
+            if abs(hal.get_value("motordrive.2.offset") - hal.get_value("motordrive.2.max-offset")) < 0.1:
+                self.set_status("Z offset is active,\nlimited by max Z:\n(%+0.0f mm)"
+                    % hal.get_value("motordrive.2.offset"), True)
+            elif hal.get_value("powerctl.allow_auto"):
+                self.set_status("Z offset movement in progress:\n(%+0.0f mm)\n(open door to pause)"
+                    % hal.get_value("motordrive.2.offset"), True)
+            else:
+                self.set_status("Z offset movement paused\n(%+0.0f mm)\n(close door to continue)"
+                    % hal.get_value("motordrive.2.offset"), True)
         elif self.stat.file and self.get_offsets() != self.prev_offset:
             self.set_status("Coordinate system\nchanged, press\nreload to update preview.")
+        elif abs(hal.get_value("motordrive.2.offset")) > 0.01:
+            self.set_status("Z offset is active:\n(%+0.0f mm)"
+                % hal.get_value("motordrive.2.offset"), True)
         else:
             self.set_status()
 

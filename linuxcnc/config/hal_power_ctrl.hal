@@ -4,7 +4,7 @@
 loadrt not count=2
 loadrt lut5 count=18
 loadrt timedelay count=7
-loadrt mux2 count=4
+loadrt mux2 count=5
 loadrt scale count=2
 loadrt absmaxdecay count=1
 loadrt abslimit count=1
