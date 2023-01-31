@@ -1,7 +1,7 @@
 # Power-on and emergency stop control.
 
 # Note: some components loaded here are used from other files.
-loadrt not count=2
+loadrt not count=3
 loadrt lut5 count=18
 loadrt timedelay count=7
 loadrt mux2 count=5
@@ -10,6 +10,8 @@ loadrt absmaxdecay count=1
 loadrt abslimit count=1
 loadrt sum2 count=4
 loadrt select8 count=1
+loadrt edge count=2
+loadrt message names=msg_estop_btn,msg_estop_pause,msg_estop_motorx,msg_estop_motory,msg_estop_motorz messages="Emergency stop button pressed,Emergency stop by pause button during manual operation,Emergency stop due to X axis fault,Emergency stop due to Y axis fault,Emergency stop due to Z axis fault"
 
 addf abslimit.0   servo-thread
 addf absmaxdecay.0 servo-thread
@@ -28,7 +30,6 @@ addf lut5.8     servo-thread
 addf lut5.9     servo-thread
 addf lut5.10    servo-thread
 addf lut5.11    servo-thread
-# addf lut5.13    servo-thread # lut5.13 is free
 addf lut5.12    servo-thread
 addf lut5.15    servo-thread
 addf timedelay.0 servo-thread
@@ -37,12 +38,21 @@ addf timedelay.2 servo-thread
 addf timedelay.3 servo-thread
 addf timedelay.4 servo-thread
 addf timedelay.5 servo-thread
-addf timedelay.6 servo-thread
 addf mux2.0     servo-thread
 addf mux2.2     servo-thread
 addf lut5.14    servo-thread
 addf select8.0  servo-thread
 addf lut5.17    servo-thread
+addf edge.0     servo-thread
+addf edge.1     servo-thread
+addf lut5.13    servo-thread
+addf timedelay.6 servo-thread
+addf not.2      servo-thread
+addf msg_estop_btn servo-thread
+addf msg_estop_pause servo-thread
+addf msg_estop_motorx servo-thread
+addf msg_estop_motory servo-thread
+addf msg_estop_motorz servo-thread
 
 # Signals to hardware / simulator panel
 newsig powerctl.mso1_switch bit
@@ -76,11 +86,22 @@ newsig powerctl.coolant_rate float
 newsig powerctl.coolant_enabled bit
 newsig powerctl.coolant_air bit
 
+newsig motordrive.0.runaway bit
+newsig motordrive.1.runaway bit
+newsig motordrive.2.runaway bit
+
 net powerctl.program_paused <= halui.program.is-paused
 net powerctl.program_running <= halui.program.is-running
 
 net tool-prep-loop iocontrol.0.tool-prepare => iocontrol.0.tool-prepared
 net tool-change-loop iocontrol.0.tool-change => iocontrol.0.tool-changed
+
+# Messages for estop cause
+net powerctl.estop_btn => msg_estop_btn.trigger
+net powerctl.estop_pause => msg_estop_pause.trigger
+net motordrive.0.runaway => msg_estop_motorx.trigger
+net motordrive.1.runaway => msg_estop_motory.trigger
+net motordrive.2.runaway => msg_estop_motorz.trigger
 
 #######################
 # Run / pause buttons
@@ -162,24 +183,51 @@ net powerctl.mso1_switch => lut5.5.in-1
 net powerctl.allow_auto <= lut5.5.out
 
 # Hardware power enable after e-stop is off
-# This needs a bit of on-delay to avoid partial resets due to short estop press
+# Power is turned on in three conditions:
+#  1. Hardware power switch is turned on (falling edge on estop_btn)
+#  2. Hardware e-stop switch is turned off (falling edge on estop_btn)
+#  3. User interface power button is pressed (halui.machine.is-on high state)
+# Power is turned off when:
+#  1. Either hardware or software estop (low state on estop_off)
+#  2. User interface power button is pressed (halui.machine.is-on falling edge)
+#
+net powerctl.estop_btn => edge.0.in
+net powerctl.machine_is_on => edge.1.in
+
+# lut5.13:
+# out = 0 when !in0 || in1
+# out = 1 when  in0 & (in2 || in3)
+# out = !in4 otherwise
+setp lut5.13.function 0x22002222
+net powerctl.estop_off => lut5.13.in-0
+net powerctl.ui_power_off edge.1.out => lut5.13.in-1
+net powerctl.estop_btn_fall edge.0.out => lut5.13.in-2
+net powerctl.machine_is_on => lut5.13.in-3
+
+# This trick with not gate forces initial state to 1
+# if power is already on when LinuxCNC is started
+net powerctl.power_enable_raw lut5.13.out => not.2.in
+net powerctl.power_enable_not not.2.out => lut5.13.in-4
+
+# Power-enable needs a bit of on-delay to avoid partial resets due to short estop press
 setp timedelay.6.on-delay 1
 setp timedelay.6.off-delay 0.01
-net powerctl.estop_off => timedelay.6.in
+net powerctl.power_enable_raw => timedelay.6.in
 net powerctl.power_enable <= timedelay.6.out
 
 # Enable power in UI when power good signal is high
 # The power-on must be delayed to give the GUI time to react when estop turns off.
-# lut5.6: out = !in0 | !in1
-setp lut5.6.function 0x06
+# lut5.6: out = in0 & in1 & in2
+setp lut5.6.function 0x80
 setp timedelay.0.on-delay 0.5
 setp timedelay.0.off-delay 0.01
 net powerctl.power_good => lut5.6.in-0
 net powerctl.estop_off => lut5.6.in-1
-net powerctl.machine_off lut5.6.out => halui.machine.off
-net powerctl.machine_off => not.0.in
-net powerctl.machine_on not.0.out => timedelay.0.in
+net powerctl.power_enable => lut5.6.in-2
+net powerctl.machine_on lut5.6.out => timedelay.0.in
 net powerctl.machine_on_delayed timedelay.0.out => halui.machine.on
+net powerctl.machine_on_delayed => not.0.in
+net powerctl.machine_off not.0.out => halui.machine.off
 net powerctl.machine_is_on <= halui.machine.is-on
 
 # Check machine homing status

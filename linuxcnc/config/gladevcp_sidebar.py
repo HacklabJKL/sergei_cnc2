@@ -89,7 +89,9 @@ class SidebarHandler:
         elif hal.get_value("powerctl.power_enable") and not hal.get_value("powerctl.power_good"):
             self.set_status("+48V power is off\nPossible fuse trip?\nTurn off and on to reset", True)
         elif not s.enabled and hal.get_value("halui.machine.on"):
-            self.set_status("Software stop\nRe-enable power on toolbar")
+            self.set_status("Software stop\nRe-enable power on toolbar", True)
+        elif not hal.get_value("powerctl.power_enable_raw"):
+            self.set_status("Power disabled due to fault\nRe-enable power on toolbar", True)
         elif (0 in s.homed[:3]):
             if not s.inpos:
                 self.last_home_time = time.time()
