@@ -111,7 +111,7 @@ class SidebarHandler:
         elif self.paused_door_open.get():
             self.set_status("Close door or hold down RUN\nto enable automatic moves", True)
         elif hal.get_value("powerctl.spindle_on") and hal.get_value("powerctl.probe_connected"):
-            self.set_status("Cannot start spindle when probe connected!", True)
+            self.set_status("Cannot start spindle\nwhen probe connected!", True)
         elif hal.get_value("powerctl.spindle_on") and not hal.get_value("powerctl.spindle_enable"):
             self.set_status("Close door to start spindle", True)
         elif hal.get_value("powerctl.spindle_enable") and not hal.get_value("powerctl.spindle_at_speed_filtered"):
@@ -181,7 +181,9 @@ class SidebarHandler:
     def check_program_stopped(self, w, data = None):
         '''When program is aborted, make sure M2 gets run to restore any modal settings.'''
         if self.program_was_running:
+            time.sleep(0.1)
             self.command.mode(linuxcnc.MODE_MDI)
+            self.command.wait_complete()
             self.command.mdi("M2")
             self.program_was_running = False
 
