@@ -11,6 +11,7 @@ loadrt abslimit count=1
 loadrt sum2 count=4
 loadrt select8 count=1
 loadrt edge count=2
+loadrt pwmgen output_type=0
 loadrt message names=msg_estop_btn,msg_estop_pause,msg_estop_motorx,msg_estop_motory,msg_estop_motorz messages="Emergency stop button pressed,Emergency stop by pause button during manual operation,Emergency stop due to X axis fault,Emergency stop due to Y axis fault,Emergency stop due to Z axis fault"
 
 addf abslimit.0   servo-thread
@@ -50,6 +51,8 @@ addf lut5.13    servo-thread
 addf timedelay.6 servo-thread
 addf timedelay.7 servo-thread
 addf not.2      servo-thread
+addf pwmgen.update servo-thread
+addf pwmgen.make-pulses servo-thread 
 addf msg_estop_btn servo-thread
 addf msg_estop_pause servo-thread
 addf msg_estop_motorx servo-thread
@@ -86,7 +89,7 @@ newsig powerctl.lift_z bit
 newsig powerctl.coolant_on bit
 newsig powerctl.coolant_auto bit
 newsig powerctl.coolant_rate float
-newsig powerctl.coolant_enabled bit
+newsig powerctl.coolant_fluid bit
 newsig powerctl.coolant_air bit
 
 newsig motordrive.0.runaway bit
@@ -354,6 +357,13 @@ setp timedelay.5.on-delay 0
 setp timedelay.5.off-delay 0.5
 net powerctl.coolant_enabled_raw => timedelay.5.in
 net powerctl.coolant_air <= timedelay.5.out
+
+# PWM for fluid pump
+setp pwmgen.0.pwm-freq 1
+setp pwmgen.0.scale 100
+net powerctl.coolant_enabled_raw => pwmgen.0.enable
+net powerctl.coolant_rate => pwmgen.0.value
+net powerctl.coolant_fluid <= pwmgen.0.pwm
 
 # Detect feed moves
 net powerctl.program_running => select8.0.enable
