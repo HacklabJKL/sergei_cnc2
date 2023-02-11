@@ -4,14 +4,14 @@
 (Type: G-code from Geometry)
 (Units: MM)
 
-(Created on perjantai, 10 helmikuu 2023 at 21:48)
+(Created on Saturday, 11 February 2023 at 14:11)
 
 (This preprocessor is the default preprocessor used by FlatCAM.)
 (It is made to work with MACH3 compatible motion controllers.)
 
 (TOOL DIAMETER: 0.8 mm)
-(Feedrate_XY: 120.0 mm/min)
-(Feedrate_Z: 60.0 mm/min)
+(Feedrate_XY: 200.0 mm/min)
+(Feedrate_Z: 100.0 mm/min)
 (Feedrate rapids 1500.0 mm/min)
 
 (Z_Cut: -1.8 mm)
@@ -31,7 +31,7 @@ G21
 G90
 G94
 
-G01 F120.00
+G01 F200.00
 
 M5
 G00 Z15.0000
@@ -43,11 +43,11 @@ M0
 G00 Z15.0000
 
 M03 S24000.0
-G01 F120.00
+G01 F200.00
 G00 X-0.5500 Y-1.0000
-G01 F60.00
+G01 F100.00
 G01 Z-0.6000
-G01 F120.00
+G01 F200.00
 G01 X-0.5494 Y-0.9730
 G01 X-0.5445 Y-0.8750
 G01 X-0.5427 Y-0.8505
@@ -242,9 +242,9 @@ G01 X-0.5445 Y-31.1250
 G01 X-0.5499 Y-31.0123
 G01 X-0.5500 Y-1.0000
 G00 X-0.5500 Y-1.0000
-G01 F60.00
+G01 F100.00
 G01 Z-1.2000
-G01 F120.00
+G01 F200.00
 G01 X-0.5499 Y-31.0123
 G01 X-0.5445 Y-31.1250
 G01 X-0.5427 Y-31.1495
@@ -439,9 +439,9 @@ G01 X-0.5445 Y-0.8750
 G01 X-0.5494 Y-0.9730
 G01 X-0.5500 Y-1.0000
 G00 X-0.5500 Y-1.0000
-G01 F60.00
+G01 F100.00
 G01 Z-1.8000
-G01 F120.00
+G01 F200.00
 G01 X-0.5494 Y-0.9730
 G01 X-0.5445 Y-0.8750
 G01 X-0.5427 Y-0.8505
@@ -641,3 +641,4 @@ G00 Z2.0000
 G00 Z15.00
 
 
+M2
