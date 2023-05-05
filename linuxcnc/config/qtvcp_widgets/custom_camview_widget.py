@@ -78,6 +78,8 @@ class CustomCamView(QtWidgets.QWidget, _HalWidgetBase):
     def _hal_init(self):
         try:
             self.pin_ = self.HAL_GCOMP_.newpin('cam-rotation',hal.HAL_FLOAT, hal.HAL_OUT)
+            self.center_x = self.HAL_GCOMP_.newpin('cam-center-x',hal.HAL_FLOAT, hal.HAL_IN)
+            self.center_y = self.HAL_GCOMP_.newpin('cam-center-y',hal.HAL_FLOAT, hal.HAL_IN)
         except Exception as e:
             self.pin_ = None
             LOG.error('HAL pin error: {}'.format(e))
@@ -222,13 +224,13 @@ class CustomCamView(QtWidgets.QWidget, _HalWidgetBase):
         rady = self.diameter/2
         # draw red circles
         gp.setPen(self.circle_color)
-        center = QtCore.QPoint(w/2, h/2)
+        center = QtCore.QPoint(w/2 + self.center_x.get(), h/2 + self.center_y.get())
         gp.drawEllipse(center, radx, rady)
 
     def drawCrossHair(self, event, gp):
         size = self.size()
-        w = size.width()/2
-        h = size.height()/2
+        w = size.width()/2 + self.center_x.get()
+        h = size.height()/2 + self.center_y.get()
         pen0 = QPen(self.cross_pointer_color, 1, QtCore.Qt.SolidLine)
         pen = QPen(self.cross_color, 1, QtCore.Qt.SolidLine)
         gp.translate(w, h)

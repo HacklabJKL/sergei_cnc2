@@ -67,6 +67,10 @@
     {
       "nr": 95,
       "path": "B3x3x20x38.fctb"
+    },
+    {
+      "nr": "42",
+      "path": "4x4x10x50.fctb"
     }
   ],
   "version": 1
