@@ -352,14 +352,15 @@ net powerctl.coolant_on => lut5.17.in-0
 net powerctl.coolant_auto => lut5.17.in-1
 net powerctl.coolant_enabled_raw <= lut5.17.out
 
-# Filtering for short travel moves
+# Filtering for short travel moves and to keep
+# air enabled for a while after pump turns off
 setp timedelay.5.on-delay 0
-setp timedelay.5.off-delay 0.5
+setp timedelay.5.off-delay 10
 net powerctl.coolant_enabled_raw => timedelay.5.in
 net powerctl.coolant_air <= timedelay.5.out
 
 # PWM for fluid pump
-setp pwmgen.0.pwm-freq 1
+setp pwmgen.0.pwm-freq 2
 setp pwmgen.0.scale 100
 net powerctl.coolant_enabled_raw => pwmgen.0.enable
 net powerctl.coolant_rate => pwmgen.0.value
