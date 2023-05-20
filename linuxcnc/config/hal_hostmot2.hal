@@ -170,7 +170,7 @@ net powerctl.spindle_at_speed <= hm2_[HOSTMOT2](BOARD).0.gpio.028.in
 # Currently hardcodes the rate and soft pwm in hal_power_ctrl.hal
 setp hm2_[HOSTMOT2](BOARD).0.pwmgen.04.output-type 3
 setp hm2_[HOSTMOT2](BOARD).0.pwmgen.04.scale 200
-setp hm2_[HOSTMOT2](BOARD).0.pwmgen.04.value 25
+setp hm2_[HOSTMOT2](BOARD).0.pwmgen.04.value 50
 net powerctl.coolant_fluid => hm2_[HOSTMOT2](BOARD).0.pwmgen.04.enable
 
 # Air valve control
