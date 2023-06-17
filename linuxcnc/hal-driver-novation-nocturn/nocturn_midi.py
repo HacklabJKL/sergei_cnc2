@@ -176,6 +176,14 @@ class NocturnMidi:
         if self.midi_out.isPortOpen():
             self.midi_out.sendMessage(rtmidi.MidiMessage.controllerEvent(1,
                 self.buttonaddrs[index], int(enabled)))
+            time.sleep(0.01)
+
+    def leds_off(self):
+        for i in range(len(self.buttonaddrs)):
+            self.set_button_led(i, False)
+        
+        for i in range(len(self.encoderleds)):
+            self.set_encoder_leds(i, 0, 0)
 
 if __name__ == '__main__':
     try:

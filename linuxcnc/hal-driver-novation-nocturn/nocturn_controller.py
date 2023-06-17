@@ -14,6 +14,7 @@ import hal
 import linuxcnc
 import time
 import nocturn_midi
+import traceback
 
 def delay():
     '''Delay to let LinuxCNC GUI notice action'''
@@ -56,6 +57,12 @@ class JogMotion:
         self.comp.newpin(self.counts, hal.HAL_S32, hal.HAL_OUT)
 
     def __call__(self, event):
+        if self.comp['machine-is-on'] == 0:
+            return
+        
+        if self.comp['jog_enabled'] == 0 or self.comp['machine-homed'] == 0:
+            return
+    
         self.comp[self.counts] += event[1]
 
 class AutoZeroEncoder:
@@ -79,6 +86,9 @@ class Button:
         self.comp.newpin(self.pinname, hal.HAL_BIT, hal.HAL_OUT)
     
     def __call__(self, event):
+        if self.comp['machine-is-on'] == 0 or self.comp['machine-homed'] == 0:
+            event[1] = 0
+
         self.comp[self.pinname] = event[1]
 
 class ToggleButton:
@@ -97,11 +107,12 @@ class ToggleButton:
 
 class MDIButton:
     '''Button that runs MDI command'''
-    def __init__(self, mdi_command):
+    def __init__(self, comp, mdi_command):
+        self.comp = comp
         self.mdi_command = mdi_command
     
     def __call__(self, event):
-        if event[1]:
+        if event[1] and self.comp['machine-is-on'] and self.comp['machine-homed']:
             cmd = linuxcnc.command()
             cmd.mode(linuxcnc.MODE_MDI)
             cmd.wait_complete()
@@ -147,7 +158,7 @@ class Led:
         else:
             state = False
         
-        if self.comp['machine-is-on'] == 0:
+        if self.comp['machine-is-on'] == 0 or self.comp['machine-homed'] == 0:
             state = False
 
         if self.hw.midi_port_idx is None:
@@ -167,9 +178,12 @@ class RelativeZeroLed:
         self.comp.newpin(self.pinname, hal.HAL_FLOAT, hal.HAL_IN)
     
     def __call__(self, event):
-        state = abs(self.comp[self.pinname]) < 0.01
+        state = abs(self.comp[self.pinname]) <= 0.01
 
         if self.comp['machine-is-on'] == 0:
+            state = False
+        
+        if self.comp['program-idle'] == 0 or self.comp['machine-homed'] == 0:
             state = False
 
         if self.hw.midi_port_idx is None:
@@ -204,6 +218,10 @@ class NocturnController:
     def __init__(self):
         self.comp = hal.component("nocturn")
         self.comp.newpin('machine-is-on', hal.HAL_BIT, hal.HAL_IN)
+        self.comp.newpin('program-idle', hal.HAL_BIT, hal.HAL_IN)
+        self.comp.newpin('machine-homed', hal.HAL_BIT, hal.HAL_IN)
+        self.comp.newpin('jog_enabled', hal.HAL_BIT, hal.HAL_IN)
+        
         self.hw = nocturn_midi.NocturnMidi()
         self.handlers = {
             'slider00': JogSpeed(self.comp),
@@ -226,22 +244,22 @@ class NocturnController:
             'btn08': [Button(self.comp, "a_plus"),   Pulse(self.comp, "start_jog")],
             'btn07': ToggleButton(self.comp, "clear_offsets", default = True),
             'btn06': ToggleButton(self.comp, "lift_z"),
-            'btn15': MDIButton('G10 L20 P0 X0'),
-            'btn14': MDIButton('G10 L20 P0 Y0'),
-            'btn13': MDIButton('G10 L20 P0 Z0'),
-            'btn12': MDIButton('o<z_probe_pad> call'),
-            'btn05': MDIButton('o<tool_change_pos> call'),
-            'btn04': MDIButton('o<tool_length_probe> call'),
+            'btn15': MDIButton(self.comp, 'G10 L20 P0 X0'),
+            'btn14': MDIButton(self.comp, 'G10 L20 P0 Y0'),
+            'btn13': MDIButton(self.comp, 'G10 L20 P0 Z0'),
+            'btn12': MDIButton(self.comp, 'o<z_probe_pad> call'),
+            'btn05': MDIButton(self.comp, 'o<tool_change_pos> call'),
+            'btn04': MDIButton(self.comp, 'o<tool_length_probe> call'),
             'poll': [
                 Pulse(self.comp, "start_jog"),
-                Led(self.comp, self.hw, 'jog_enabled', 0),
-                Led(self.comp, self.hw, 'jog_enabled', 1),
-                Led(self.comp, self.hw, 'jog_enabled', 2),
-                Led(self.comp, self.hw, 'jog_enabled', 3),
-                Led(self.comp, self.hw, 'jog_enabled', 8),
-                Led(self.comp, self.hw, 'jog_enabled', 9),
-                Led(self.comp, self.hw, 'jog_enabled', 10),
-                Led(self.comp, self.hw, 'jog_enabled', 11),
+                Led(self.comp, self.hw, 'program-idle', 0),
+                Led(self.comp, self.hw, 'program-idle', 1),
+                Led(self.comp, self.hw, 'program-idle', 2),
+                Led(self.comp, self.hw, 'program-idle', 3),
+                Led(self.comp, self.hw, 'program-idle', 8),
+                Led(self.comp, self.hw, 'program-idle', 9),
+                Led(self.comp, self.hw, 'program-idle', 10),
+                Led(self.comp, self.hw, 'program-idle', 11),
                 Led(self.comp, self.hw, 'clear_offsets', 7, invert = True),
                 Led(self.comp, self.hw, 'lift_z', 6),
                 EncoderRing(self.comp, self.hw, 'led_x_offset', 8, 0.0, 1.0, 4, True),
@@ -266,22 +284,27 @@ class NocturnController:
         self.comp.ready()
 
     def poll(self):
-        event = self.hw.parse_inputs()
-        if event:
-            self.handle_event(event)
-        else:
-            time.sleep(0.05)
-            self.handle_event(('poll', None))
-            self.hw.check_midi_connection()
+        try:
+            event = self.hw.parse_inputs()
+            if event:
+                self.handle_event(event)
+            else:
+                time.sleep(0.05)
+                self.handle_event(('poll', None))
+                self.hw.check_midi_connection()
+        except KeyboardInterrupt:
+            raise
+        except:
+            traceback.print_exc()
 
     def handle_event(self, event):
         if event[0] in self.handlers:
             handlers = self.handlers[event[0]]
             
-            try:
+            if isinstance(handlers, list):
                 for handler in handlers:
                     handler(event)
-            except TypeError:
+            else:
                 handlers(event)
     
 if __name__ == '__main__':
@@ -290,4 +313,5 @@ if __name__ == '__main__':
         while True:
             nocturn.poll()
     except KeyboardInterrupt:
+        nocturn.hw.leds_off()
         raise SystemExit
