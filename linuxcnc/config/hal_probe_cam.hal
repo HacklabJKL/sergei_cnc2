@@ -17,6 +17,7 @@ setp sum2.1.offset [CAMERA]YOFF
 
 net machine.rel_x halui.axis.x.pos-relative => sum2.0.in0
 net machine.rel_y halui.axis.y.pos-relative => sum2.1.in0
+net machine.rel_z <= halui.axis.z.pos-relative
 
 net camera.dro_x <= sum2.0.out
 net camera.dro_y <= sum2.1.out

@@ -29,4 +29,5 @@ net powerctl.probe_xored => gladevcp.probe_sensor
 
 net powerctl.coolant_on <= gladevcp.coolant_on
 net powerctl.coolant_auto <= gladevcp.coolant_auto
+net powerctl.coolant_pulse <= gladevcp.coolant_pulse
 net powerctl.coolant_rate <= gladevcp.coolant_rate

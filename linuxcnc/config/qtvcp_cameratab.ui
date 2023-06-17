@@ -473,7 +473,7 @@
       <item row="9" column="1">
        <widget class="ActionButton" name="actionbutton_8">
         <property name="toolTip">
-         <string>Set Z coordinate to 0</string>
+         <string>Set Y coordinate to specified value</string>
         </property>
         <property name="text">
          <string>Set</string>
@@ -1486,7 +1486,7 @@
       <item row="5" column="1">
        <widget class="ActionButton" name="actionbutton_9">
         <property name="toolTip">
-         <string>Set Z coordinate to 0</string>
+         <string>Set X coordinate to specified value</string>
         </property>
         <property name="text">
          <string>Set</string>

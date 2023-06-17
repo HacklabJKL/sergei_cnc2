@@ -46,6 +46,8 @@ net nocturn.s_jog_z_minus nocturn.z_minus => halui.axis.z.minus
 
 # Overrides are reset when machine is powered off
 net powerctl.machine_is_on => nocturn.machine-is-on
+net powerctl.machine_homed => nocturn.machine-homed
+net powerctl.program_idle => nocturn.program-idle
 
 # Feed and spindle overrides
 net nocturn.s_feed_override nocturn.feed_override => halui.feed-override.counts
