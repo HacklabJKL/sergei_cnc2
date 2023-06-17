@@ -348,7 +348,8 @@ net powerctl.home_inhibit not.1.out => motion.homing-inhibit
 # PWM for fluid pump
 setp pwmgen.0.pwm-freq 2
 setp pwmgen.0.scale 100
-net powerctl.motion_is_feed => pwmgen.0.enable
+#net powerctl.motion_is_feed => pwmgen.0.enable
+setp pwmgen.0.enable 1
 net powerctl.coolant_rate => pwmgen.0.value
 net powerctl.coolant_fluid <= pwmgen.0.pwm
 
@@ -365,7 +366,7 @@ net powerctl.program_running => select8.0.enable
 net powerctl.motion_type motion.motion-type => select8.0.sel
 net powerctl.motion_linfeed select8.0.out2 => lut5.19.in-0
 net powerctl.motion_arcfeed select8.0.out3 => lut5.19.in-1
-net powerctl.fluid_was_on => lut5.19.in-2
+#net powerctl.fluid_was_on => lut5.19.in-2
 net powerctl.motion_is_feed_raw <= lut5.19.out
 
 # Filtering for short travel moves
