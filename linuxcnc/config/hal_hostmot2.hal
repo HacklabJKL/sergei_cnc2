@@ -178,7 +178,7 @@ setp hm2_[HOSTMOT2](BOARD).0.gpio.021.is_output 1
 setp stepgen.0.position-scale 5.0
 setp stepgen.0.maxvel 100
 setp stepgen.0.maxaccel 1000
-net powerctl.coolant_air => stepgen.0.enable
+net powerctl.coolant_fluid => stepgen.0.enable
 net powerctl.coolant_rate => stepgen.0.velocity-cmd
 net powerctl.coolant_step stepgen.0.step => hm2_[HOSTMOT2](BOARD).0.gpio.021.out
 

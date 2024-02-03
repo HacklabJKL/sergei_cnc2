@@ -2,7 +2,7 @@
 
 # Note: some components loaded here are used from other files.
 loadrt not count=3
-loadrt lut5 count=20
+loadrt lut5 count=21
 loadrt timedelay count=9
 loadrt mux2 count=5
 loadrt scale count=2
@@ -45,6 +45,7 @@ addf mux2.2     servo-thread
 addf lut5.14    servo-thread
 addf select8.0  servo-thread
 addf lut5.19    servo-thread
+addf lut5.20    servo-thread
 addf lut5.17    servo-thread
 addf timedelay.8 servo-thread
 addf edge.0     servo-thread
@@ -93,6 +94,7 @@ newsig powerctl.coolant_auto bit
 newsig powerctl.coolant_pulse bit
 newsig powerctl.coolant_rate float
 newsig powerctl.coolant_fluid bit
+newsig powerctl.coolant_step bit
 newsig powerctl.coolant_air bit
 newsig powerctl.op_minute_counter bit
 
@@ -346,18 +348,10 @@ net powerctl.max_speed_xy <= mux2.2.out
 net powerctl.allow_auto => not.1.in
 net powerctl.home_inhibit not.1.out => motion.homing-inhibit
 
-# PWM for fluid pump
-setp pwmgen.0.pwm-freq 2
-setp pwmgen.0.scale 100
-#net powerctl.motion_is_feed => pwmgen.0.enable
-setp pwmgen.0.enable 1
-net powerctl.coolant_rate => pwmgen.0.value
-net powerctl.coolant_fluid <= pwmgen.0.pwm
-
 # Keep air pump active after fluid feed to clear tubes
 setp timedelay.8.on-delay 0.0
 setp timedelay.8.off-delay 10.0
-net powerctl.coolant_fluid => timedelay.8.in
+net powerctl.coolant_step => timedelay.8.in
 net powerctl.fluid_was_on <= timedelay.8.out
 
 # Detect feed moves
@@ -396,4 +390,15 @@ net powerctl.coolant_pulse => lut5.17.in-2
 net powerctl.motion_is_feed => lut5.17.in-0
 net powerctl.air_pulse_pwm => lut5.17.in-1
 net powerctl.coolant_air <= lut5.17.out
+
+# Fluid pump activation
+# lut5.20: in-4 or (in3 and in0) or (in2 and in0 and in1)
+setp lut5.20.function 0xFFFFAA80
+net powerctl.coolant_on => lut5.20.in-4
+net powerctl.coolant_auto => lut5.20.in-3
+net powerctl.coolant_pulse => lut5.20.in-2
+net powerctl.motion_is_feed => lut5.20.in-0
+setp lut5.20.in-1 1
+net powerctl.coolant_fluid <= lut5.20.out
+
 
