@@ -94,6 +94,7 @@ newsig powerctl.coolant_pulse bit
 newsig powerctl.coolant_rate float
 newsig powerctl.coolant_fluid bit
 newsig powerctl.coolant_air bit
+newsig powerctl.op_minute_counter bit
 
 newsig motordrive.0.runaway bit
 newsig motordrive.1.runaway bit
@@ -395,7 +396,4 @@ net powerctl.coolant_pulse => lut5.17.in-2
 net powerctl.motion_is_feed => lut5.17.in-0
 net powerctl.air_pulse_pwm => lut5.17.in-1
 net powerctl.coolant_air <= lut5.17.out
-
-
-
 

@@ -6,7 +6,7 @@ loadrt [HOSTMOT2](DRIVER) config=[HOSTMOT2](CONFIG)
 
 loadrt debounce cfg=5
 
-loadrt stepgen step_type=0 ctrl_type=v
+loadrt stepgen step_type=0,0 ctrl_type=v,v
 
 # Read inputs at start of servo loop and write outputs at end
 addf hm2_[HOSTMOT2](BOARD).0.read          servo-thread    1
@@ -185,5 +185,17 @@ net powerctl.coolant_step stepgen.0.step => hm2_[HOSTMOT2](BOARD).0.gpio.021.out
 # Air valve control
 setp hm2_[HOSTMOT2](BOARD).0.gpio.023.is_output 1
 net powerctl.coolant_air =>  hm2_[HOSTMOT2](BOARD).0.gpio.023.out
+
+
+############################
+# Operating minute counter #
+############################
+
+setp hm2_[HOSTMOT2](BOARD).0.gpio.026.is_output 1
+setp stepgen.1.position-scale 1
+setp stepgen.1.steplen 100000000
+setp stepgen.1.velocity-cmd 0.01666667
+net powerctl.op_minute_counter stepgen.1.step => hm2_[HOSTMOT2](BOARD).0.gpio.026.out
+net powerctl.spindle_enable => stepgen.1.enable
 
 
