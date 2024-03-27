@@ -65,20 +65,72 @@ class RemainingTime:
         self.label.pack(fill="x", side="left", expand=1)
         tool_label.pack(side="left")
 
+        # Get maximum velocity per each axis
+        # GLCanon works in inches so convert the unit
+        self.velocity_to_inch_per_s = 1 / 25.4
+        self.max_vels = [
+            float(inifile.find('AXIS_X', 'MAX_VELOCITY')) * self.velocity_to_inch_per_s,
+            float(inifile.find('AXIS_Y', 'MAX_VELOCITY')) * self.velocity_to_inch_per_s,
+            float(inifile.find('AXIS_Z', 'MAX_VELOCITY')) * self.velocity_to_inch_per_s
+        ]
+        self.max_accels = [
+            float(inifile.find('AXIS_X', 'MAX_ACCELERATION')) * self.velocity_to_inch_per_s,
+            float(inifile.find('AXIS_Y', 'MAX_ACCELERATION')) * self.velocity_to_inch_per_s,
+            float(inifile.find('AXIS_Z', 'MAX_ACCELERATION')) * self.velocity_to_inch_per_s
+        ]
+
+    def segment_time(self, start, end, feed):
+        '''Calculate time taken by a segment, roughly approximating velocity
+        and acceleration effects.
+        '''
+        # Calculate velocity vector
+        delta = (end[0]-start[0], end[1]-start[1], end[2]-start[2])
+        distance = sum(x**2 for x in delta)**0.5
+        velocity = tuple(feed * x / distance for x in delta)
+
+        # Compare against axis max velocities
+        velocity_factor = min((abs(x / y) if x < abs(y) else 1.0) for x, y in zip(self.max_vels, velocity))
+        if velocity_factor < 1.0:
+            velocity = tuple(x * velocity_factor for x in velocity)
+
+        # Compute acceleration time
+        # This is not perfectly accurate because it doesn't take into account
+        # path blending, and also we receive the feed vs. traverse segments
+        # in wrong order. But it gets close.
+        velocity_delta = tuple(abs(x - y) for x, y in zip(velocity, self.velocity))
+        accel_time = max(x / y for x, y in zip(velocity_delta, self.max_accels))
+        self.velocity = velocity
+
+        try:
+            return distance / (feed * velocity_factor) + accel_time
+        except ZeroDivisionError:
+            return 0.0
+
     def update_total_time(self):
         '''Calculate total time for G-code based on loaded preview'''
 
+        # Get traverse velocity in inches per second
+        maxvel = live_plotter.stat.max_velocity * self.velocity_to_inch_per_s
+
         # Check if anything has changed
-        maxvel = live_plotter.stat.max_velocity
         canon = o.canon
         key = hash((id(canon), maxvel))
         if key == self.prev_calculate: return
         self.prev_calculate = key
 
-        self.total_traverse = sum(dist(l[1][:3], l[2][:3]) / maxvel for l in canon.traverse)
-        self.total_feed = (sum(dist(l[1][:3], l[2][:3]) / min(maxvel, l[3]) for l in canon.feed) +
-                           sum(dist(l[1][:3], l[2][:3]) / min(maxvel, l[3]) for l in canon.arcfeed))
+        # Add up estimated times for each segment
+        self.total_traverse = 0
+        self.total_feed = 0
         self.total_dwell = canon.dwell_time
+        self.velocity = (0,0,0)
+        for seg in canon.traverse:
+            self.total_traverse += self.segment_time(seg[1][:3], seg[2][:3], maxvel)
+
+        for seg in canon.feed:
+            self.total_feed += self.segment_time(seg[1][:3], seg[2][:3], seg[3])
+
+        for seg in canon.arcfeed:
+            self.total_feed += self.segment_time(seg[1][:3], seg[2][:3], seg[3])
 
     def format_time(self, seconds):
         if seconds > 120:
@@ -107,6 +159,7 @@ class RemainingTime:
             elif stat.motion_type != 0:
                 self.first_traverse = -1
                 self.done_feed += delta * stat.feedrate
+
             elif stat.delay_left > 0:
                 self.done_dwell += delta
 
