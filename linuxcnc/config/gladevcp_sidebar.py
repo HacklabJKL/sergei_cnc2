@@ -126,7 +126,7 @@ class SidebarHandler:
             else:
                 self.set_status("Z offset movement paused\n(%+0.0f mm)\n(close door to continue)"
                     % hal.get_value("motordrive.2.offset"), True)
-        elif self.stat.file and self.get_offsets() != self.prev_offset:
+        elif self.stat.file and self.get_offsets() != self.prev_offset and self.stat.task_mode != linuxcnc.MODE_AUTO:
             self.set_status("Coordinate system\nchanged, press\nreload to update preview.")
         elif abs(hal.get_value("motordrive.2.offset")) > 0.01:
             self.set_status("Z offset is active:\n(%+0.0f mm)"
