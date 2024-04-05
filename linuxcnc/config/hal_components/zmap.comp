@@ -1,0 +1,332 @@
+//   This is a component for LinuxCNC HAL
+//   Copyright 2022 Petteri Aimonen <jpa at git.mail.kapsi.fi>
+//
+//   This program is free software; you can redistribute it and/or
+//   modify it under the terms of version 2 of the GNU General
+//   Public License as published by the Free Software Foundation.
+//
+//   This program is distributed in the hope that it will be useful,
+//   but WITHOUT ANY WARRANTY; without even the implied warranty of
+//   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//   GNU General Public License for more details.
+//
+//   You should have received a copy of the GNU General Public License
+//   along with this program; if not, write to the Free Software
+//   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+component zmap "Interpolate Z coordinate on a grid";
+option personality yes;
+
+description
+"""
+The zmap component performs 2-dimensional interpolation of
+Z value based on measured point on XY grid. This can be used for bed
+leveling or for carving on curved surfaces, by probing points on the
+surface.
+
+\\fBINTERPOLATION METHOD:\\fR
+
+The interpolated area and number of grid points is set by parameters
+xmin, xmax, xdiv for X axis and correspondingly for Y axis. The number
+of grid cells is xdiv * ydiv and the total number of points is
+(xdiv + 1) * (ydiv + 1). 
+
+This component performs bilinear interpolation between 4 corner points
+of each grid cell. Outside the grid the values from closest border point
+are used. The output value will never exceed the range of the probed
+values. Linear extrapolation is not used to avoid excessive values in
+case of steep slopes.
+
+\\fBCONFIGURATION:\\fR
+
+For bed leveling, set parameters xmin, xmax and ymin, ymax to the furthest
+coordinates you want to probe. For 3D printers this would be a few
+centimeters from the edge of the bed.
+
+By default xdiv and ydiv are both set to 1, and only the corner points are
+probed. For a more dense mesh, you can increase the values. Up to 1089 points
+(xdiv = 32, ydiv = 32) can be specified.
+
+In typical usage, the probe pin is connected to signal from a probe sensor,
+and probe_z is connected to Z axis motor feedback signal. The component will
+capture Z coordinate before each falling edge of the probe signal. After
+all points have been captured, further probe signals are ignored. New capture
+cycle can be started using the reset signal.
+
+If using the example G29 implementation from configs/sim/axis/remap/zmap,
+probe_req should be connected to motion.digital-in-0 and reset to
+motion.digital-out-0.
+
+To compensate Z offset in movements, the HAL offset component should be
+connected between joint and motor control pins. The z_inv output is connected
+to offset input pin, to subtract the measured offset from commanded
+coordinates. When reset is high or probe map has not been initialized, the Z
+outputs both have value 0.0.
+
+\\fBPROBING:\\fR
+
+This component provides probe point coordinates on an X-Y grid. Order of
+iteration in the grid is increasing X coordinate and at the rightmost edge
+returning to left edge and increasing Y coordinate.
+
+For simple usage, an user command script should monitor probe_req pin and
+when high, move to probe_x, probe_y coordinates to probe Z level. Example
+script is provided in configs/sim/axis/remap/zmap.
+
+For non-rectangular bed shapes or more advanced interpolation, the user
+script can probe a custom set of points. Userspace calculation with e.g.
+scipy should then be used to generate a regular grid of points that can
+be passed to zmap. The points can be fed through HAL pins, or written
+to HAL stream for faster transfer.
+
+\\fCHANGING PARAMETERS:\\fR
+
+All parameters can be freely modified before first probing operation.
+The component should be reset if any parameters are modified after points
+have been probed.
+
+It is possible to modify xmin/xmax/ymin/ymax without reset, and this will
+scale the Z map accordingly. Modifying xdiv/ydiv without reset will result
+in a corrupted map.
+
+Note that when zmap is reset, the Z output will go to 0.0. This
+can potentially cause a downward movement that could cause the toolhead to
+hit the bed. This can be avoided by adjusting the non-compensated Z=0
+level to be slightly above the bed, so that resetting the offset will only
+cause upwards movements.
+
+\\fPERFORMANCE:\\fR
+
+The interpolation process is fast and constant time. To eliminate latency
+between X/Y movement and the corresponding Z offset, the HAL component
+functions must be scheduled in correct order:
+
+1. motion
+2. zmap
+3. offset
+4. motor control
+
+It is recommended to apply zmap output using a separate offset
+component instead of motion.eoffset mechanism. The latter requires extra
+conversion to integer values, and also results in 1 cycle latency between
+X/Y movement and the corresponding Z movement.
+
+When using a separate offset component, the Z axis velocity can temporarily
+exceed the configured maximum axis velocities. This normally not a problem,
+as long as compensation offsets for Z are small. The maximum speed can be
+further limited using limit3 component.
+
+""";
+
+option extra_setup yes;
+option extra_cleanup yes;
+
+param rw float xmin = 0.0 "Minimum X coordinate";
+param rw float xmax = 0.0 "Maximum X coordinate";
+param rw unsigned xdiv = 1 "Number of X divisions";
+param rw float ymin = 0.0 "Minimum Y coordinate";
+param rw float ymax = 0.0 "Maximum Y coordinate";
+param rw unsigned ydiv = 1 "Number of Y divisions";
+
+pin in bit reset = 1 "Forget all points";
+
+pin out float probe_x = 0.0 "X coordinate of next point to probe";
+pin out float probe_y = 0.0 "Y coordinate of next point to probe";
+pin out bit probe_req = 0 "Ready to probe next point";
+pin in float probe_z = 0.0 "Probed Z coordinate at probe_x, probe_y. Sampled before falling edge of probe pin.";
+pin in bit probe = 0 "Load new point to memory";
+
+pin out unsigned pointcount = 0 "Number of points probed";
+pin out unsigned total_points = 0 "Total number of points to probe";
+
+pin in float x "X coordinate to interpolate at";
+pin in float y "Y coordinate to interpolate at";
+pin out float z = 0.0 "Interpolated Z coordinate, or 0 if valid = 0";
+pin out float z_inv = 0.0 "Negated value of Z, for use in offset";
+pin out bit valid = 0 "Map has been fully loaded and Z output is valid";
+
+param r unsigned maxpoints = 1089 "Maximum number of points, set at compile time";
+variable float gridvalues[1089];
+variable bool had_probe = 0;
+
+variable hal_stream_t stream;
+
+function _;
+license "GPL";
+author "Petteri Aimonen";
+;;
+
+#include <rtapi_math.h>
+
+/* Interpolate f(t) linearly between two points (t0,f0) and (t1,f1).
+ * If the requested t is outside the range, returns value at the closest
+ * endpoint.
+ * Assumptions: t0 <= t1
+ */
+static hal_float_t interpolate(hal_float_t t, hal_float_t t0, hal_float_t f0, hal_float_t t1, hal_float_t f1)
+{
+    if (t <= t0)
+    {
+        return f0;
+    }
+    else if (t >= t1)
+    {
+        return f1;
+    }
+    else
+    {
+        return f0 + (f1 - f0) / (t1 - t0) * (t - t0);
+    }
+}
+
+/* Setup stream that can be used for fast loading of points.
+ * This is called once per every instance of the component.
+ */
+EXTRA_SETUP()
+{
+    int ret;
+    const int stream_key = 0x5A4D4150;
+    ret = hal_stream_create(&stream, comp_id, stream_key + extra_arg, 16, "F");
+    if (ret < 0)
+    {
+        rtapi_print_msg(RTAPI_MSG_WARN, "zmap: Failed to create stream");
+    }
+}
+
+/* Destroy the streams.
+ * This is called only once, so we need to walk the linked list
+ * to destroy all streams.
+ */
+EXTRA_CLEANUP()
+{
+    struct __comp_state *__comp_inst = __comp_first_inst;
+    while (__comp_inst)
+    {
+        hal_stream_destroy(&stream);
+        __comp_inst = __comp_inst->_next;
+    }
+}
+
+/* Main processing function */
+FUNCTION(_)
+{
+    total_points = (xdiv + 1) * (ydiv + 1);
+
+    if (total_points > maxpoints)
+    {
+        rtapi_print_msg(RTAPI_MSG_WARN,
+            "zmap: Requested number of points %d x %d exceeds limit %d.",
+            (xdiv + 1), (ydiv + 1), maxpoints);
+        
+        probe_req = 0;
+        pointcount = 0;
+        valid = 0;
+        xdiv = 1;
+        ydiv = 1;
+    }
+    else if (xdiv < 1 || ydiv < 1)
+    {
+        rtapi_print_msg(RTAPI_MSG_WARN,
+            "zmap: xdiv and ydiv must both be >= 1.");
+        
+        probe_req = 0;
+        pointcount = 0;
+        valid = 0;
+        xdiv = 1;
+        ydiv = 1;
+    }
+    else if (reset == 1)
+    {
+        /* Clear all stored points */
+        probe_req = 0;
+        pointcount = 0;
+        valid = 0;
+    }
+    else if (pointcount < total_points)
+    {
+        /* All points have not been loaded yet */
+        valid = 0;
+
+        /* Save any probed value (takes last value before probe goes to 0) */
+        if (probe == 1)
+        {
+            probe_req = 0;
+            had_probe = 1;
+            gridvalues[pointcount] = probe_z;
+        }
+        else if (had_probe == 1)
+        {
+            had_probe = 0;
+            pointcount += 1;
+        }
+
+        /* Take any points from stream */
+        if (probe == 0)
+        {
+            while (hal_stream_readable(&stream) && pointcount < total_points)
+            {
+                union hal_stream_data item;
+                if (hal_stream_read(&stream, &item, NULL) >= 0)
+                {
+                    gridvalues[pointcount++] = item.f;
+                }
+            }
+        }
+
+        if (pointcount < total_points)
+        {
+            /* Update coordinates of next point to probe */
+            int idx_x = pointcount % (xdiv + 1);
+            int idx_y = pointcount / (xdiv + 1);
+            probe_x = xmin + (xmax - xmin) * idx_x / xdiv;
+            probe_y = ymin + (ymax - ymin) * idx_y / ydiv;
+            probe_req = 1;
+        }
+        else
+        {
+            probe_req = 0;
+        }
+    }
+    else
+    {
+        /* Interpolate value from grid */
+        valid = 1;
+        probe_req = 0;
+
+        /* Compute grid coordinates */
+        float fidx_x = (x - xmin) * xdiv / (xmax - xmin);
+        float fidx_y = (y - ymin) * ydiv / (ymax - ymin);
+        int idx_x = floor(fidx_x);
+        int idx_y = floor(fidx_y);
+
+        /* Clamp the values so that (idx_x, idx_y) is the upper left corner
+         * of a grid cell that we will interpolate in. If we are outside the
+         * grid, we use the closest grid cell on the border.
+         */
+        if (idx_x < 0) idx_x = 0;
+        if (idx_x > xdiv - 1) idx_x = xdiv - 1;
+        if (idx_y < 0) idx_y = 0;
+        if (idx_y > ydiv - 1) idx_y = ydiv - 1;
+
+        /* Collect the Z values at four corners of the interpolation cell */
+        unsigned stride = xdiv + 1;
+        float z0 = gridvalues[(idx_y + 0) * stride + (idx_x + 0)];
+        float z1 = gridvalues[(idx_y + 0) * stride + (idx_x + 1)];
+        float z2 = gridvalues[(idx_y + 1) * stride + (idx_x + 0)];
+        float z3 = gridvalues[(idx_y + 1) * stride + (idx_x + 1)];
+
+        /* Interpolate in X direction along the top and bottom of cell */
+        float zx0 = interpolate(fidx_x, idx_x, z0, idx_x + 1, z1);
+        float zx1 = interpolate(fidx_x, idx_x, z2, idx_x + 1, z3);
+
+        /* Interpolate in Y direction between those values */
+        z = interpolate(fidx_y, idx_y, zx0, idx_y + 1, zx1);
+    }
+
+    if (valid = 0)
+    {
+        z = 0.0;
+    }
+
+    z_inv = -z;
+}

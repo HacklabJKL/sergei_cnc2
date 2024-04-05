@@ -7,8 +7,10 @@ loadrt logic names=logic.or3 personality=0x203
 loadrt offset count=1
 loadrt limit3 count=1
 loadrt limit2 count=1
+loadrt zmap count=1
 
 addf offset.0.update-feedback              servo-thread 1
+addf zmap.0                                servo-thread
 addf offset.0.update-output                servo-thread
 
 addf pid.0.do-pid-calcs                    servo-thread
@@ -168,14 +170,21 @@ net motordrive.2.runaway runawayprot.2.out => logic.or3.in-02
 # Combined OR of all fault signals
 net motordrive.fault <= logic.or3.or
 
-######################
-# Z axis lift offset #
-######################
+#################
+# Z axis offset #
+#################
 
-# Select either +0 or +100mm offset for Z axis.
+setp zmap.0.reset 1
+
+net machine.pos_x axis.x.pos-cmd => zmap.0.x
+net machine.pos_y axis.y.pos-cmd => zmap.0.y
+net machine.rel_z => zmap.0.probe-z
+net powerctl.probe_sensor => zmap.0.probe
+
+# Select either zmap or +100mm offset for Z axis.
 # This can be used for e.g. tool changing or for dry run
 net powerctl.lift_z => mux2.3.sel
-setp mux2.3.in0 0
+net powerctl.zmap zmap.0.z-inv => mux2.3.in0
 setp mux2.3.in1 100
 
 # Calculate maximum offset to not exceed Z axis maximum

@@ -1,0 +1,22 @@
+o<zmap_probe_grid> sub
+
+M73
+
+; Stop spindle, absolute mode
+M5
+G90
+
+G0 Z5
+
+o100 do
+    M66 E0 L0
+    G53 G0 X#<_hal[zmap.0.probe-x]> Y#<_hal[zmap.0.probe-y]>
+
+    G38.3 Z[#<_z> - 20] F100
+    G0 Z5
+
+    M66 E0 L0
+o100 while [#<_hal[zmap.0.probe-req]> EQ 1]
+
+o<zmap_probe_grid> endsub
+M2

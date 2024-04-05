@@ -32,10 +32,33 @@ class DisplayUpdate:
         comp.newpin("display-update-count", hal.HAL_U32, hal.HAL_OUT)
         comp["display-update-count"] = 0
 
+        comp.newpin("extents-minx", hal.HAL_FLOAT, hal.HAL_OUT)
+        comp.newpin("extents-miny", hal.HAL_FLOAT, hal.HAL_OUT)
+        comp.newpin("extents-minz", hal.HAL_FLOAT, hal.HAL_OUT)
+        comp.newpin("extents-maxx", hal.HAL_FLOAT, hal.HAL_OUT)
+        comp.newpin("extents-maxy", hal.HAL_FLOAT, hal.HAL_OUT)
+        comp.newpin("extents-maxz", hal.HAL_FLOAT, hal.HAL_OUT)
+        comp["extents-minx"] = 0.0
+        comp["extents-miny"] = 0.0
+        comp["extents-minz"] = 0.0
+        comp["extents-maxx"] = 0.0
+        comp["extents-maxy"] = 0.0
+        comp["extents-maxz"] = 0.0
+
     def update(self):
         if self.prev_id != id(o.canon):
             self.prev_id = id(o.canon)
             self.comp["display-update-count"] = comp["display-update-count"] + 1
+
+            minext = from_internal_units(o.canon.min_extents)
+            maxext = from_internal_units(o.canon.max_extents)
+
+            self.comp["extents-minx"] = minext[0]
+            self.comp["extents-miny"] = minext[1]
+            self.comp["extents-minz"] = minext[2]
+            self.comp["extents-maxx"] = maxext[0]
+            self.comp["extents-maxy"] = maxext[1]
+            self.comp["extents-maxz"] = maxext[2]
 
 displayupdate = DisplayUpdate()
 
