@@ -118,10 +118,10 @@ class SidebarHandler:
             self.set_status("Waiting for spindle to start")
         elif abs(hal.get_value("motordrive.2.offset") - hal.get_value("motordrive.2.offset-req")) > 0.1:
             if abs(hal.get_value("motordrive.2.offset") - hal.get_value("motordrive.2.max-offset")) < 0.1:
-                self.set_status("Z offset is active,\nlimited by max Z:\n(%+0.0f mm)"
+                self.set_status("Z offset is active,\nlimited by max Z:\n(%+0.2f mm)"
                     % hal.get_value("motordrive.2.offset"), True)
             elif hal.get_value("powerctl.allow_auto"):
-                self.set_status("Z offset movement in progress:\n(%+0.0f mm)\n(open door to pause)"
+                self.set_status("Z offset movement in progress:\n(%+0.2f mm)\n(open door to pause)"
                     % hal.get_value("motordrive.2.offset"), True)
             else:
                 self.set_status("Z offset movement paused\n(%+0.0f mm)\n(close door to continue)"
@@ -129,7 +129,7 @@ class SidebarHandler:
         elif self.stat.file and self.get_offsets() != self.prev_offset and self.stat.task_mode != linuxcnc.MODE_AUTO:
             self.set_status("Coordinate system\nchanged, press\nreload to update preview.")
         elif abs(hal.get_value("motordrive.2.offset")) > 0.01:
-            self.set_status("Z offset is active:\n(%+0.0f mm)"
+            self.set_status("Z offset is active:\n(%+0.2f mm)"
                 % hal.get_value("motordrive.2.offset"), True)
         else:
             self.set_status()

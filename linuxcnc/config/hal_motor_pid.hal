@@ -184,7 +184,7 @@ net powerctl.probe_sensor => zmap.0.probe
 # Select either zmap or +100mm offset for Z axis.
 # This can be used for e.g. tool changing or for dry run
 net powerctl.lift_z => mux2.3.sel
-net powerctl.zmap zmap.0.z-inv => mux2.3.in0
+net powerctl.zmap zmap.0.z => mux2.3.in0
 setp mux2.3.in1 100
 
 # Calculate maximum offset to not exceed Z axis maximum
