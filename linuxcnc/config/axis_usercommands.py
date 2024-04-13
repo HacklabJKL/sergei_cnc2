@@ -109,6 +109,10 @@ class RemainingTime:
         # Calculate velocity vector
         delta = (end[0]-start[0], end[1]-start[1], end[2]-start[2])
         distance = sum(x**2 for x in delta)**0.5
+
+        if distance <= 1e-6:
+            return 0.0
+        
         velocity = tuple(feed * x / distance for x in delta)
 
         # Compare against axis max velocities
