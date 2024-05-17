@@ -1,0 +1,4 @@
+FreeCAD DIN rail clip (fully constrained and dimensioned)
+by fluidhomefront is licensed under the Creative Commons - Attribution license.
+https://www.thingiverse.com/thing:4432713/files
+
