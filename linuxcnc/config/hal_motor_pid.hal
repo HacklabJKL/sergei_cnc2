@@ -77,7 +77,7 @@ setp pid.0.maxoutput [JOINT_0]MAX_OUTPUT
 
 # Monitoring PID feedback loop
 setp runawayprot.0.control-threshold 5.0
-setp runawayprot.0.feedback-threshold 0.02
+setp runawayprot.0.feedback-threshold 0.05
 setp runawayprot.0.time-threshold 0.2
 net motordrive.0.feedback => runawayprot.0.feedback
 net motordrive.0.control => runawayprot.0.control
