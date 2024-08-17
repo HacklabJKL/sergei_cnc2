@@ -76,8 +76,8 @@ setp pid.0.deadband [JOINT_0]DEADBAND
 setp pid.0.maxoutput [JOINT_0]MAX_OUTPUT
 
 # Monitoring PID feedback loop
-setp runawayprot.0.control-threshold 5.0
-setp runawayprot.0.feedback-threshold 0.05
+setp runawayprot.0.control-threshold 8.0
+setp runawayprot.0.feedback-threshold 0.01
 setp runawayprot.0.time-threshold 0.2
 net motordrive.0.feedback => runawayprot.0.feedback
 net motordrive.0.control => runawayprot.0.control
@@ -117,8 +117,8 @@ setp pid.1.deadband [JOINT_1]DEADBAND
 setp pid.1.maxoutput [JOINT_1]MAX_OUTPUT
 
 # Monitoring PID feedback loop
-setp runawayprot.1.control-threshold 5.0
-setp runawayprot.1.feedback-threshold 0.02
+setp runawayprot.1.control-threshold 8.0
+setp runawayprot.1.feedback-threshold 0.01
 setp runawayprot.1.time-threshold 0.2
 net motordrive.1.feedback => runawayprot.1.feedback
 net motordrive.1.control => runawayprot.1.control
@@ -161,7 +161,7 @@ setp pid.2.maxoutput [JOINT_2]MAX_OUTPUT
 
 # Monitoring PID feedback loop
 setp runawayprot.2.control-threshold 20.0
-setp runawayprot.2.feedback-threshold 0.02
+setp runawayprot.2.feedback-threshold 0.01
 setp runawayprot.2.time-threshold 0.2
 net motordrive.2.feedback => runawayprot.2.feedback
 net motordrive.2.control => runawayprot.2.control
