@@ -1,0 +1,32 @@
+# C0 =  0.99999
+# C1 = -0.00063
+# C2 = -0.00360
+# C3 =  0.0    
+# C4 =  0.99950
+# C5 =  0.00137
+# C6 =  0.00004
+# C7 =  0.001
+# C8 =  1.0
+
+12:58:39: ZMinus result X -280.371 Y -25.511 Z 13.322 Angle 0.022 deg
+12:58:45: ZMinus result X -216.665 Y -25.506 Z 13.323 Angle 0.001 deg
+12:58:50: ZMinus result X -152.970 Y -25.506 Z 13.323 Angle 0.001 deg
+12:58:56: ZMinus result X -82.569 Y -25.506 Z 13.290 Angle -0.027 deg
+12:59:02: ZMinus result X -10.138 Y -25.506 Z 13.311 Angle 0.016 deg
+12:59:07: ZMinus result X 46.862 Y -25.506 Z 13.297 Angle -0.014 deg
+12:59:13: ZMinus result X 105.863 Y -25.506 Z 13.288 Angle -0.009 deg
+12:59:19: ZMinus result X 162.828 Y -25.506 Z 13.269 Angle -0.019 deg
+12:59:25: ZMinus result X 246.664 Y -25.506 Z 13.264 Angle -0.003 deg
+12:59:31: ZMinus result X 291.560 Y -25.506 Z 13.247 Angle -0.021 deg
+12:59:46: ZMinus result X 83.730 Y -149.543 Z 13.305 Angle 0.014 deg
+12:59:50: ZMinus result X 83.725 Y -116.011 Z 13.243 Angle -0.106 deg
+12:59:55: ZMinus result X 83.726 Y -83.840 Z 13.407 Angle 0.293 deg
+12:59:59: ZMinus result X 83.725 Y -46.081 Z 13.396 Angle -0.017 deg
+13:00:03: ZMinus result X 83.728 Y -24.616 Z 13.290 Angle -0.284 deg
+13:00:08: ZMinus result X 83.727 Y 5.555 Z 13.143 Angle -0.279 deg
+13:00:20: ZMinus result X 83.727 Y 5.555 Z 13.148
+13:00:25: ZMinus result X 83.727 Y 36.385 Z 13.345 Angle 0.367 deg
+13:00:31: ZMinus result X 83.729 Y 94.054 Z 13.508 Angle 0.161 deg
+13:00:37: ZMinus result X 83.728 Y 125.855 Z 13.406 Angle -0.183 deg
+13:00:41: ZMinus result X 83.729 Y 157.355 Z 13.568 Angle 0.294 deg
+
