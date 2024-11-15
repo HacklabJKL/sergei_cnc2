@@ -145,6 +145,8 @@ class SidebarHandler:
         self.command.wait_complete()
         self.command.mdi("G54")
         self.command.wait_complete()
+        self.command.mdi("M52")
+        self.command.wait_complete()
 
     def update_coordinate_selection(self, w, data):
         '''Update the state of coordinate selection buttons in sidebar'''

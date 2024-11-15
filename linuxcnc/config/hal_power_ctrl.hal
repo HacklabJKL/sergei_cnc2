@@ -5,10 +5,11 @@ loadrt not count=3
 loadrt lut5 count=21
 loadrt timedelay count=9
 loadrt mux2 count=5
-loadrt scale count=2
+loadrt scale count=3
 loadrt absmaxdecay count=1
 loadrt abslimit count=1
 loadrt sum2 count=4
+loadrt spindle_load count=1
 loadrt select8 count=1
 loadrt edge count=2
 loadrt pwmgen output_type=0,0
@@ -17,6 +18,8 @@ loadrt message names=msg_estop_btn,msg_estop_pause,msg_estop_motorx,msg_estop_mo
 addf abslimit.0   servo-thread
 addf absmaxdecay.0 servo-thread
 addf scale.0    servo-thread
+addf spindle-load.0 servo-thread
+addf scale.2    servo-thread
 addf not.0      servo-thread
 addf not.1      servo-thread
 addf lut5.0     servo-thread
@@ -81,6 +84,9 @@ newsig powerctl.pause_indicator bit
 newsig powerctl.spindle_enable bit
 newsig powerctl.spindle_at_speed bit
 newsig powerctl.spindle_rpm float
+newsig powerctl.spindle_rpm_fb float
+newsig powerctl.spindle_load float
+newsig powerctl.adaptive_feed float
 newsig powerctl.velocity_mm_s float
 newsig powerctl.velocity_mm_min float
 newsig powerctl.ferror float
@@ -284,9 +290,22 @@ net powerctl.estop_off => lut5.10.in-2
 net powerctl.probe_connected => lut5.10.in-3
 net powerctl.spindle_enable <= lut5.10.out
 
+# Spindle RPM monitoring and load calculation
+# Considers 20% slip in induction motor as 100% load
+setp spindle-load.0.max-slip 0.2
+net powerctl.spindle_rpm => spindle-load.0.target-rpm
+net powerctl.spindle_rpm_fb => spindle-load.0.actual-rpm
+net powerctl.spindle_load <= spindle-load.0.spindle-load
+net powerctl.spindle_at_speed <= spindle-load.0.spindle-at-speed
+
+# Adaptive feedrate when spindle is overloaded (enabled by M52)
+setp spindle-load.0.adaptive-feed-minimum 0.2
+setp spindle-load.0.adaptive-feed-threshold 0.5
+net powerctl.adaptive-feed spindle-load.0.adaptive-feed => motion.adaptive-feed
+
 # Noise filtering for spindle at speed signal
 setp timedelay.2.on-delay 0.1
-setp timedelay.2.off-delay 0.1
+setp timedelay.2.off-delay 0.01
 net powerctl.spindle_at_speed => timedelay.2.in
 net powerctl.spindle_at_speed_filtered timedelay.2.out => spindle.0.at-speed
 

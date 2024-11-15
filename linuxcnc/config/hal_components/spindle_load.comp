@@ -1,0 +1,63 @@
+// Build and install with: halcompile --install spindle_load.comp
+
+component spindle_load "Calculate spindle load from induction motor slip";
+
+pin in float target_rpm "Target spindle RPM";
+pin in float actual_rpm "Actual spindle RPM";
+pin in float max_slip "Maximum slip (0..1)";
+pin in float adaptive_feed_threshold "Limit feedrate when load is above this threshold (0..1)";
+pin in float adaptive_feed_minimum "Minimum adaptive feedrate";
+pin out float spindle_load "Load (0..1)";
+pin out float adaptive_feed "Adaptive feed multiplier (0..1)";
+pin out bit spindle_at_speed "Is spindle slip less than the limit";
+
+function _;
+license "GPL";
+;;
+FUNCTION(_) {
+    float abs_actual = (actual_rpm > 0) ? actual_rpm : -actual_rpm;
+    float abs_target = (target_rpm > 0) ? target_rpm : -target_rpm;
+    if (abs_actual > abs_target || abs_target <= 0)
+    {
+        spindle_load = 0.0;
+    }
+    else if (abs_actual <= 0)
+    {
+        spindle_load = 1.0;
+    }
+    else
+    {
+        float slip = 1.0 - abs_actual / abs_target;
+        if (slip >= max_slip)
+        {
+            spindle_load = 1.0;
+        }
+        else
+        {
+            spindle_load = slip / max_slip;
+        }
+    }
+    
+    if (spindle_load < 1.0 && abs_actual > 0 && abs_target > 0)
+    {
+        spindle_at_speed = true;
+    }
+    else
+    {
+        spindle_at_speed = false;
+    }
+    
+    if (spindle_load <= adaptive_feed_threshold)
+    {
+        adaptive_feed = 1.0;
+    }
+    else if (spindle_load >= 1.0)
+    {
+        adaptive_feed = adaptive_feed_minimum;
+    }
+    else
+    {
+        adaptive_feed = adaptive_feed_minimum + 1.0 - (1.0 - adaptive_feed_minimum) * (spindle_load - adaptive_feed_threshold) / (1.0 - adaptive_feed_threshold);
+    }
+}
+

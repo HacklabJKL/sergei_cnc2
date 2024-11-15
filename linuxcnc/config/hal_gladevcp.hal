@@ -31,3 +31,7 @@ net powerctl.coolant_on <= gladevcp.coolant_on
 net powerctl.coolant_auto <= gladevcp.coolant_auto
 net powerctl.coolant_pulse <= gladevcp.coolant_pulse
 net powerctl.coolant_rate <= gladevcp.coolant_rate
+
+setp scale.2.gain 100.0
+net powerctl.spindle_load => scale.2.in
+net powerctl.spindle_load_percent scale.2.out => gladevcp.spindle_load

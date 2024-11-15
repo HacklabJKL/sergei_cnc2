@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <!-- interface-requires gladevcp 0.0 -->
   <requires lib="gtk+" version="2.16"/>
+  <!-- interface-requires gladevcp 0.0 -->
   <!-- interface-naming-policy project-wide -->
   <object class="GtkAdjustment" id="coolant_adj">
     <property name="upper">100</property>
-    <property name="value">0</property>
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
   </object>
@@ -213,6 +212,41 @@
           </packing>
         </child>
         <child>
+          <object class="GtkLabel" id="label12">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="xalign">0</property>
+            <property name="label" translatable="yes">Spindle load:</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">6</property>
+          </packing>
+        </child>
+        <child>
+          <object class="HAL_HBar" id="spindle_load">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="bg_color">#e739e739e739</property>
+            <property name="force_height">20</property>
+            <property name="show_limits">False</property>
+            <property name="target_color">#000000000000</property>
+            <property name="text_template">%0.0f%%</property>
+            <property name="value">60</property>
+            <property name="z0_border">0.40000000596046448</property>
+            <property name="z0_color">#c649ffffc649</property>
+            <property name="z1_border">0.75</property>
+            <property name="z1_color">#ffffffff9294</property>
+            <property name="z2_color">#ffff88388838</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">7</property>
+          </packing>
+        </child>
+        <child>
           <object class="GtkHSeparator" id="hseparator4">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
@@ -221,7 +255,7 @@
             <property name="expand">False</property>
             <property name="fill">True</property>
             <property name="padding">10</property>
-            <property name="position">6</property>
+            <property name="position">8</property>
           </packing>
         </child>
         <child>
@@ -259,7 +293,7 @@
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">7</property>
+            <property name="position">9</property>
           </packing>
         </child>
         <child>
@@ -297,7 +331,7 @@
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">8</property>
+            <property name="position">10</property>
           </packing>
         </child>
         <child>
@@ -335,7 +369,7 @@
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">9</property>
+            <property name="position">11</property>
           </packing>
         </child>
         <child>
@@ -373,7 +407,7 @@
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">10</property>
+            <property name="position">12</property>
           </packing>
         </child>
         <child>
@@ -411,7 +445,7 @@
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">11</property>
+            <property name="position">13</property>
           </packing>
         </child>
         <child>
@@ -449,7 +483,7 @@
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">12</property>
+            <property name="position">14</property>
           </packing>
         </child>
         <child>
@@ -461,7 +495,7 @@
             <property name="expand">False</property>
             <property name="fill">True</property>
             <property name="padding">10</property>
-            <property name="position">13</property>
+            <property name="position">15</property>
           </packing>
         </child>
         <child>
@@ -545,7 +579,7 @@
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">14</property>
+            <property name="position">16</property>
           </packing>
         </child>
         <child>
@@ -588,7 +622,7 @@ offsets (G5x)</property>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">15</property>
+            <property name="position">17</property>
           </packing>
         </child>
         <child>
@@ -647,7 +681,7 @@ offsets (G5x)</property>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">16</property>
+            <property name="position">18</property>
           </packing>
         </child>
         <child>
@@ -890,7 +924,7 @@ offsets (G5x)</property>
             <property name="expand">False</property>
             <property name="fill">True</property>
             <property name="padding">2</property>
-            <property name="position">17</property>
+            <property name="position">19</property>
           </packing>
         </child>
         <child>
@@ -902,7 +936,7 @@ offsets (G5x)</property>
             <property name="expand">False</property>
             <property name="fill">True</property>
             <property name="padding">10</property>
-            <property name="position">18</property>
+            <property name="position">20</property>
           </packing>
         </child>
         <child>
@@ -990,7 +1024,7 @@ offsets (G5x)</property>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">19</property>
+            <property name="position">21</property>
           </packing>
         </child>
         <child>
@@ -1030,7 +1064,7 @@ offsets (G5x)</property>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">20</property>
+            <property name="position">22</property>
           </packing>
         </child>
         <child>
@@ -1042,7 +1076,7 @@ offsets (G5x)</property>
             <property name="expand">False</property>
             <property name="fill">True</property>
             <property name="padding">10</property>
-            <property name="position">21</property>
+            <property name="position">23</property>
           </packing>
         </child>
         <child>
@@ -1058,7 +1092,7 @@ offsets (G5x)</property>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">22</property>
+            <property name="position">24</property>
           </packing>
         </child>
         <child>
@@ -1073,7 +1107,7 @@ offsets (G5x)</property>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">23</property>
+            <property name="position">25</property>
           </packing>
         </child>
         <child>
@@ -1088,7 +1122,7 @@ offsets (G5x)</property>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">24</property>
+            <property name="position">26</property>
           </packing>
         </child>
         <child>
@@ -1103,7 +1137,7 @@ offsets (G5x)</property>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">25</property>
+            <property name="position">27</property>
           </packing>
         </child>
         <child>
@@ -1115,7 +1149,7 @@ offsets (G5x)</property>
             <property name="expand">False</property>
             <property name="fill">True</property>
             <property name="padding">10</property>
-            <property name="position">26</property>
+            <property name="position">28</property>
           </packing>
         </child>
         <child>
@@ -1142,7 +1176,7 @@ offsets (G5x)</property>
           <packing>
             <property name="expand">True</property>
             <property name="fill">True</property>
-            <property name="position">28</property>
+            <property name="position">30</property>
           </packing>
         </child>
         <child>
@@ -1154,7 +1188,7 @@ offsets (G5x)</property>
             <property name="expand">False</property>
             <property name="fill">True</property>
             <property name="padding">10</property>
-            <property name="position">29</property>
+            <property name="position">31</property>
           </packing>
         </child>
         <child>
@@ -1192,7 +1226,7 @@ offsets (G5x)</property>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">30</property>
+            <property name="position">32</property>
           </packing>
         </child>
         <child>
@@ -1256,7 +1290,7 @@ offsets (G5x)</property>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">31</property>
+            <property name="position">33</property>
           </packing>
         </child>
         <child>

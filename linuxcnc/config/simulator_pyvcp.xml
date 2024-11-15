@@ -25,10 +25,13 @@
             <number halpin="spindle_rpm" format="+6.0f" />
         </hbox> 
         <hbox>
+            <label text="Spindle feedback RPM:" />
+            <scale halpin="spindle_rpm_fb" width="20" resolution="100" orient="horizontal" min_="0" max_="24000" />
+        </hbox>
+        <hbox>
             <label text="Spindle enable:" />
             <rectled halpin="spindle_enable" on_color="green" off_color="black" />
-        </hbox> 
-        <checkbutton halpin="spindle_at_speed" text="Spindle at speed" initval="1" />
+        </hbox>
         <hbox>
             <label text="Coolant enable:" />
             <rectled halpin="coolant_enabled" on_color="green" off_color="black" />
