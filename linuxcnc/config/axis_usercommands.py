@@ -8,6 +8,11 @@
 # child = Popen(cmd)
 # _dynamic_childs["qtvcp_sidepanel"] = (child, cmd, False)
 
+# Unbind keyboard commands (prefer physical buttons)
+for key in root_window.bind():
+    root_window.unbind(key)
+root_window.bind_class("all", "<Key-F1>", '')
+
 # Maximize window
 maxgeo=root_window.tk.call("wm","maxsize",".")
 fullsize=str(maxgeo[0]) + 'x' + str(maxgeo[1])
