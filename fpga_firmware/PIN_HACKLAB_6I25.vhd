@@ -140,7 +140,7 @@ package PIN_HACKLAB_6I25 is
 		IOPortTag & x"00" & NullTag    & x"00",				-- I/O 25 / Pin  5
 		IOPortTag & x"04" & PWMTag    & PWMAOutPin,		-- I/O 26 / Pin  6: Coolant pump, PWM 4
 		IOPortTag & x"00" & NullTag    & x"00",				-- I/O 27 / Pin  7
-		IOPortTag & x"00" & QCountTag & QCountQAPin,		-- I/O 28 / Pin  8: SPINDLE_STATUS
+		IOPortTag & x"03" & QCountTag & QCountQAPin,		-- I/O 28 / Pin  8: SPINDLE_STATUS
 		IOPortTag & x"03" & PWMTag    & PWMBDirPin,			-- I/O 29 / Pin  9: SPINDLE_DIR, PWM 3
 		IOPortTag & x"03" & PWMTag    & PWMAOutPin,			-- I/O 30 / Pin 10: SPINDLE_PWM
 		IOPortTag & x"00" & NullTag    & x"00",				-- I/O 31 / Pin 11
