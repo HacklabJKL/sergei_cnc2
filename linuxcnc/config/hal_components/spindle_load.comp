@@ -4,10 +4,12 @@ component spindle_load "Calculate spindle load from induction motor slip";
 
 pin in float target_rpm "Target spindle RPM";
 pin in float actual_rpm "Actual spindle RPM";
-pin in float max_slip "Maximum slip (0..1)";
-pin in float adaptive_feed_threshold "Limit feedrate when load is above this threshold (0..1)";
-pin in float adaptive_feed_minimum "Minimum adaptive feedrate";
+pin in float max_slip = 0.2 "Maximum slip (0..1)";
+pin in float adaptive_feed_threshold = 0.5 "Limit feedrate when load is above this threshold (0..1)";
+pin in float adaptive_feed_minimum = 0.2 "Minimum adaptive feedrate";
+pin in float filter_decay = 0.01 "Lowpass filter decay constant";
 pin out float spindle_load "Load (0..1)";
+pin out float spindle_load_filtered "Low pass filtered load";
 pin out float adaptive_feed "Adaptive feed multiplier (0..1)";
 pin out bit spindle_at_speed "Is spindle slip less than the limit";
 
@@ -58,6 +60,15 @@ FUNCTION(_) {
     else
     {
         adaptive_feed = adaptive_feed_minimum + 1.0 - (1.0 - adaptive_feed_minimum) * (spindle_load - adaptive_feed_threshold) / (1.0 - adaptive_feed_threshold);
+    }
+    
+    if (abs_target == 0)
+    {
+        spindle_load_filtered = 0;
+    }
+    else
+    {
+        spindle_load_filtered += (spindle_load - spindle_load_filtered) * filter_decay;
     }
 }
 

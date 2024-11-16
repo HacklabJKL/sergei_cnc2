@@ -71,6 +71,10 @@
     {
       "nr": "42",
       "path": "4x4x10x50.fctb"
+    },
+    {
+      "nr": 96,
+      "path": "3_v_30deg.fctb"
     }
   ],
   "version": 1
