@@ -147,7 +147,8 @@ package PIN_HACKLAB_6I25 is
 		IOPortTag & x"00" & NullTag    & x"00",				-- I/O 32 / Pin 12
 		IOPortTag & x"00" & NullTag    & x"00",				-- I/O 33 / Pin 13
 
-		emptypin,emptypin,emptypin,emptypin,emptypin,emptypin,emptypin,emptypin, -- added for 34 pin 5I25
+                IOPortTag & x"03" & QCountTag & QCountQBPin, -- Dummy
+		emptypin,emptypin,emptypin,emptypin,emptypin,emptypin,emptypin, -- added for 34 pin 5I25
 		emptypin,emptypin,emptypin,emptypin,emptypin,emptypin,
 
 
