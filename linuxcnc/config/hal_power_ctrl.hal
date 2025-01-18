@@ -14,13 +14,13 @@ loadrt select8 count=1
 loadrt edge count=2
 loadrt pwmgen output_type=0,0
 loadrt biquad count=1
-loadrt median5 count=1
+loadrt median9 count=1
 loadrt message names=msg_estop_btn,msg_estop_pause,msg_estop_motorx,msg_estop_motory,msg_estop_motorz messages="Emergency stop button pressed,Emergency stop by pause button during manual operation,Emergency stop due to X axis fault,Emergency stop due to Y axis fault,Emergency stop due to Z axis fault"
 
 addf abslimit.0   servo-thread
 addf absmaxdecay.0 servo-thread
 addf scale.0    servo-thread
-addf median5.0  servo-thread
+addf median9.0  servo-thread
 addf biquad.0   servo-thread
 addf spindle-load.0 servo-thread
 addf scale.2    servo-thread
@@ -303,8 +303,8 @@ setp biquad.0.f0 100.0
 setp biquad.0.Q 0.8
 setp biquad.0.type 1
 net powerctl.spindle_on => biquad.0.enable
-net powerctl.spindle_rpm_fb_raw => median5.0.in
-net powerctl.spindle_rpm_fb_med median5.0.out => biquad.0.in
+net powerctl.spindle_rpm_fb_raw => median9.0.in
+net powerctl.spindle_rpm_fb_med median9.0.out => biquad.0.in
 net powerctl.spindle_rpm_fb <= biquad.0.out
 
 # Spindle RPM monitoring and load calculation
