@@ -15,7 +15,7 @@ FUNCTION(_) {
     {
         history[i] = history[i + 1];
     }
-    history[4] = in;
+    history[8] = in;
     
     // Find five largest values (max1 is largest)
     float max1 = history[0];
