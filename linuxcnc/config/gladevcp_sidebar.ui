@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <requires lib="gtk+" version="2.16"/>
   <!-- interface-requires gladevcp 0.0 -->
+  <requires lib="gtk+" version="2.16"/>
   <!-- interface-naming-policy project-wide -->
   <object class="GtkAdjustment" id="coolant_adj">
     <property name="upper">100</property>
@@ -963,7 +963,6 @@ offsets (G5x)</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">False</property>
-                <property name="active">True</property>
                 <property name="draw_indicator">False</property>
               </object>
               <packing>
@@ -994,7 +993,6 @@ offsets (G5x)</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">False</property>
-                <property name="active">True</property>
                 <property name="draw_indicator">False</property>
                 <property name="group">coolant_off</property>
               </object>
@@ -1010,7 +1008,6 @@ offsets (G5x)</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">False</property>
-                <property name="active">True</property>
                 <property name="draw_indicator">False</property>
                 <property name="group">coolant_off</property>
               </object>
@@ -1153,6 +1150,73 @@ offsets (G5x)</property>
           </packing>
         </child>
         <child>
+          <object class="GtkHBox" id="hbox15">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <child>
+              <object class="GtkLabel" id="label99">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">0</property>
+                <property name="label" translatable="yes">Squareness
+compensation:</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="HAL_RadioButton" id="compoff">
+                <property name="label" translatable="yes">Off</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">False</property>
+                <property name="draw_indicator">False</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="HAL_RadioButton" id="compon">
+                <property name="label" translatable="yes">On</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">False</property>
+                <property name="active">True</property>
+                <property name="draw_indicator">False</property>
+                <property name="group">compoff</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">29</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkHSeparator" id="hseparator9">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="padding">10</property>
+            <property name="position">30</property>
+          </packing>
+        </child>
+        <child>
           <placeholder/>
         </child>
         <child>
@@ -1176,7 +1240,7 @@ offsets (G5x)</property>
           <packing>
             <property name="expand">True</property>
             <property name="fill">True</property>
-            <property name="position">30</property>
+            <property name="position">32</property>
           </packing>
         </child>
         <child>
@@ -1188,7 +1252,7 @@ offsets (G5x)</property>
             <property name="expand">False</property>
             <property name="fill">True</property>
             <property name="padding">10</property>
-            <property name="position">31</property>
+            <property name="position">33</property>
           </packing>
         </child>
         <child>
@@ -1226,7 +1290,7 @@ offsets (G5x)</property>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">32</property>
+            <property name="position">34</property>
           </packing>
         </child>
         <child>
@@ -1290,7 +1354,7 @@ offsets (G5x)</property>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">33</property>
+            <property name="position">35</property>
           </packing>
         </child>
         <child>

@@ -35,3 +35,5 @@ net powerctl.coolant_rate <= gladevcp.coolant_rate
 setp scale.2.gain 100.0
 net powerctl.spindle_load_filtered => scale.2.in
 net powerctl.spindle_load_percent scale.2.out => gladevcp.spindle_load
+
+net powerctl.matrixkins_enable <= gladevcp.compon

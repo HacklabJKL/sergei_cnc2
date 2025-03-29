@@ -25,6 +25,9 @@ class SidebarHandler:
         self.prev_display_update = None
         self.last_home_time = time.time()
 
+        self.builder.get_object('compon').set_active(True)
+        self.builder.get_object('coolant_auto').set_active(True)
+
         GSTAT.connect("periodic", self.update_status)
         GSTAT.connect("user-system-changed", self.update_coordinate_selection)
         GSTAT.connect("all-homed", self.activate_default_g54)
@@ -83,6 +86,9 @@ class SidebarHandler:
             self.prev_offset = self.get_offsets()
 
         s = self.stat
+
+        self.builder.get_object('compon').set_sensitive(not s.enabled)
+        self.builder.get_object('compoff').set_sensitive(not s.enabled)
 
         if s.estop:
             self.set_status("Emergency stop active\nor power off")

@@ -110,6 +110,7 @@ newsig powerctl.coolant_fluid bit
 newsig powerctl.coolant_step bit
 newsig powerctl.coolant_air bit
 newsig powerctl.op_minute_counter bit
+newsig powerctl.matrixkins_enable bit
 
 newsig motordrive.0.runaway bit
 newsig motordrive.1.runaway bit

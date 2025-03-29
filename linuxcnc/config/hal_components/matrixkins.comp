@@ -132,6 +132,7 @@ license "GPL";
 ;;
 
 static struct haldata {
+    hal_bit_t *enable;
     hal_float_t *c[9];
 } *haldata;
 
@@ -149,6 +150,8 @@ static int userkins_setup(void) {
         res += hal_pin_float_newf(HAL_IN, &(haldata->c[i]), comp_id,"matrixkins.c%d", i);
         *haldata->c[i] = 0.0;
     }
+
+	res += hal_pin_bit_new("matrixkins.enable", HAL_IN, &(haldata->enable), comp_id);
 
     *haldata->c[0] = *haldata->c[4] = *haldata->c[8] = 1.0;
 
@@ -185,16 +188,29 @@ int kinematicsForward(const double *j,
     // Refer to e.g.
     // https://ardoris.wordpress.com/2008/07/18/general-formula-for-the-inverse-of-a-3x3-matrix/
     // https://en.wikipedia.org/wiki/Invertible_matrix#Inversion_of_3_%C3%97_3_matrices
+
+	double a = 1;
+	double b = 0;
+	double c = 0;
+	double d = 0;
+	double e = 1;
+	double f = 0;
+	double g = 0;
+	double h = 0;
+	double i = 1;
     
-    double a = *haldata->c[0];
-    double b = *haldata->c[1];
-    double c = *haldata->c[2];
-    double d = *haldata->c[3];
-    double e = *haldata->c[4];
-    double f = *haldata->c[5];
-    double g = *haldata->c[6];
-    double h = *haldata->c[7];
-    double i = *haldata->c[8];
+	if (*haldata->enable)
+	{
+		a = *haldata->c[0];
+		b = *haldata->c[1];
+		c = *haldata->c[2];
+		d = *haldata->c[3];
+		e = *haldata->c[4];
+		f = *haldata->c[5];
+		g = *haldata->c[6];
+		h = *haldata->c[7];
+		i = *haldata->c[8];
+	}
 
     double det = a * (e * i - f * h)
                - b * (d * i - f * g)
@@ -230,15 +246,28 @@ int kinematicsInverse(const EmcPose * pos,
                       const KINEMATICS_INVERSE_FLAGS * iflags,
                       KINEMATICS_FORWARD_FLAGS * fflags)
 {
-    double a = *haldata->c[0];
-    double b = *haldata->c[1];
-    double c = *haldata->c[2];
-    double d = *haldata->c[3];
-    double e = *haldata->c[4];
-    double f = *haldata->c[5];
-    double g = *haldata->c[6];
-    double h = *haldata->c[7];
-    double i = *haldata->c[8];
+	double a = 1;
+	double b = 0;
+	double c = 0;
+	double d = 0;
+	double e = 1;
+	double f = 0;
+	double g = 0;
+	double h = 0;
+	double i = 1;
+
+	if (*haldata->enable)
+	{
+		a = *haldata->c[0];
+		b = *haldata->c[1];
+		c = *haldata->c[2];
+		d = *haldata->c[3];
+		e = *haldata->c[4];
+		f = *haldata->c[5];
+		g = *haldata->c[6];
+		h = *haldata->c[7];
+		i = *haldata->c[8];
+	}
 
     // Apply matrix transform to the 3 cartesian coordinates
     j[0] = pos->tran.x * a + pos->tran.y * b + pos->tran.z * c;

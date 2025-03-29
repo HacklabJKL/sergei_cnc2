@@ -41,6 +41,7 @@ setp matrixkins.c5 [MATRIXKINS]C5
 setp matrixkins.c6 [MATRIXKINS]C6
 setp matrixkins.c7 [MATRIXKINS]C7
 setp matrixkins.c8 [MATRIXKINS]C8
+net powerctl.matrixkins_enable => matrixkins.enable
 
 ####################
 # X axis / joint 0 #

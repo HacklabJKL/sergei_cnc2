@@ -31,7 +31,7 @@ net powerctl.power_good <= simulator_pyvcp.power_good
 net powerctl.allow_auto => simulator_pyvcp.high_current
 net powerctl.spindle_rpm => simulator_pyvcp.spindle_rpm
 net powerctl.spindle_enable => simulator_pyvcp.spindle_enable
-net powerctl.spindle_rpm_fb <= simulator_pyvcp.spindle_rpm_fb-f
+net powerctl.spindle_rpm_fb_raw <= simulator_pyvcp.spindle_rpm_fb-f
 net powerctl.probe_sensor <= simulator_pyvcp.probe
 net powerctl.coolant_enabled => simulator_pyvcp.coolant_enabled
 
